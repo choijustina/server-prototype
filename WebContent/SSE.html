@@ -9,36 +9,34 @@ function pageScroll() {
 }
 </script>
 
-
-<style type="text/css">
-#header {
-	position: fixed;
-	z-index: 9999;
-	top: 0;
-	left: 0;
-}
-</style>
-
-
 </head>
 <body onload = "pageScroll()">
 
-<!--<div id="header">sdflkdsjfklsdj<br>fdhsklfjsd<br></div>-->
 <div id="ServerTime"></div>
 
 	<script>
-	if (typeof (EventSource) !== "undefined") {
+	if (typeof (EventSource) != "undefined") {
 		var source = new EventSource("http://localhost:8080/SSE/SseServer");
+		
+		
 		source.onmessage = function(event) {
-//			var data = event.data;
-//			var id = event.id
-			document.getElementById("ServerTime").innerHTML += event.data + "<br>";
+			document.body.innerHTML += event.data + "<br>";
+			//document.getElementById("ServerTime").innerHTML += event.data + "<br>";
 		}
+		
+		
+		/*
+		source.addEventListener('event', function(e) {
+			document.innerHTML += event.data + "<br>";
+		}, false);
+		*/
+		
+		
 	} else {
 		document.getElementById("ServerTime").innerHTML = "Sorry, your browser does not support server-sent events...";
 	}
 	</script>
-
+	
 </body>
 
 </html>

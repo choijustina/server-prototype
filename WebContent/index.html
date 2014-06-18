@@ -3,35 +3,118 @@
 <html>
 
 <head>
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+function checkAll(formname, checktoggle)
+{
+  var checkboxes = new Array(); 
+  checkboxes = document[formname].getElementsByTagName('input');
+ 
+  for (var i=0; i<checkboxes.length; i++)  {
+    if (checkboxes[i].type == 'checkbox')   {
+      checkboxes[i].checked = checktoggle;
+    }
+  }
+}
+</script>
 
 <style type="text/css">
 .box{
-	width: 358px;
-	border: #000000 1px solid;
+	width: 98%;
+	height: 100%;
+	border: none;
 	background-color: #ffffff;
-	text-align: center;
-	padding: 0px 2px 7px 2px;
+	align: right;
+	text-align: left;
+	padding-top: 20px;
+	padding-left: 5px;
 }
-.font{
-	color: #006699;
-	font: 13px arial, serif;
-	font-weight: bold;
-	text-align: center;
-	padding: 3px;
+
+
+
+#iframe {
+  width: 100%;
+  height: 100%;
+  border: none;    
+  
+  background: #eee ;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  
+  z-index: 1;
+}
+
+#resizable {
+  width: 700px;
+  height: 700px;
+  background: #fff;
+  border: 1px solid #ccc;
+  
+  position: absolute;
+  top: 100px;
+  left: 200px;
+  
+  z-index: 9;
 }
 
 </style>
 
 </head>
 
-<body>
+<body onload="checkAll('list',true)">
+<script type="text/javascript">
+$(function() {
+  $('#resizable').resizable({
+      start: function(event, ui) {
+        $('<div class="ui-resizable-iframeFix" style="background: #fff;"></div>')
+            .css({
+                width:'100%', height: '100%',
+                position: "absolute", opacity: "0.001", zIndex: 1000
+           })
+            .appendTo("body");
+      },
+    stop: function(event, ui) {
+        $('.ui-resizable-iframeFix').remove();
+      }
+  });
+}); 
+
+</script>
+
+<h1>current server time</h1>
 
 <div class="box">
-<div class="font">
-News Window<br>
-</div>
-<iframe id="contentwindow" seamless src="SSE.html" width="500" height="500" marginwidth="0" marginheight="0" frameborder="0" scrolling="yes" style="display: block; margin: 0 auto; padding: 0; border: #000000 1px solid;"></iframe>
-</div>
+
+<form name="list">
+<a onclick="javascript:checkAll('list', true);" href="javascript:void();">check all</a>
+<a onclick="javascript:checkAll('list', false);" href="javascript:void();">uncheck all</a><br>
+<input type="checkbox" name="filter" value="filter">BUSINESS<br>
+<input type="checkbox" name="filter" value="blah">FAMILY<br>
+<input type="checkbox" name="filter" value="blah">FRIENDS<br>
+<input type="checkbox" name="filter" value="blah">HAPPY<br>
+<input type="checkbox" name="filter" value="blah">PERSONAL<br>
+<input type="checkbox" name="filter" value="blah">SAD<br>
+<input type="checkbox" name="filter" value="blah">SOCIAL<br>
+<input type="checkbox" name="filter" value="blah">SPIRITUAL<br>
+<input type="checkbox" name="filter" value="blah">UPDATE<br>
+<input type="checkbox" name="filter" value="blah">VIRTUAL<br>
+</form>
+<div id="resizable">
+   <iframe id="iframe" seamless src="SSE.html" align="left" marginwidth="0" marginheight="0" frameborder="0" scrolling="yes" style="display: block; margin: 0 auto; padding: 0; border: #000000 1px solid;"></iframe>
+
+
+
+
+</div></div>
+
+
 </body>
 
 </html>

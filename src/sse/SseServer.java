@@ -38,7 +38,7 @@ public class SseServer extends HttpServlet {
 
 		PrintWriter out = response.getWriter();
 		String filename = "longfile.txt";
-		URL url = new URL("http://localhost:8080/SSE/longfile.txt");
+		URL url = new URL("http://localhost:8080/SSE/shortfile.txt");
 		
 		out.print("data: " + "Searching in " + filename + "\n\n");
 		out.flush();
@@ -70,14 +70,12 @@ public class SseServer extends HttpServlet {
 			 * 9 virtual
 			 */
 			
-//			if (event.equals("business")) {
-				Date date = new Date();
-				out.print(data + " id: " + id + " eventtype: " + event
-						+ " in file " + "\"" + filename + "\" at "
-						+ date.toString() + "\n\n");
-				out.flush();
-//			}
-			
+			Date date = new Date();
+			//out.print("event: " + event + "\n");
+			out.print(data + " id: " + id + " eventtype: " + event
+					+ " in file " + "\"" + filename + "\" at "
+					+ date.toString() + "\n\n");
+			out.flush();
 
 			try {
 				Thread.currentThread().sleep(1000);
