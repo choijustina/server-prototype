@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script type="text/javascript">
+function pageScroll() {
+	window.scrollBy(0,100);
+	scrolldelay = setTimeout('pageScroll()',50);
+}
+</script>
+
+</head>
+<body onload = "pageScroll()">
+
+<div id="ServerTime"></div>
+
+	<script>
+	if (typeof (EventSource) !== "undefined") {
+		var source = new EventSource("http://localhost:8080/SSE/SseServer");
+/*
+		source.onerror = function(event) {
+			alert("EventSource failed.");
+		};
+		
+
+		source.addEventListener("personal", function(e) {
+			var newStuff = document.createElement("li");
+			
+			var obj = JSON.parse(e.data);
+			newStuff.innerHTML = "personal at " + obj.time;
+			eventList.appendChild(newStuff);
+		}, false);
+*/
+		
+		source.onmessage = function(event) {
+//		var newStuff = document.createElement("li");
+//		newStuff.innerHTML = "data: " + e.data;
+//		eventList.appendChild(newStuff);
+		
+//			eventList.appendChild(document.getElementById("ServerTime").innerHTML);
+			document.getElementById("ServerTime").innerHTML += event.data + "<br>";
+			
+		}
+
+		
+		
+		
+	} else {
+		document.getElementById("ServerTime").innerHTML = "Sorry, your browser does not support server-sent events...";
+	}
+	</script>
+	
+</body>
+
+</html>
