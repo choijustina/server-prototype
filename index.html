@@ -87,7 +87,21 @@ $(function() {
   });
 }); 
 
-</script>
+
+function pick() {
+	var checkBoxes = document.getElementsByTagName('input');
+	//alert(checkBoxes.length);
+	var param = "Checkbox Value:" + "\n";
+	for (var counter = 0; counter < checkBoxes.length; counter++) {
+		if (checkBoxes[counter].type.toUpperCase() == 'CHECKBOX' && checkBoxes[counter].checked == true) {
+			param += checkBoxes[counter].value + "\n";
+		}
+	}
+alert(param);
+}
+  </script>
+
+
 
 <h1>current server time</h1>
 
@@ -96,19 +110,21 @@ $(function() {
 <form name="list">
 <a onclick="javascript:checkAll('list', true);" href="javascript:void();">check all</a>
 <a onclick="javascript:checkAll('list', false);" href="javascript:void();">uncheck all</a><br>
-<input type="checkbox" name="filter" value="filter">BUSINESS<br>
-<input type="checkbox" name="filter" value="blah">FAMILY<br>
-<input type="checkbox" name="filter" value="blah">FRIENDS<br>
-<input type="checkbox" name="filter" value="blah">HAPPY<br>
-<input type="checkbox" name="filter" value="blah">PERSONAL<br>
-<input type="checkbox" name="filter" value="blah">SAD<br>
-<input type="checkbox" name="filter" value="blah">SOCIAL<br>
-<input type="checkbox" name="filter" value="blah">SPIRITUAL<br>
-<input type="checkbox" name="filter" value="blah">UPDATE<br>
-<input type="checkbox" name="filter" value="blah">VIRTUAL<br>
+<label><input type="checkbox" name="filter[]" value="1" onclick="chkme()">BUSINESS</label><br>
+<label><input type="checkbox" name="filter[]" value="2">FAMILY</label><br>
+<label><input type="checkbox" name="filter[]" value="3">FRIENDS</label><br>
+<label><input type="checkbox" name="filter[]" value="5">HAPPY</label><br>
+<label><input type="checkbox" name="filter[]" value="7">PERSONAL</label><br>
+<label><input type="checkbox" name="filter[]" value="11">SAD</label><br>
+<label><input type="checkbox" name="filter[]" value="13">SOCIAL</label><br>
+<label><input type="checkbox" name="filter[]" value="17">SPIRITUAL</label><br>
+<label><input type="checkbox" name="filter[]" value="19">UPDATE</label><br>
+<label><input type="checkbox" name="filter[]" value="23">VIRTUAL</label><br>
+ <input type="button" value="SUBMIT"  onClick="pick()">
+ 
 </form>
 <div id="resizable">
-   <iframe id="iframe" seamless src="SSE.html" align="left" marginwidth="0" marginheight="0" frameborder="0" scrolling="yes" style="display: block; margin: 0 auto; padding: 0; border: #000000 1px solid;"></iframe>
+   <iframe id="iframe" seamless src="SSE.html" style="display: block; margin: 0 auto; padding: 0; border: #000000 1px solid;"></iframe>
 
 
 
