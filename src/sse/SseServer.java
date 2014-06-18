@@ -56,7 +56,21 @@ public class SseServer extends HttpServlet {
 			s.nextLine();
 			data = s.nextLine();
 			
-//			if (event.equals("personal")) {
+			/*
+			 * Possible event types:
+			 * 0  business
+			 * 1 family
+			 * 2 friends
+			 * 3 happy
+			 * 4 personal
+			 * 5 sad
+			 * 6 social
+			 * 7 spiritual
+			 * 8 update
+			 * 9 virtual
+			 */
+			
+//			if (event.equals("business")) {
 				Date date = new Date();
 				out.print(data + " id: " + id + " eventtype: " + event
 						+ " in file " + "\"" + filename + "\" at "
