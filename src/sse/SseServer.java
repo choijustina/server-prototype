@@ -70,7 +70,7 @@ public class SseServer extends HttpServlet {
 			 * 9 virtual
 			 */
 			
-//			if (event.equals("personal")) {
+//			if (event.equals("business")) {
 				Date date = new Date();
 				out.print(data + " id: " + id + " eventtype: " + event
 						+ " in file " + "\"" + filename + "\" at "
