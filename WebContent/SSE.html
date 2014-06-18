@@ -28,7 +28,7 @@ function pageScroll() {
 
 	<script>
 	if (typeof (EventSource) !== "undefined") {
-		var source = new EventSource("http://localhost:8080/SSEServlet/SseServer");
+		var source = new EventSource("http://localhost:8080/SSE/SseServer");
 		source.onmessage = function(event) {
 //			var data = event.data;
 //			var id = event.id

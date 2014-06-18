@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  * File: SseServer.java
  * Project: SSEServlet
  * @author swang
- * @version 4:20pm 6/17/14
+ * @version 10:15am 6/18/14
  * Source: http://milestonenext.blogspot.com/2013/07/html5-server-sent
  *         -events-sample-with.html
  * 
