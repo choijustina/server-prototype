@@ -1,44 +1,71 @@
 <!DOCTYPE html>
 <html>
-<head>
 
+<head>
 <script type="text/javascript">
+// GLOBAL VARIABLES FOR LATER //////////////////////////////////////
+//checks received from parent
+var arrayVals = new Array(9);
+
+// 
 function pageScroll() {
 	window.scrollBy(0,100);
 	scrolldelay = setTimeout('pageScroll()',50);
 }
+
+function addLoadEvent(func) {
+  var oldonload = window.onload;
+  if (typeof window.onload != 'function') {
+    window.onload = func;
+  } else {
+    window.onload = function() {
+      if (oldonload) {
+        oldonload();
+      }
+      func();
+    }
+  }
+}
+
+function buttonPressed(){
+	for (var i = 0; i < 10; i++) {
+		arrayVals[i] = window.parent.param[i];
+	}
+	alert("rcvd values: " + arrayVals);
+	
+	//call back to alert parent that values were received
+	window.parent.babyCallback();
+}
+
+
 </script>
 
-
-<style type="text/css">
-#header {
-	position: fixed;
-	z-index: 9999;
-	top: 0;
-	left: 0;
-}
-</style>
-
-
 </head>
-<body onload = "pageScroll()">
 
-<!--<div id="header">sdflkdsjfklsdj<br>fdhsklfjsd<br></div>-->
+<body>
+
+
+
 <div id="ServerTime"></div>
 
 	<script>
+	
+	addLoadEvent(pageScroll());
+
+//	addLoadEvent(function() {...});
+
+	
+
 	if (typeof (EventSource) !== "undefined") {
 		var source = new EventSource("http://localhost:8080/SSE/SseServer");
 		source.onmessage = function(event) {
-//			var data = event.data;
-//			var id = event.id
 			document.getElementById("ServerTime").innerHTML += event.data + "<br>";
 		}
 	} else {
 		document.getElementById("ServerTime").innerHTML = "Sorry, your browser does not support server-sent events...";
 	}
+	
 	</script>
 
 </body>
-
 </html>
