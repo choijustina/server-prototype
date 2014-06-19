@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * File: SseServer.java
- * Project: SSEServlet
+ * Project: SSE
  * @author swang
  * @version 10:15am 6/18/14
  * Source: http://milestonenext.blogspot.com/2013/07/html5-server-sent
@@ -25,19 +25,17 @@ import javax.servlet.http.HttpServletResponse;
 public class SseServer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
 
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/event-stream;charset=UTF-8");
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Connection", "keep-alive");
 
 		PrintWriter out = response.getWriter();
-		String filename = "longfile.txt";
+		String filename = "shortfile.txt";
 		URL url = new URL("http://localhost:8080/SSE/shortfile.txt");
 		
 		out.print("data: " + "Searching in " + filename + "\n\n");
@@ -69,6 +67,7 @@ public class SseServer extends HttpServlet {
 			 * 8 update
 			 * 9 virtual
 			 */
+			
 			
 			Date date = new Date();
 			//out.print("event: " + event + "\n");

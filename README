@@ -4,6 +4,6 @@ Justina Choi (choi.justina@gmail.com) github: choijustina
 
 location on Justina's VM: /home/ubuntu/workspace/SSE
 export as SSE.war file on Eclipse
-deploy on Tomcat
+re-deploy on Tomcat (delete the old one, add the new one)
 to access the data to be printed: http://localhost:8080/SSE/SSE.html
 to see visually appealing version: http://localhost:8080/SSE/
