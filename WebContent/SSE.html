@@ -17,11 +17,62 @@ function pageScroll() {
 	<script>
 	if (typeof (EventSource) != "undefined") {
 		var source = new EventSource("http://localhost:8080/SSE/SseServer");
-
+		
+		source.addEventListener('open', function(e) {
+			document.body.innerHTML += "Connection was opened" + "<br>";
+		}, false);
+		
+		source.addEventListener('error', function(e) {
+			document.body.innerHTML += "An error ocurred..." + "<br>";
+			if (e.readyState == EventSource.CLOSED) {
+				document.body.innerHTML += "Connection was closed" + "<br>";
+			}
+		}, false);
+		
+		source.addEventListener('business', function(e) {
+			document.body.innerHTML += e.data + "<br>";
+		}, false);
+		
+		source.addEventListener('family', function(e) {
+			document.body.innerHTML += e.data + "<br>";
+		}, false);
+		
+		source.addEventListener('friends', function(e) {
+			document.body.innerHTML += e.data + "<br>";
+		}, false);
+		
+		source.addEventListener('happy', function(e) {
+			document.body.innerHTML += e.data + "<br>";
+		}, false);
+		
+		source.addEventListener('personal', function(e) {
+			document.body.innerHTML += e.data + "<br>";
+		}, false);
+		
+		source.addEventListener('sad', function(e) {
+			document.body.innerHTML += e.data + "<br>";
+		}, false);
+		
+		source.addEventListener('social', function(e) {
+			document.body.innerHTML += e.data + "<br>";
+		}, false);
+		
+		source.addEventListener('spiritual', function(e) {
+			document.body.innerHTML += e.data + "<br>";
+		}, false);
+		
+		source.addEventListener('update', function(e) {
+			document.body.innerHTML += e.data + "<br>";
+		}, false);
+		
+		source.addEventListener('virtual', function(e) {
+			document.body.innerHTML += e.data + "<br>";
+		}, false);
+		
+		// onmessage handler is used if no event name is specified for a message
 		source.onmessage = function(event) {
-			document.body.innerHTML += event.data + "<br>";
+			document.body.innerHTML += "no event name.." + event.data + "<br>";
 		}
-
 		
 	} else {
 		document.body.innerHTML = "Sorry, your browser does not support server-sent events...";

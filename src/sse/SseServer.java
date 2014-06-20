@@ -35,10 +35,31 @@ public class SseServer extends HttpServlet {
 		response.setHeader("Connection", "keep-alive");
 
 		PrintWriter out = response.getWriter();
-
-		while (true) {
+		String filename = "shortfile.txt";
+		URL url = new URL("http://localhost:8080/SSE/" + filename);
+		
+		out.print("data: " + "Searching in " + filename + "\n\n");
+		out.flush();
+		
+		Scanner s = new Scanner(url.openStream());
+		int id = 0;
+		String event = "";
+		String msg = "";
+		
+		while (s.hasNext()) {
+			s.next();
+			id = s.nextInt();
+			s.next();
+			event = s.next();
+			s.nextLine();
+			s.next();
+			msg = s.nextLine();
+			
 			Date date = new Date();
-			out.print("data: current time is " + date + "\n\n");
+			out.print("event: " + event + "\n");
+			out.print("data: " + id + "  " + event 
+					+ " - " + msg + " accessed at " + date
+					+ "\n\n");
 			out.flush();
 			
 			try {
@@ -47,5 +68,7 @@ public class SseServer extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
+		out.close();
+		s.close();
 	}
 }
