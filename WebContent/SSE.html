@@ -17,24 +17,11 @@ function pageScroll() {
 	<script>
 	if (typeof (EventSource) != "undefined") {
 		var source = new EventSource("http://localhost:8080/SSE/SseServer");
-		
+
 		source.onmessage = function(event) {
 			document.body.innerHTML += event.data + "<br>";
 		}
 
-		source.addEventListener('open', function(e) {
-			document.body.innerHTML += "Connection was opened" + "<br>";
-		}, false);
-
-		source.addEventListener('error', function(e) {
-			document.body.innerHTML += "An error ocurred..." + "<br>";
-			if (e.readyState == EventSource.CLOSED) {
-				document.body.innerHTML += "Connection was closed" + "<br>";
-			}
-		}, false);
-		
-		
-		
 		
 	} else {
 		document.body.innerHTML = "Sorry, your browser does not support server-sent events...";
