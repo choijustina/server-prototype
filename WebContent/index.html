@@ -17,7 +17,6 @@ var param = new Array(9);
 //checks returned from iframe
 var returnvals = new Array(9);
 
-
 // CHECK/UNCHECK ALL FUNCTION /////////////////////////////////////
 
 function checkAll(formname, checktoggle){
@@ -50,7 +49,6 @@ $(function() {
   });
 }); 
 
-
 // SUBMIT BUTTON FUNCTION ///////////////////////////////////////
 
 function pick() {
@@ -66,7 +64,7 @@ function pick() {
 		}
 	}
 
-	alert("sent values: " + param );
+//	alert("sent values: " + param );
 	//call child iframe and notify that a button was pressed
 	//activates function buttonPressed in iframe SSE.html
 	document.getElementById("iframe").contentWindow.buttonPressed();
@@ -85,8 +83,25 @@ function babyCallback(){
 //	alert("sent back values are " + param[0] + " " + param[1]);
 }
 */
-  </script>
 
+// LOAD MULTIPLE FUNCTIONS ONLOAD ////////////////////////////
+function addLoadEvent(func) {
+  var oldonload = window.onload;
+  if (typeof window.onload != 'function') {
+    window.onload = func;
+  } else {
+    window.onload = function() {
+      if (oldonload) {
+        oldonload();
+      }
+      func();
+    }
+  }
+}
+
+addLoadEvent(checkAll('list',true));
+addLoadEvent(pick());
+</script>
 
 <!-- STYLES-------------------------------------------------------- -->
 <style type="text/css">
@@ -127,12 +142,10 @@ function babyCallback(){
 }
 
 </style>
-
 </head>
+<body onload="checkAll('list',true); pick()">
 
-<body onload="checkAll('list',true)">
-
-<h1>current fsdfds time</h1>
+<h1>reading from file...</h1>
 
 <div class="box">
 
