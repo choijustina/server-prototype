@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * File: SseServer.java
  * Project: SSE
- * @author swang
- * @version 10:15am 6/18/14
  * Source: http://milestonenext.blogspot.com/2013/07/html5-server-sent-events-sample-with.html
  * Documentation: http://docs.oracle.com/javaee/6/api/javax/servlet/http/package-summary.html
  * 
@@ -35,7 +33,7 @@ public class SseServer extends HttpServlet {
 		response.setHeader("Connection", "keep-alive");
 
 		PrintWriter out = response.getWriter();
-		String filename = "shortfile.txt";
+		String filename = "longfile_10.txt";
 		URL url = new URL("http://localhost:8080/SSE/" + filename);
 		
 		out.print("data: " + "Searching in " + filename + "\n\n");
