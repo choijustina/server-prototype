@@ -52,7 +52,7 @@ addLoadEvent(pageScroll());
 
 <script>
 if (typeof (EventSource) != "undefined") {
-	var source = new EventSource("http://localhost:8080/SSE/SseServer");
+	var source = new EventSource("http://localhost:8080/SSE/SSE_Rabbit");
 	
 	source.addEventListener('open', function(e) {
 		document.body.innerHTML += "Connection was opened" + "<br>";
