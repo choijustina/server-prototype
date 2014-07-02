@@ -7,3 +7,11 @@ export as SSE.war file on Eclipse
 re-deploy on Tomcat (delete the old one, add the new one)
 to access the data to be printed: http://localhost:8080/SSE/SSE.html
 to see visually appealing version: http://localhost:8080/SSE/
+
+SseServer.java
+
+
+SSE_Rabbit.java (rabbitmq version)
+localhost:8080/SSE/ opens the consumer with queue name "queue"
+confirmation message should appear when message receieved & prints message
+if "break" is sent as the message, closes consumer & connection but automatically reconnects
