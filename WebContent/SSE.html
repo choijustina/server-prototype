@@ -52,7 +52,7 @@ addLoadEvent(pageScroll());
 
 <script>
 if (typeof (EventSource) != "undefined") {
-	var source = new EventSource("http://localhost:8080/SSE/SseServer");
+	var source = new EventSource("http://localhost:8080/SSE/SSE_Rabbit");
 	
 	source.addEventListener('open', function(e) {
 		document.body.innerHTML += "Connection was opened" + "<br>";
@@ -127,7 +127,7 @@ if (typeof (EventSource) != "undefined") {
 	
 	// onmessage handler is used if no event name is specified for a message
 	source.onmessage = function(event) {
-		document.body.innerHTML += "no event name.." + event.data + "<br>";
+		document.body.innerHTML += event.data + "<br>";
 	}
 	
 } else {
