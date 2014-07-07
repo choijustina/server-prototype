@@ -42,6 +42,8 @@ function buttonPressed(){
 
 addLoadEvent(pageScroll());
 //addLoadEvent(function() {...});
+
+
 </script>
 
 </head>
@@ -59,10 +61,14 @@ if (typeof (EventSource) != "undefined") {
 	}, false);
 		
 	source.addEventListener('error', function(e) {
-		document.body.innerHTML += "An error ocurred..." + "<br>";
+		document.body.innerHTML += "An error ocurred... attempting to reconnect" + "<br>";
 		if (e.readyState == EventSource.CLOSED) {
 			document.body.innerHTML += "Connection was closed" + "<br>";
 		}
+	}, false); 
+	
+	source.addEventListener('pause', function(e) {
+		document.body.innerHTML += e.data + "<br>";
 	}, false);
 	
 	source.addEventListener('business', function(e) {
@@ -125,9 +131,9 @@ if (typeof (EventSource) != "undefined") {
 		}
 	}, false);
 	
-	// onmessage handler is used if no event name is specified for a message
+	// onmessage handler is only used if no event name is specified for a message
 	source.onmessage = function(event) {
-		document.body.innerHTML += "no event name.." + event.data + "<br>";
+		document.body.innerHTML += event.data + "<br>";
 	}
 	
 } else {
