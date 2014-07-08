@@ -2,6 +2,13 @@
 <html>
 
 <head>
+<style>
+body {
+	overflow-x: hidden;
+	word-wrap: break-word;
+}
+
+</style>
 <script type="text/javascript">
 // GLOBAL VARIABLES FOR LATER //////////////////////////////////////
 //checks received from parent
@@ -9,7 +16,7 @@ var arrayVals = new Array(9);
 
 // 
 function pageScroll() {
-	window.scrollBy(0,100);
+	window.scrollBy(0,-500);
 	scrolldelay = setTimeout('pageScroll()',50);
 }
 
@@ -42,8 +49,6 @@ function buttonPressed(){
 
 addLoadEvent(pageScroll());
 //addLoadEvent(function() {...});
-
-
 </script>
 
 </head>
@@ -57,18 +62,17 @@ if (typeof (EventSource) != "undefined") {
 	var source = new EventSource("http://localhost:8080/SSE/SSE_Rabbit");
 	
 	source.addEventListener('open', function(e) {
-		document.body.innerHTML += "Connection was opened" + "<br>";
+		document.body.innerHTML = "Connection was opened" + "<br>" + document.body.innerHTML;
+		//document.body.innerHTML += "Connection was opened" + "<br>";
 	}, false);
 		
 	source.addEventListener('error', function(e) {
-		document.body.innerHTML += "An error ocurred... attempting to reconnect" + "<br>";
-		if (e.readyState == EventSource.CLOSED) {
-			document.body.innerHTML += "Connection was closed" + "<br>";
-		}
-	}, false); 
-	
-	source.addEventListener('pause', function(e) {
-		document.body.innerHTML += e.data + "<br>";
+		//document.body.innerHTML = "ERROR" + "<br>";
+		document.body.innerHTML = "An error occurred..." + "<br>" + document.body.innerHTML;
+		//document.body.innerHTML += "An error occurred..." + "<br>";
+		//if (e.readyState == EventSource.CLOSED) {
+		//	document.body.innerHTML += "Connection was closed" + "<br>";
+		//}
 	}, false);
 	
 	source.addEventListener('business', function(e) {
@@ -131,9 +135,10 @@ if (typeof (EventSource) != "undefined") {
 		}
 	}, false);
 	
-	// onmessage handler is only used if no event name is specified for a message
+	// onmessage handler is used if no event name is specified for a message
 	source.onmessage = function(event) {
-		document.body.innerHTML += event.data + "<br>";
+		document.body.innerHTML = event.data + "<br>" + document.body.innerHTML;
+		//document.body.innerHTML += event.data + "<br>";
 	}
 	
 } else {

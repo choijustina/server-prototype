@@ -8,6 +8,7 @@ import java.util.Scanner;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.MessageProperties;
 
 public class TextfileProducer implements ProducerInterface {
 
@@ -19,7 +20,8 @@ public class TextfileProducer implements ProducerInterface {
 		try {
 			Connection connection = factory.newConnection();
 			Channel channel = connection.createChannel();
-			channel.queueDeclare(QUEUE_NAME, MSG_DURABLE, false, false, null);
+			channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
+			//channel.queueDeclare(QUEUE_NAME, MSG_DURABLE, false, false, null);
 			getData(channel, connection);
 		} catch (IOException exception) {
 			exception.getStackTrace();
@@ -44,12 +46,19 @@ public class TextfileProducer implements ProducerInterface {
 			
 			while (s.hasNextLine()) {
 				str = s.nextLine();
-				channel.basicPublish("", QUEUE_NAME, null, str.getBytes());
+				channel.basicPublish(EXCHANGE_NAME, "", MessageProperties.PERSISTENT_TEXT_PLAIN, str.getBytes());
+				//channel.basicPublish(EXCHANGE_NAME, "", null, str.getBytes());
+				//channel.basicPublish("", QUEUE_NAME, null, str.getBytes());
+				
+				Thread.currentThread().sleep(25);
+				
 				System.out.println("  [x] Sent '" + str + "'");
 			}
 			
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} catch (InterruptedException e2) {
+			e2.printStackTrace();
 		}
 	}
 

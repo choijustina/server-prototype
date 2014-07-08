@@ -6,6 +6,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
 
+//NOTE DOESN'T USE EXCHANGES
 public class ServerProducer {
 	public static final String QUEUE_NAME = "queue";
 	public static final boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
