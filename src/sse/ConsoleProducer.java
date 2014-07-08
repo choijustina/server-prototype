@@ -31,11 +31,11 @@ public class ConsoleProducer implements ProducerInterface {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Opening a new producer, sending to queue entitled '" + QUEUE_NAME + "'\n"
 				+ "Press enter after every message you would like to send.\n"
-				+ "Specific commands: 'close producer', 'close consumer'");
+				+ "Specific commands: '" + CLOSE_PRODUCER + "' and '" + CLOSE_CONSUMER + "'"); 
 		String str = scanner.nextLine();
 		
 		try {
-			while (!(str.equals("close producer"))) {
+			while (!(str.equals(CLOSE_PRODUCER))) {
 				channel.basicPublish(EXCHANGE_NAME, "", MessageProperties.PERSISTENT_TEXT_PLAIN, str.getBytes());
 				//channel.basicPublish(EXCHANGE_NAME, "", null, str.getBytes());
 				//channel.basicPublish("", QUEUE_NAME, null, str.getBytes());

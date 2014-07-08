@@ -67,9 +67,6 @@ public class SSE_Rabbit extends HttpServlet {
 				QueueingConsumer.Delivery delivery = consumer.nextDelivery();
 				String message = new String(delivery.getBody());
 				if (message.equals("close consumer")) {
-//					out.print("data: will wait 10000ms before reconnecting");
-//					out.print("retry: 10000\n");
-//					out.flush();
 					break;
 				}
 				out.print("data: [x] Received '" + message + "'" + "\n\n");

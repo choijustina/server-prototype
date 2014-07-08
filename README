@@ -3,16 +3,85 @@ Joyce Chang (rejoyce@bu.edu) github: joooooyce
 Justina Choi (choi.justina@gmail.com) github: choijustina
 
 location on Justina's VM: /home/ubuntu/workspace/SSE
-export as SSE.war file on Eclipse
-re-deploy on Tomcat (delete the old one, add the new one)
-to access the data to be printed: http://localhost:8080/SSE/SSE.html
-to see visually appealing version: http://localhost:8080/SSE/
-
-SseServer.java
-
+export as SSE.war file on Eclipse (must build with necessary libraries: rabbitmq-client.jar, servlet-api.jar)
+deploy on Tomcat
+http://localhost:8080/SSE/ (same as http://localhost:8080/SSE/index.html)
+	index.html provides the framework of what the page will look like with UI
+data that gets printed inside the text box: localhost:8080/SSE/SSE.html
 
 SSE_Rabbit.java (rabbitmq version)
-when exporting as a .war file, don't forget to build with the necessary libraries (i.e. com.rabbitmq)
 localhost:8080/SSE/ opens the consumer with queue name "queue"
-confirmation message should appear when message receieved & prints message
-if "close" is sent as the message, closes consumer & connection but automatically reconnects after a few (unknown) seconds
+confirmation message should appear when message received & prints message
+if "close consumer" is sent as the message, closes consumer & connection but automatically reconnects
+
+
+----------------------
+Text files: shortfile.txt, longfile.txt, longfile_10.txt
+
+PROTOTYPE 1
+Related files: SseServer.java, index.html, SSE.html
+	SseServer.java
+		- extends HttpServlet
+		- uses a Scanner object to read the text file with the following types of information:
+			int id number, String event type, String message data
+			- note: the text file must be of the following format in order to be read correctly
+				id: 0
+				event: personal
+				data: this is line 0
+				
+				id: 1
+				event: business
+				data: this is line 1
+			
+		- example output (localhost:8080/SSE/SSE.html):
+			data: Searching in longfile.txt
+		
+			event: personal
+			data: 0 personal - this is line 0 accessed at <CurrentDate>
+			
+			event: business
+			data: 1 business - this is line 1 accessed at <CurrentDate>
+			
+		- "event: <eventtype>" is used for filter purposes
+		- sleep timer of 1000milliseconds
+		- must have a out.flush(); after every out.print(<String>);
+
+	SSE.html
+		- EventListeners for filter function
+		- auto scroll to keep at top
+		
+	index.html
+		- resizeable iframe (drag to resize)
+		- text-wrapping
+		- filter by event type
+
+
+
+
+PROTOTYPE 2
+Related Files: SSE_Rabbit.java, ProducerInterface.java, ConsoleProducer.java, TextfileProducer.java
+	SSE_Rabbit.java
+		- RabbitMQ implementation; creates a consumer to get messages from the queue
+		- outputs "[*] Waiting for messages." when ready
+		- uses message acknowledgments & fanout exchange (all of the consumers receive all
+			of the messages sent by producers with the same exchange name)
+		- CLOSE_PRODUCER & CLOSE_CONSUMER global variables that cause each to close
+	ProducerInterface.java
+		- interface outlining required methods for the producer
+		- current implementation: console and text file
+		- 
+	ConsoleProducer.java
+		- implements interface such that messages are typed into the console/terminal
+	TextfileProducer.java
+		- implements interface such that each line in the text file is a message
+		- has a thread sleep timer of 25milliseconds
+		
+	
+
+
+
+
+
+
+
+

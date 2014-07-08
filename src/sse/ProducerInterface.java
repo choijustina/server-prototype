@@ -16,6 +16,8 @@ import com.rabbitmq.client.Connection;
 public interface ProducerInterface {
 	public final String EXCHANGE_NAME = "exchange";
 	public final String QUEUE_NAME = "queue";
+	public final String CLOSE_PRODUCER = "close producer";
+	public final String CLOSE_CONSUMER = "close consumer";
 	//public final boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
 	
 	public void createQueue();

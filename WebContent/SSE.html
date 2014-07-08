@@ -63,82 +63,75 @@ if (typeof (EventSource) != "undefined") {
 	
 	source.addEventListener('open', function(e) {
 		document.body.innerHTML = "Connection was opened" + "<br>" + document.body.innerHTML;
-		//document.body.innerHTML += "Connection was opened" + "<br>";
 	}, false);
 		
 	source.addEventListener('error', function(e) {
-		//document.body.innerHTML = "ERROR" + "<br>";
 		document.body.innerHTML = "An error occurred..." + "<br>" + document.body.innerHTML;
-		//document.body.innerHTML += "An error occurred..." + "<br>";
-		//if (e.readyState == EventSource.CLOSED) {
-		//	document.body.innerHTML += "Connection was closed" + "<br>";
-		//}
 	}, false);
 	
 	source.addEventListener('business', function(e) {
 		if (arrayVals[0]) {
-			document.body.innerHTML += e.data + "<br>";
+			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
 		}
 	}, false);
 	
 	source.addEventListener('family', function(e) {
 		if (arrayVals[1]) {
-			document.body.innerHTML += e.data + "<br>";
+			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
 		}
 	}, false);
 
 	source.addEventListener('friends', function(e) {
 		if (arrayVals[2]) {
-			document.body.innerHTML += e.data + "<br>";
+			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
 		}
 	}, false);
 
 	source.addEventListener('happy', function(e) {
 		if (arrayVals[3]) {
-			document.body.innerHTML += e.data + "<br>";
+			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
 		}
 	}, false);
 
 	source.addEventListener('personal', function(e) {
 		if (arrayVals[4]) {
-			document.body.innerHTML += e.data + "<br>";
+			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
 		}
 	}, false);
 
 	source.addEventListener('sad', function(e) {
 		if (arrayVals[5]) {
-			document.body.innerHTML += e.data + "<br>";
+			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
 		}
 	}, false);
 
 	source.addEventListener('social', function(e) {
 		if (arrayVals[6]) {
-			document.body.innerHTML += e.data + "<br>";
+			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
 		}
 	}, false);
 
 	source.addEventListener('spiritual', function(e) {
 		if (arrayVals[7]) {
-			document.body.innerHTML += e.data + "<br>";
+			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
 		}
 	}, false);
 
 	source.addEventListener('update', function(e) {
 		if (arrayVals[8]) {
-			document.body.innerHTML += e.data + "<br>";
+			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
 		}
 	}, false);
 
 	source.addEventListener('virtual', function(e) {
 		if (arrayVals[9]) {
-			document.body.innerHTML += e.data + "<br>";
+			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
 		}
 	}, false);
 	
 	// onmessage handler is used if no event name is specified for a message
 	source.onmessage = function(event) {
 		document.body.innerHTML = event.data + "<br>" + document.body.innerHTML;
-		//document.body.innerHTML += event.data + "<br>";
 	}
 	
 } else {
