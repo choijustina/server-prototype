@@ -2,18 +2,6 @@ Creating a server-side event stream server/client prototype
 Joyce Chang (rejoyce@bu.edu) github: joooooyce
 Justina Choi (choi.justina@gmail.com) github: choijustina
 
-location on Justina's VM: /home/ubuntu/workspace/SSE
-export as SSE.war file on Eclipse (must build with necessary libraries: rabbitmq-client.jar, servlet-api.jar)
-deploy on Tomcat
-http://localhost:8080/SSE/ (same as http://localhost:8080/SSE/index.html)
-	index.html provides the framework of what the page will look like with UI
-data that gets printed inside the text box: localhost:8080/SSE/SSE.html
-
-SSE_Rabbit.java (rabbitmq version)
-localhost:8080/SSE/ opens the consumer with queue name "queue"
-confirmation message should appear when message received & prints message
-if "close consumer" is sent as the message, closes consumer & connection but automatically reconnects
-
 
 ----------------------
 Text files: shortfile.txt, longfile.txt, longfile_10.txt
@@ -56,8 +44,6 @@ Related files: SseServer.java, index.html, SSE.html
 		- filter by event type
 
 
-
-
 PROTOTYPE 2
 Related Files: SSE_Rabbit.java, ProducerInterface.java, ConsoleProducer.java, TextfileProducer.java
 	SSE_Rabbit.java
@@ -65,6 +51,7 @@ Related Files: SSE_Rabbit.java, ProducerInterface.java, ConsoleProducer.java, Te
 		- outputs "[*] Waiting for messages." when ready
 		- uses message acknowledgments & fanout exchange (all of the consumers receive all
 			of the messages sent by producers with the same exchange name)
+		- automatically reconnects
 		- CLOSE_PRODUCER & CLOSE_CONSUMER global variables that cause each to close
 	ProducerInterface.java
 		- interface outlining required methods for the producer
