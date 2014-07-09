@@ -6,7 +6,7 @@
 body {
 	overflow-x: hidden;
 	word-wrap: break-word;
-	background: lightblue;
+	background: pink;
 }
 
 </style>
@@ -76,7 +76,7 @@ if (typeof (EventSource) != "undefined") {
 		document.body.innerHTML = "An error occurred..." + "<br>" + document.body.innerHTML;
 		
 		//newest messages on bottom
-		document.body.innerHTML += "An error occurred..." + "<br>";
+		//document.body.innerHTML += "An error occurred..." + "<br>";
 		if (e.readyState == EventSource.CLOSED) {
 			//newest messages on top
 			document.body.innerHTML = "Connection was closed" + "<br>" + document.body.innerHTML;
@@ -84,6 +84,10 @@ if (typeof (EventSource) != "undefined") {
 			//newest messages on bottom
 			//document.body.innerHTML += "Connection was closed" + "<br>";
 		}
+	}, false);
+	
+	source.addEventListener('clear', function(e) {
+		document.body.innerHTML = "[*] Waiting for messages..";
 	}, false);
 	
 	source.addEventListener('business', function(e) {
