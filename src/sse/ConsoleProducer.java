@@ -31,7 +31,7 @@ public class ConsoleProducer implements ProducerInterface {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Opening a new producer, sending to queue entitled '" + QUEUE_NAME + "'\n"
 				+ "Press enter after every message you would like to send.\n"
-				+ "Specific commands: '" + CLOSE_PRODUCER + "' and '" + CLOSE_CONSUMER + "'"); 
+				+ "Specific commands: '" + CLOSE_PRODUCER + "' and '" + CLOSE_CONSUMER + "' and 'clear'"); 
 		String str = scanner.nextLine();
 		
 		try {

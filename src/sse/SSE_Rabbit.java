@@ -69,8 +69,15 @@ public class SSE_Rabbit extends HttpServlet {
 				if (message.equals("close consumer")) {
 					break;
 				}
-				out.print("data: [x] Received '" + message + "'" + "\n\n");
-				out.flush();
+				else if (message.equals("clear")) {
+					out.print("event: " + "clear" + "\n");
+					out.print("data: " + "asldfj;l" + "\n\n");
+					out.flush();
+				}
+				else {
+					out.print("data: [x] Received '" + message + "'" + "\n\n");
+					out.flush();
+				}
 				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
 			} catch (InterruptedException e) {
 				e.getStackTrace();
