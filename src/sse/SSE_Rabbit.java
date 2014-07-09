@@ -19,16 +19,17 @@ import com.rabbitmq.client.QueueingConsumer;
  * Author: Justina Choi (choi.justina@gmail.com)
  * Date: July 1, 2014
  * Sources: http://www.rabbitmq.com/tutorials/tutorial-two-java.html
+ * Notes: RabbitMQ Consumer
  */
 
 @WebServlet("/SSE_Rabbit")
 public class SSE_Rabbit extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String EXCHANGE_NAME = "exchange";
-	private final static String QUEUE_NAME = "queue";
-	private final static boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
+	//private final static String QUEUE_NAME = "queue";
+	//private final static boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
 	//private final static int PREFETCH_COUNT = 1;     // limits the number of messages a consumer has at a time
-	private final static boolean MSG_ACK = true;    // msg acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
+	private final static boolean MSG_ACK = false;    // msg acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
 	
 	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
@@ -52,8 +53,8 @@ public class SSE_Rabbit extends HttpServlet {
 		channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
 		String queueName = channel.queueDeclare().getQueue();
 		channel.queueBind(queueName, EXCHANGE_NAME, "");
-		
 //		channel.queueDeclare(QUEUE_NAME, MSG_DURABLE, false, false, null);
+		
 		out.print("data: [*] Waiting for messages.\n\n");
 		out.flush();
 		//channel.basicQos(PREFETCH_COUNT);
@@ -65,15 +66,19 @@ public class SSE_Rabbit extends HttpServlet {
 			try {
 				QueueingConsumer.Delivery delivery = consumer.nextDelivery();
 				String message = new String(delivery.getBody());
-				if (message.equals("break")) {
-//					out.print("data: will wait 10000ms before reconnecting");
-//					out.print("retry: 10000\n");
-//					out.flush();
+				if (message.equals("close consumer")) {
 					break;
 				}
-				out.print("data: [x] Received '" + message + "'" + "\n\n");
-				out.flush();
-				//channel.basicAck(delivery.getEnvelope().getDeliverTag(), false);
+				else if (message.equals("clear")) {
+					out.print("event: " + "clear" + "\n");
+					out.print("data: " + "asldfj;l" + "\n\n");
+					out.flush();
+				}
+				else {
+					out.print("data: [x] Received '" + message + "'" + "\n\n");
+					out.flush();
+				}
+				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
 			} catch (InterruptedException e) {
 				e.getStackTrace();
 			}
