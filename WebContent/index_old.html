@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+
+//GLOBAL VARIABLES FOR LATER //////////////////////////////////////
+
+//checks before sending to iframe
+var param = new Array(9);
+//checks returned from iframe
+var returnvals = new Array(9);
+
+// CHECK/UNCHECK ALL FUNCTION /////////////////////////////////////
+
+function checkAll(formname, checktoggle){
+  var checkboxes = new Array(); 
+  checkboxes = document[formname].getElementsByTagName('input');
+ 
+  for (var i=0; i<checkboxes.length; i++)  {
+    if (checkboxes[i].type == 'checkbox')   {
+      checkboxes[i].checked = checktoggle;
+    }
+  }
+  
+}
+
+// STUFF THAT ALLOWS FRAME TO BE RESIZABLE ///////////////////////
+
+$(function() {
+  $('#resizable').resizable({
+      start: function(event, ui) {
+        $('<div class="ui-resizable-iframeFix" style="background: #fff;"></div>')
+            .css({
+                width:'100%', height: '100%',
+                position: "absolute", opacity: "0.001", zIndex: 1000
+           })
+            .appendTo("body");
+      },
+    stop: function(event, ui) {
+        $('.ui-resizable-iframeFix').remove();
+      }
+  });
+}); 
+
+// SUBMIT BUTTON FUNCTION ///////////////////////////////////////
+
+function pick() {
+	var checkBoxes = document.getElementsByTagName('input');
+	//alert(checkBoxes.length);
+
+	for (var i = 0; i < checkBoxes.length - 1; i++) {
+		if (checkBoxes[i].checked) {
+			param[i] = checkBoxes[i].value;
+//			param += checkBoxes[counter].value + " ";
+		} else {
+			param[i] = 0;
+		}
+	}
+
+//	alert("sent values: " + param );
+	//call child iframe and notify that a button was pressed
+	//activates function buttonPressed in iframe SSE.html
+	document.getElementById("iframe").contentWindow.buttonPressed();
+//	alert("Checkbox Value: " + param);
+}
+
+// TESTS WHETHER OR NOT EVERYTHING WAS SENT RIGHT /////////////
+/*
+function babyCallback(){
+
+//	returnvals = new Array(9);
+	for (var i = 0; i < 10; i++) {
+		returnvals[i] = document.getElementById("iframe").contentWindow.arrayVals[i];
+	}
+	alert("sent from baby: " + returnvals)
+//	alert("sent back values are " + param[0] + " " + param[1]);
+}
+*/
+
+// LOAD MULTIPLE FUNCTIONS ONLOAD ////////////////////////////
+function addLoadEvent(func) {
+  var oldonload = window.onload;
+  if (typeof window.onload != 'function') {
+    window.onload = func;
+  } else {
+    window.onload = function() {
+      if (oldonload) {
+        oldonload();
+      }
+      func();
+    }
+  }
+}
+
+addLoadEvent(checkAll('list',true));
+addLoadEvent(pick());
+</script>
+
+<!-- STYLES-------------------------------------------------------- -->
+<style type="text/css">
+.box{
+	width: 98%;
+	height: 100%;
+	border: none;
+	background-color: #ffffff;
+	align: right;
+	text-align: left;
+	padding-top: 20px;
+	padding-left: 5px;
+}
+
+#iframe {
+  width: 100%;
+  height: 100%;
+  border: none;    
+  
+  background: #eee ;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+}
+
+#resizable {
+  width: 1200px;
+  height: 700px;
+  background: #fff;
+  border: 1px solid #ccc;
+  position: absolute;
+  top: 100px;
+  left: 200px;
+  z-index: 9;
+}
+
+</style>
+</head>
+<body onload="checkAll('list',true); pick()">
+
+<h1>Testing SSE/index_old 2</h1>
+
+<div class="box">
+
+<form name="list">
+<a onclick="javascript:checkAll('list', true);" href="javascript:void();">check all</a>
+<a onclick="javascript:checkAll('list', false);" href="javascript:void();">uncheck all</a><br>
+<label><input type="checkbox" name="filter[]" class="blah" value="1" onclick="chkme()">BUSINESS</label><br>
+<label><input type="checkbox" name="filter[]" class="blah" value="2">FAMILY</label><br>
+<label><input type="checkbox" name="filter[]" class="blah" value="3">FRIENDS</label><br>
+<label><input type="checkbox" name="filter[]" class="blah" value="5">HAPPY</label><br>
+<label><input type="checkbox" name="filter[]" class="blah" value="7">PERSONAL</label><br>
+<label><input type="checkbox" name="filter[]" class="blah" value="11">SAD</label><br>
+<label><input type="checkbox" name="filter[]" class="blah" value="13">SOCIAL</label><br>
+<label><input type="checkbox" name="filter[]" class="blah" value="17">SPIRITUAL</label><br>
+<label><input type="checkbox" name="filter[]" class="blah" value="19">UPDATE</label><br>
+<label><input type="checkbox" name="filter[]" class="blah" value="23">VIRTUAL</label><br>
+ </form>
+<input type="button" value="SUBMIT"  onClick="pick()">
+
+
+<div id="resizable">
+   <iframe id="iframe" name="iframe" seamless src="SSE_old.html" style="display: block; margin: 0 auto; padding: 0; border: #000000 1px solid;"></iframe>
+
+
+
+
+</div></div>
+
+
+</body>
+
+</html>

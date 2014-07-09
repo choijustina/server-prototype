@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * File: SseServer.java
  * Project: SSE
- * To access: http://localhost:8080/SSE/
+ * To access: http://localhost:8080/SSE/index_old.html
  * Source: http://milestonenext.blogspot.com/2013/07/html5-server-sent-events-sample-with.html
  * Documentation: http://docs.oracle.com/javaee/6/api/javax/servlet/http/package-summary.html
  * 
