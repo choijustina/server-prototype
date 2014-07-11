@@ -1,3 +1,11 @@
+/**
+ * File: SSE_Rabbit.java
+ * Author: Justina Choi (choi.justina@gmail.com)
+ * Date: July 1, 2014
+ * Sources: http://www.rabbitmq.com/tutorials/tutorial-two-java.html
+ * Notes: RabbitMQ Consumer
+ */
+
 package sse;
 
 import java.io.IOException;
@@ -14,22 +22,15 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.QueueingConsumer;
 
-/**
- * File: SSE_Rabbit.java
- * Author: Justina Choi (choi.justina@gmail.com)
- * Date: July 1, 2014
- * Sources: http://www.rabbitmq.com/tutorials/tutorial-two-java.html
- * Notes: RabbitMQ Consumer
- */
-
 @WebServlet("/SSE_Rabbit")
 public class SSE_Rabbit extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String EXCHANGE_NAME = "exchange";
+	private static final String EXCHANGE_NAME = "topicexchange";
 	//private final static String QUEUE_NAME = "queue";
-	//private final static boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
-	//private final static int PREFETCH_COUNT = 1;     // limits the number of messages a consumer has at a time
+	private final static boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
+	//private final static int PREFETCH_COUNT = 1;     // maximum number of messages that the server will deliver
 	private final static boolean MSG_ACK = false;    // msg acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
+	private final String BINDING_KEY = "#";
 	
 	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
@@ -50,9 +51,9 @@ public class SSE_Rabbit extends HttpServlet {
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
 	
-		channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
-		String queueName = channel.queueDeclare().getQueue();
-		channel.queueBind(queueName, EXCHANGE_NAME, "");
+		channel.exchangeDeclare(EXCHANGE_NAME, "topic"); 	// a durable, non-autodelete exchange of "topic" type
+		String queueName = channel.queueDeclare().getQueue();	    //get server-generated queue name
+		channel.queueBind(queueName, EXCHANGE_NAME, BINDING_KEY);
 //		channel.queueDeclare(QUEUE_NAME, MSG_DURABLE, false, false, null);
 		
 		out.print("data: [*] Waiting for messages.\n\n");
@@ -65,7 +66,11 @@ public class SSE_Rabbit extends HttpServlet {
 		while (true) {
 			try {
 				QueueingConsumer.Delivery delivery = consumer.nextDelivery();
+				//String message = new String(delivery.getBody());
+				
+				String routingKey = delivery.getEnvelope().getRoutingKey();
 				String message = new String(delivery.getBody());
+				
 				if (message.equals("close consumer")) {
 					break;
 				}
@@ -79,6 +84,10 @@ public class SSE_Rabbit extends HttpServlet {
 					out.flush();
 				}
 				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+				
+				//testing queue
+				Thread.currentThread().sleep(1000);
+				
 			} catch (InterruptedException e) {
 				e.getStackTrace();
 			}
