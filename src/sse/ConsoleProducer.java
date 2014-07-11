@@ -36,7 +36,7 @@ public class ConsoleProducer extends ProducerAbstract {
 				MSG_DATA = scanner.next() + scanner.nextLine();
 			}
 		} catch (IOException exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(); 
 		}
 		
 		/*try {

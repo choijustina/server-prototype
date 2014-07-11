@@ -10,6 +10,7 @@ package sse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,7 +28,7 @@ public class SSE_Rabbit extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String EXCHANGE_NAME = "topicexchange";
 	//private final static String QUEUE_NAME = "queue";
-	private final static boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
+	//private final static boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
 	//private final static int PREFETCH_COUNT = 1;     // maximum number of messages that the server will deliver
 	private final static boolean MSG_ACK = false;    // msg acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
 	private final String BINDING_KEY = "high.admin.#";
@@ -79,13 +80,14 @@ public class SSE_Rabbit extends HttpServlet {
 					out.flush();
 				}
 				else {
-					out.print("data: [x] Received " + routingKey + " : '" + message + "'" + "\n\n");
+					Date date = new Date();
+					out.print("data: " + date.toString() + " [x] Received " + routingKey + " : '" + message + "'" + "\n\n");
 					out.flush();
 				}
 				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
 				
 				//testing queue
-				Thread.currentThread().sleep(1000);
+				//Thread.currentThread().sleep(1000);
 				
 			} catch (InterruptedException e) {
 				e.getStackTrace();
