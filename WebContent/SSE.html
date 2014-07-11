@@ -87,7 +87,8 @@ if (typeof (EventSource) != "undefined") {
 	}, false);
 	
 	source.addEventListener('clear', function(e) {
-		document.body.innerHTML = "[*] Waiting for messages..";
+		document.body.innerHTML = e.data;
+		document.body.innerHTML = "[*] Waiting for messages.." + "<br>" + document.body.innerHTML;
 	}, false);
 	
 	source.addEventListener('business', function(e) {

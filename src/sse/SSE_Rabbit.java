@@ -30,7 +30,7 @@ public class SSE_Rabbit extends HttpServlet {
 	private final static boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
 	//private final static int PREFETCH_COUNT = 1;     // maximum number of messages that the server will deliver
 	private final static boolean MSG_ACK = false;    // msg acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
-	private final String BINDING_KEY = "#";
+	private final String BINDING_KEY = "high.admin.#";
 	
 	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
@@ -42,9 +42,6 @@ public class SSE_Rabbit extends HttpServlet {
 		response.setContentType("text/event-stream;charset=UTF-8");
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Connection", "keep-alive");
-
-		PrintWriter out = response.getWriter();
-		out.print("data: inside SSE_Rabbit.java file" + "\n\n");
 		
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("localhost");
@@ -56,6 +53,8 @@ public class SSE_Rabbit extends HttpServlet {
 		channel.queueBind(queueName, EXCHANGE_NAME, BINDING_KEY);
 //		channel.queueDeclare(QUEUE_NAME, MSG_DURABLE, false, false, null);
 		
+		PrintWriter out = response.getWriter();
+		out.print("data: binding key: " + BINDING_KEY + "\n\n");
 		out.print("data: [*] Waiting for messages.\n\n");
 		out.flush();
 		//channel.basicQos(PREFETCH_COUNT);
@@ -76,11 +75,11 @@ public class SSE_Rabbit extends HttpServlet {
 				}
 				else if (message.equals("clear")) {
 					out.print("event: " + "clear" + "\n");
-					out.print("data: " + "asldfj;l" + "\n\n");
+					out.print("data: " + "binding key: " + BINDING_KEY + "\n\n");
 					out.flush();
 				}
 				else {
-					out.print("data: [x] Received '" + message + "'" + "\n\n");
+					out.print("data: [x] Received " + routingKey + " : '" + message + "'" + "\n\n");
 					out.flush();
 				}
 				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
