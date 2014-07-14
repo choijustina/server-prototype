@@ -2,6 +2,8 @@
 <html>
 
 <head>
+
+  
 <style>
 body {
 	overflow-x: hidden;
@@ -14,7 +16,7 @@ body {
 // GLOBAL VARIABLES FOR LATER //////////////////////////////////////
 //checks received from parent
 var arrayVals = new Array(9);
-
+var bKey;
 // 
 function pageScroll() {
 	//negative for scrolling up, positive for scrolling down
@@ -34,6 +36,11 @@ function addLoadEvent(func) {
       func();
     }
   }
+}
+
+function bKeysubmitted() {
+	bindingKey = window.parent.bKey;
+	document.body.innerHTML = "Binding Key: " + bindingKey + "<br>" + document.body.innerHTML;
 }
 
 function buttonPressed(){
@@ -56,6 +63,7 @@ addLoadEvent(pageScroll());
 </head>
 
 <body>
+
 
 <div id="ServerTime"></div>
 
