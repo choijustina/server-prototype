@@ -8,6 +8,24 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
 
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script>
+  $(function() {
+	  $( "#dialog" ).dialog({ 
+	  	buttons: [ { text: "SUBMIT", click: function() { 
+	  		$( this ).dialog( "close" ); 
+	  		var bKey = document.getElementById("bindingkey").value;
+//	  		alert("Entered " + bKey);
+	  	} } ]
+	  });	  
+  });
+  </script>
+
+
+
 <script type="text/javascript">
 
 //GLOBAL VARIABLES FOR LATER //////////////////////////////////////
@@ -101,6 +119,9 @@ function addLoadEvent(func) {
 
 addLoadEvent(checkAll('list',true));
 addLoadEvent(pick());
+
+
+
 </script>
 
 <!-- STYLES-------------------------------------------------------- -->
@@ -141,11 +162,24 @@ addLoadEvent(pick());
   z-index: 9;
 }
 
+
+
 </style>
 </head>
 <body onload="checkAll('list',true); pick()">
 
 <h1>Testing SSE_Rabbit</h1>
+
+<div id="dialog">
+<div> Enter binding key:</div>
+<input id="bindingkey" type="text"/>
+
+<!-- PASSWORD INPUT
+	<div>Enter password:</div>
+	<input id="pass" type="password"/>
+-->
+</div>
+
 
 <div class="box">
 
