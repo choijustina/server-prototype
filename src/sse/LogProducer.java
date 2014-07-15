@@ -1,5 +1,3 @@
-package sse;
-
 import java.io.IOException;
 import java.lang.String;
 import java.util.logging.*;
@@ -42,6 +40,7 @@ public class LogProducer extends ProducerAbstract {
 		} catch (IOException exception) {
 			exception.printStackTrace(); 
 		}
+		
 		System.out.println("closing producer");
 		scanner.close();
 		closeQueue(channel, connection);
