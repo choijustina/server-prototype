@@ -6,7 +6,7 @@
 body {
 	overflow-x: hidden;
 	word-wrap: break-word;
-	background: lightblue;
+	background: pink;
 }
 
 </style>
@@ -73,7 +73,7 @@ if (typeof (EventSource) != "undefined") {
 		
 	source.addEventListener('error', function(e) {
 		//newest messages on top
-		document.body.innerHTML = "An error occurred..." + "<br>" + document.body.innerHTML;
+		document.body.innerHTML = "An error occurred; auto-reconnecting" + "<br>" + document.body.innerHTML;
 		
 		//newest messages on bottom
 		//document.body.innerHTML += "An error occurred..." + "<br>";
@@ -87,8 +87,7 @@ if (typeof (EventSource) != "undefined") {
 	}, false);
 	
 	source.addEventListener('clear', function(e) {
-		document.body.innerHTML = e.data;
-		document.body.innerHTML = "[*] Waiting for messages.." + "<br>" + document.body.innerHTML;
+		document.body.innerHTML = "[*] Waiting for messages.." + "<br>" + e.data;
 	}, false);
 	
 	source.addEventListener('business', function(e) {

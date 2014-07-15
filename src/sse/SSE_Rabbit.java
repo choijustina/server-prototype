@@ -31,7 +31,7 @@ public class SSE_Rabbit extends HttpServlet {
 	//private final static boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
 	//private final static int PREFETCH_COUNT = 1;     // maximum number of messages that the server will deliver
 	private final static boolean MSG_ACK = false;    // msg acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
-	private final String BINDING_KEY = "high.admin.#";
+	private final String BINDING_KEY = "document.#";
 	
 	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
@@ -66,7 +66,6 @@ public class SSE_Rabbit extends HttpServlet {
 		while (true) {
 			try {
 				QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-				//String message = new String(delivery.getBody());
 				
 				String routingKey = delivery.getEnvelope().getRoutingKey();
 				String message = new String(delivery.getBody());
@@ -81,7 +80,7 @@ public class SSE_Rabbit extends HttpServlet {
 				}
 				else {
 					Date date = new Date();
-					out.print("data: " + date.toString() + " [x] Received " + routingKey + " : '" + message + "'" + "\n\n");
+					out.print("data: " + date.toString() + "       [x] Received " + routingKey + " : '" + message + "'" + "\n\n");
 					out.flush();
 				}
 				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
@@ -90,7 +89,7 @@ public class SSE_Rabbit extends HttpServlet {
 				//Thread.currentThread().sleep(1000);
 				
 			} catch (InterruptedException e) {
-				e.getStackTrace();
+				e.printStackTrace();
 			}
 		}
 		connection.close();

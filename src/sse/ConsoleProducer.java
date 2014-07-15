@@ -19,36 +19,23 @@ public class ConsoleProducer extends ProducerAbstract {
 	public void getData(Channel channel, Connection connection) {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("NEW PRODUCER: Press enter after every message you would like to send.\n"
+				+ "Format: <ROUTINGKEY> <message or command text>\n"
 				+ "Specific commands: '" + CLOSE_PRODUCER + "', '" + CLOSE_CONSUMER + "' and 'clear'"); 
-		//String str = scanner.nextLine();
 		
-		
-		// TODO check to make sure there are two tokens per line
 		ROUTING_KEY = scanner.next();
 		MSG_DATA = scanner.next() + scanner.nextLine();
 		
 		try {
 			while (!(MSG_DATA.equals(CLOSE_PRODUCER))) {
 				channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, MessageProperties.PERSISTENT_TEXT_PLAIN, MSG_DATA.getBytes());
-				//channel.basicPublish(EXCHANGE_NAME, String routingKey, msg properties, str.getBytes());
 				System.out.println("  [x] Sent " + ROUTING_KEY + " : '" + MSG_DATA + "'");
+				
 				ROUTING_KEY = scanner.next();
 				MSG_DATA = scanner.next() + scanner.nextLine();
 			}
 		} catch (IOException exception) {
 			exception.printStackTrace(); 
 		}
-		
-		/*try {
-			while (!(str.equals(CLOSE_PRODUCER))) {
-				channel.basicPublish(EXCHANGE_NAME, "", MessageProperties.PERSISTENT_TEXT_PLAIN, str.getBytes());
-				//channel.basicPublish(EXCHANGE_NAME, String routingKey, msg properties, str.getBytes());
-				System.out.println("  [x] Sent '" + str + "'");
-				str = scanner.nextLine();
-			}
-		} catch (IOException exception) {
-			exception.printStackTrace();
-		}*/
 		
 		System.out.println("closing producer");
 		scanner.close();
