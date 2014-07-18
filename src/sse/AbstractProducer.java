@@ -1,5 +1,5 @@
 /**
- * File: ProducerAbstract.java
+ * File: AbstractProducer.java
  * @author Justina Choi (choi.justina@gmail.com)
  * Date: July 9, 2014
  * Sources: http://www.rabbitmq.com/tutorials/tutorial-two-java.html
@@ -14,18 +14,19 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-public abstract class ProducerAbstract {
-	public final String EXCHANGE_NAME = "topicexchange";
-	//public final String QUEUE_NAME = "queue";		// uses server-generated queue names
-	public final String CLOSE_PRODUCER = "close producer";
-	public final String CLOSE_CONSUMER = "close consumer";
-	//public final boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
-	public String ROUTING_KEY = "";
-	public String MSG_DATA = "";
+public abstract class AbstractProducer {
+	public static final String EXCHANGE_NAME = "topicexchange";
+	//public static final String QUEUE_NAME = "queue";		// uses server-generated queue names
+	public static final String CLOSE_PRODUCER = "closeproducer";
+	public static final String CLOSE_CONSUMER = "closeconsumer";
+	//public static final boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
+	
+	public static String bindingKey = "";
+	public static String messageData = "";
 
 	abstract void getData(Channel channel, Connection connection);
 	
-	public void createQueue() {
+	protected void createQueue() {
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("localhost");
 		
@@ -41,7 +42,9 @@ public abstract class ProducerAbstract {
 		}
 	}
 	
-	public void closeQueue(Channel channel, Connection connection) {
+	protected void closeQueue(Channel channel, Connection connection) {
+		// TODO delete the queue/exchange?
+		
 		try {
 			channel.close();
 			connection.close();

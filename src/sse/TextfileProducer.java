@@ -15,11 +15,10 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.MessageProperties;
 
-public class TextfileProducer extends ProducerAbstract {
+public class TextfileProducer extends AbstractProducer {
 
 	@Override
-	public void getData(Channel channel, Connection connection) {
-		String str = null;
+	protected void getData(Channel channel, Connection connection) {
 		String filename = "longfile_10.txt";
 		
 		URL url = null;
@@ -34,13 +33,13 @@ public class TextfileProducer extends ProducerAbstract {
 			s = new Scanner(url.openStream());
 			
 			while (s.hasNextLine()) {
-				str = s.nextLine();
-				channel.basicPublish(EXCHANGE_NAME, "", MessageProperties.PERSISTENT_TEXT_PLAIN, str.getBytes());
-				//channel.basicPublish(EXCHANGE_NAME, String routingKey, msg properties, str.getBytes());
+				bindingKey = "document";
+				messageData = s.nextLine();
+				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
 				
-				Thread.currentThread().sleep(900);
+				Thread.currentThread().sleep(500);
 				
-				System.out.println("  [x] Sent '" + str + "'");
+				System.out.println("  [x] Sent '" + messageData + "'");
 			}
 			
 		} catch (IOException e1) {

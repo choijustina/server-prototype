@@ -27,11 +27,11 @@ import com.rabbitmq.client.QueueingConsumer;
 public class SSE_Rabbit extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String EXCHANGE_NAME = "topicexchange";
-	//private final static String QUEUE_NAME = "queue";
-	//private final static boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
-	//private final static int PREFETCH_COUNT = 1;     // maximum number of messages that the server will deliver
-	private final static boolean MSG_ACK = false;    // msg acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
-	private final String BINDING_KEY = "document.#";
+	//private static final String QUEUE_NAME = "queue";
+	//private static final boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
+	//private static final int PREFETCH_COUNT = 1;      // maximum number of messages that the server will deliver
+	private static final boolean MSG_ACK = false;       // msg acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
+	private static final String BINDING_KEY = "#";	    // # can substitute for zero or more words; * for one word
 	
 	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
@@ -70,7 +70,7 @@ public class SSE_Rabbit extends HttpServlet {
 				String routingKey = delivery.getEnvelope().getRoutingKey();
 				String message = new String(delivery.getBody());
 				
-				if (message.equals("close consumer")) {
+				if (message.equals(AbstractProducer.CLOSE_CONSUMER)) {
 					break;
 				}
 				else if (message.equals("clear")) {

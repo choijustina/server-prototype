@@ -13,34 +13,32 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.MessageProperties;
 
-public class ConsoleProducer extends ProducerAbstract {
+public class ConsoleProducer extends AbstractProducer {
 
 	@Override
-	public void getData(Channel channel, Connection connection) {
+	protected void getData(Channel channel, Connection connection) {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("NEW PRODUCER: Press enter after every message you would like to send.\n"
-				+ "Format: <ROUTINGKEY> <message or command text>\n"
-				+ "Specific commands: '" + CLOSE_PRODUCER + "', '" + CLOSE_CONSUMER + "' and 'clear'"); 
-		
-		ROUTING_KEY = scanner.next();
-		MSG_DATA = scanner.next() + scanner.nextLine();
+				+ "Format: <BINDINGKEY> <message or command text>\n"
+				+ "Specific commands: '" + CLOSE_PRODUCER + "', '" + CLOSE_CONSUMER + "' and 'clear'\n"
+				+ "\tWhen closing consumer/clearing consumer screen, be sure to follow format and specify binding key of queue"); 
 		
 		try {
-			while (!(MSG_DATA.equals(CLOSE_PRODUCER))) {
-				channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, MessageProperties.PERSISTENT_TEXT_PLAIN, MSG_DATA.getBytes());
-				System.out.println("  [x] Sent " + ROUTING_KEY + " : '" + MSG_DATA + "'");
+			while (!(scanner.hasNext(CLOSE_PRODUCER))) {
+				bindingKey = scanner.next();
+				messageData = scanner.next() + scanner.nextLine();
 				
-				ROUTING_KEY = scanner.next();
-				MSG_DATA = scanner.next() + scanner.nextLine();
+				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
+				System.out.println("  [x] Sent " + bindingKey + " : '" + messageData + "'");
 			}
 		} catch (IOException exception) {
-			exception.printStackTrace(); 
+			exception.printStackTrace();
 		}
-		
 		System.out.println("closing producer");
 		scanner.close();
 		closeQueue(channel, connection);
 	}
+	
 	
 	public static void main (String[] argv) {
 		ConsoleProducer cp = new ConsoleProducer(); 

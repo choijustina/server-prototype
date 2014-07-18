@@ -10,7 +10,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.MessageProperties;
 
-public class LogProducer extends ProducerAbstract {
+public class LogProducer extends AbstractProducer {
 	private final static Logger logger = Logger.getLogger("LogProducer");
 	String d = "";
 	
@@ -26,18 +26,15 @@ public class LogProducer extends ProducerAbstract {
 				+ "Prints to logfile 'LOG_year-month-day_hour-minute-seconds.log" + "\n" 
 				+ "Specific commands: '" + CLOSE_PRODUCER + "', '" + CLOSE_CONSUMER + "' and 'clear'"); 
 		
-		ROUTING_KEY = scanner.next();
-		MSG_DATA = scanner.next() + scanner.nextLine();
-		
 		try {
-			while (!(MSG_DATA.equals(CLOSE_PRODUCER))) {
-				channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, MessageProperties.PERSISTENT_TEXT_PLAIN, MSG_DATA.getBytes());
-				//channel.basicPublish(EXCHANGE_NAME, String routingKey, msg properties, str.getBytes());
-				System.out.println("  [x] Sent " + ROUTING_KEY + " : '" + MSG_DATA + "'");
+			while (!(scanner.hasNext(CLOSE_PRODUCER))) {
+				bindingKey = scanner.next();
+				messageData = scanner.next() + scanner.nextLine();
+				
+				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
+				System.out.println("  [x] Sent " + bindingKey + " : '" + messageData + "'");
 				String d = getDate();
-				logger.info(d + " : " + ROUTING_KEY + " : '" + MSG_DATA + "'");
-				ROUTING_KEY = scanner.next();
-				MSG_DATA = scanner.next() + scanner.nextLine();
+				logger.info(d + " : " + bindingKey + " : '" + messageData + "'");
 			}
 		} catch (IOException exception) {
 			exception.printStackTrace(); 
