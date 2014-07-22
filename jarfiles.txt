@@ -1,0 +1,13 @@
+export CP=.:rabbitmq-client.jar:commons-io-2.4.jar:commons-beanutils-1.9.2.jar:commons-collections-3.2.1.jar:commons-lang-2.6.jar:commons-logging-1.2.jar:ezmorph-1.0.2.jar:mongo.jar:json-lib.jar:json-simple.jar:json_10.txt
+
+rabbitmq-client.jar
+commons-beanutils-1.9.2.jar
+commons-collections-3.2.1.jar
+commons-io-2.4.jar
+commons-lang-2.6.jar
+commons-logging-1.2.jar
+ezmorph01.0.2.jar
+json-lib.jar
+json-simple.jar
+mongo.jar
+rabbitmq-client.jar
