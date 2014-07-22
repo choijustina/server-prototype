@@ -64,7 +64,7 @@ Related Files: SSE_Rabbit.java, ProducerInterface.java, ConsoleProducer.java, Te
 		- has a thread sleep timer of 25milliseconds
 		
 	
-
+"*_high" files: creates a producer with binding key "high.*"
 
 
 

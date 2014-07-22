@@ -26,8 +26,8 @@ import com.rabbitmq.client.QueueingConsumer;
 @WebServlet("/SSE_Rabbit")
 public class SSE_Rabbit extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String EXCHANGE_NAME = "topicexchange";
-	//private static final String QUEUE_NAME = "queue";
+	//private static final String EXCHANGE_NAME = "topicexchange";   //AbstractProducer.EXCHANGE_NAME
+	//private static final String QUEUE_NAME = "queue"; // when using an exchange, server-generated queue names
 	//private static final boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
 	//private static final int PREFETCH_COUNT = 1;      // maximum number of messages that the server will deliver
 	private static final boolean MSG_ACK = false;       // msg acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
@@ -49,9 +49,9 @@ public class SSE_Rabbit extends HttpServlet {
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
 	
-		channel.exchangeDeclare(EXCHANGE_NAME, "topic"); 	// a durable, non-autodelete exchange of "topic" type
+		channel.exchangeDeclare(AbstractProducer.EXCHANGE_NAME, "topic"); 	// a durable, non-autodelete exchange of "topic" type
 		String queueName = channel.queueDeclare().getQueue();	    //get server-generated queue name
-		channel.queueBind(queueName, EXCHANGE_NAME, BINDING_KEY);
+		channel.queueBind(queueName, AbstractProducer.EXCHANGE_NAME, BINDING_KEY);
 //		channel.queueDeclare(QUEUE_NAME, MSG_DURABLE, false, false, null);
 		
 		PrintWriter out = response.getWriter();
