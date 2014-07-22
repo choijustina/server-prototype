@@ -4,33 +4,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
-
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.MessageProperties;
 
-public class TextfileProducer implements ProducerInterface {
+public class TextfileProducer extends AbstractProducer {
 
 	@Override
-	public void createQueue() {
-		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("localhost");
-		
-		try {
-			Connection connection = factory.newConnection();
-			Channel channel = connection.createChannel();
-			channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
-			//channel.queueDeclare(QUEUE_NAME, MSG_DURABLE, false, false, null);
-			getData(channel, connection);
-		} catch (IOException exception) {
-			exception.getStackTrace();
-		}
-	}
-
-	@Override
-	public void getData(Channel channel, Connection connection) {
-		String str = null;
+	protected void getData(Channel channel, Connection connection) {
 		String filename = "longfile_10.txt";
 		
 		URL url = null;
@@ -45,14 +26,13 @@ public class TextfileProducer implements ProducerInterface {
 			s = new Scanner(url.openStream());
 			
 			while (s.hasNextLine()) {
-				str = s.nextLine();
-				channel.basicPublish(EXCHANGE_NAME, "", MessageProperties.PERSISTENT_TEXT_PLAIN, str.getBytes());
-				//channel.basicPublish(EXCHANGE_NAME, "", null, str.getBytes());
-				//channel.basicPublish("", QUEUE_NAME, null, str.getBytes());
+				bindingKey = "document";
+				messageData = s.nextLine();
+				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
 				
-				Thread.currentThread().sleep(25);
+				Thread.currentThread().sleep(500);
 				
-				System.out.println("  [x] Sent '" + str + "'");
+				System.out.println("  [x] Sent '" + messageData + "'");
 			}
 			
 		} catch (IOException e1) {
@@ -61,21 +41,10 @@ public class TextfileProducer implements ProducerInterface {
 			e2.printStackTrace();
 		}
 	}
-
-	@Override
-	public void closeQueue(Channel channel, Connection connection) {
-		try {
-			channel.close();
-			connection.close();
-		} catch (IOException exception) {
-			exception.getStackTrace();
-		}
-	}
 	
 	public static void main (String[] argv) {
 		TextfileProducer tp = new TextfileProducer();
 		tp.createQueue();
 		System.out.println("EOF");
 	}
-
 }
