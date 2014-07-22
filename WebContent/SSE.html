@@ -69,7 +69,7 @@ addLoadEvent(pageScroll());
 
 <script>
 if (typeof (EventSource) != "undefined") {
-	var source = new EventSource("http://localhost:8080/SSE/SSE_Rabbit");
+	var source = new EventSource("http://localhost:8080/SSE/RoutingConsumer");
 	
 	source.addEventListener('open', function(e) {
 		//newest messages on top
@@ -98,7 +98,12 @@ if (typeof (EventSource) != "undefined") {
 		document.body.innerHTML = "[*] Waiting for messages..";
 	}, false);
 	
-	source.addEventListener('business', function(e) {
+	source.addEventListener('json', function(e)) {
+		var obj = JSON.parse(e.data);
+		document.body.innerHTML = "[x]" + obj.id + document.body.innerHTML;
+	}
+	
+/*	source.addEventListener('business', function(e) {
 		if (arrayVals[0]) {
 			//newest messages on top
 			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
@@ -106,87 +111,7 @@ if (typeof (EventSource) != "undefined") {
 			//document.body.innerHTML += e.data + "<br>";
 		}
 	}, false);
-	
-	source.addEventListener('family', function(e) {
-		if (arrayVals[1]) {
-			//newest messages on top
-			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
-			//newest messages on bottom
-			//document.body.innerHTML += e.data + "<br>";
-		}
-	}, false);
-
-	source.addEventListener('friends', function(e) {
-		if (arrayVals[2]) {
-			//newest messages on top
-			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
-			//newest messages on bottom
-			//document.body.innerHTML += e.data + "<br>";
-		}
-	}, false);
-
-	source.addEventListener('happy', function(e) {
-		if (arrayVals[3]) {
-			//newest messages on top
-			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
-			//newest messages on bottom
-			//document.body.innerHTML += e.data + "<br>";
-		}
-	}, false);
-
-	source.addEventListener('personal', function(e) {
-		if (arrayVals[4]) {
-			//newest messages on top
-			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
-			//newest messages on bottom
-			//document.body.innerHTML += e.data + "<br>";
-		}
-	}, false);
-
-	source.addEventListener('sad', function(e) {
-		if (arrayVals[5]) {
-			//newest messages on top
-			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
-			//newest messages on bottom
-			//document.body.innerHTML += e.data + "<br>";
-		}
-	}, false);
-
-	source.addEventListener('social', function(e) {
-		if (arrayVals[6]) {
-			//newest messages on top
-			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
-			//newest messages on bottom
-			//document.body.innerHTML += e.data + "<br>";
-		}
-	}, false);
-
-	source.addEventListener('spiritual', function(e) {
-		if (arrayVals[7]) {
-			//newest messages on top
-			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
-			//newest messages on bottom
-			//document.body.innerHTML += e.data + "<br>";
-		}
-	}, false);
-
-	source.addEventListener('update', function(e) {
-		if (arrayVals[8]) {
-			//newest messages on top
-			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
-			//newest messages on bottom
-			//document.body.innerHTML += e.data + "<br>";
-		}
-	}, false);
-
-	source.addEventListener('virtual', function(e) {
-		if (arrayVals[9]) {
-			//newest messages on top
-			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
-			//newest messages on bottom
-			//document.body.innerHTML += e.data + "<br>";
-		}
-	}, false);
+*/
 	
 	// onmessage handler is used if no event name is specified for a message
 	source.onmessage = function(event) {
