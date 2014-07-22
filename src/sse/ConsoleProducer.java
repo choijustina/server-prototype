@@ -2,69 +2,40 @@ package sse;
 
 import java.io.IOException;
 import java.util.Scanner;
-
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.MessageProperties;
 
-public class ConsoleProducer implements ProducerInterface {
+public class ConsoleProducer extends AbstractProducer {
 
 	@Override
-	public void createQueue() {
-		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("localhost");
-		
-		try {
-			Connection connection = factory.newConnection();
-			Channel channel = connection.createChannel();
-			channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
-			//channel.queueDeclare(QUEUE_NAME, MSG_DURABLE, false, false, null);
-			getData(channel, connection);
-		} catch (IOException exception) {
-			exception.getStackTrace();
-		}
-	}
-
-	@Override
-	public void getData(Channel channel, Connection connection) {
+	protected void getData(Channel channel, Connection connection) {
 		Scanner scanner = new Scanner(System.in);
-		System.out.println("Opening a new producer, sending to queue entitled '" + QUEUE_NAME + "'\n"
-				+ "Press enter after every message you would like to send.\n"
-				+ "Specific commands: '" + CLOSE_PRODUCER + "' and '" + CLOSE_CONSUMER + "'"); 
-		String str = scanner.nextLine();
+		System.out.println("NEW PRODUCER: Press enter after every message you would like to send.\n"
+				+ "Format: <BINDINGKEY> <message or command text>\n"
+				+ "Specific commands: '" + CLOSE_PRODUCER + "', '" + CLOSE_CONSUMER + "' and 'clear'\n"
+				+ "\tWhen closing consumer/clearing consumer screen, be sure to follow format and specify binding key of queue"); 
 		
 		try {
-			while (!(str.equals(CLOSE_PRODUCER))) {
-				channel.basicPublish(EXCHANGE_NAME, "", MessageProperties.PERSISTENT_TEXT_PLAIN, str.getBytes());
-				//channel.basicPublish(EXCHANGE_NAME, "", null, str.getBytes());
-				//channel.basicPublish("", QUEUE_NAME, null, str.getBytes());
-				System.out.println("  [x] Sent '" + str + "'");
-				str = scanner.nextLine();
+			while (!(scanner.hasNext(CLOSE_PRODUCER))) {
+				bindingKey = scanner.next();
+				messageData = scanner.next() + scanner.nextLine();
+				
+				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
+				System.out.println("  [x] Sent " + bindingKey + " : '" + messageData + "'");
 			}
 		} catch (IOException exception) {
-			exception.getStackTrace();
+			exception.printStackTrace();
 		}
-		
 		System.out.println("closing producer");
 		scanner.close();
 		closeQueue(channel, connection);
 	}
 	
-	@Override
-	public void closeQueue(Channel channel, Connection connection) {
-		try {
-			channel.close();
-			connection.close();
-		} catch (IOException exception) {
-			exception.getStackTrace();
-		}
-	}
 	
 	public static void main (String[] argv) {
 		ConsoleProducer cp = new ConsoleProducer(); 
 		cp.createQueue();
 		System.out.println("EOF");
 	}
-
 }
