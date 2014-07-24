@@ -21,12 +21,15 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 @WebServlet("/RoutingConsumer")
 public class RoutingConsumer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final boolean MSG_ACK = false;			// msg acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
+	private static final boolean MSG_ACK = false;			// message acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
 	private static final String BINDING_KEY = "json";			
-	protected static final int RECONNECT_TIME = 10000;		// millisecond delay until auto-reconnect 
+	protected static final int RECONNECT_TIME = 10000;		// delay in milliseconds how long until auto-reconnect 
 	
 	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
@@ -62,12 +65,17 @@ public class RoutingConsumer extends HttpServlet {
 			try {
 				QueueingConsumer.Delivery delivery = consumer.nextDelivery();
 				
-				//String routingKey = delivery.getEnvelope().getRoutingKey();
+				//routingKey is always the BINDING_KEY "json"
 				String message = new String(delivery.getBody());
 				
 				if (message.equals(AbstractProducer.CLOSE_CONSUMER))
 					break;
-				
+				else if (message.equals("clear")) {
+					out.print("event: clear\n");
+					out.print("data: binding key - " + BINDING_KEY + "\n\n");
+					out.flush();
+				}
+				out.print("event: jsonobject\n");
 				out.print("data: " + message + "\n\n");
 				out.flush();
 				
@@ -76,8 +84,6 @@ public class RoutingConsumer extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
-		
-		
 		connection.close();
 		channel.close();
 		out.close();

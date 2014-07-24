@@ -12,8 +12,7 @@ body {
 </style>
 <script type="text/javascript">
 // GLOBAL VARIABLES FOR LATER //////////////////////////////////////
-//checks received from parent
-var arrayVals = new Array(9);
+var SSEsearch = "blank"   // equivalent of index.html's searchCriteria
 
 // 
 function pageScroll() {
@@ -36,21 +35,12 @@ function addLoadEvent(func) {
   }
 }
 
-function buttonPressed(){
-	var chklength = window.parent.document['list'].getElementsByTagName('input');
-	for (var i = 0; i < chklength.length; i++) {
-		arrayVals[i] = window.parent.param[i];
-	}
-	
-//	alert("rcvd values: " + arrayVals);
-	
-	//call back to alert parent that values were received
-	//for testing
-	//window.parent.babyCallback();
+function buttonPressed() {
+	SSEsearch = window.parent.searchCriteria;
+	alert("2 SSE.html: " + SSEsearch);
 }
 
 addLoadEvent(pageScroll());
-//addLoadEvent(function() {...});
 </script>
 
 </head>
@@ -61,48 +51,51 @@ addLoadEvent(pageScroll());
 
 <script>
 if (typeof (EventSource) != "undefined") {
-	var source = new EventSource("http://localhost:8080/SSE/SSE_Rabbit");
+	var source = new EventSource("http://localhost:8080/SSE/RoutingConsumer");
 	
-	source.addEventListener('open', function(e) {
-		//newest messages on top
+	source.onopen = function(event) {
 		document.body.innerHTML = "Connection was opened" + "<br>" + document.body.innerHTML;
+	}
+	source.onerror = function(event) {
+		document.body.innerHTML = "An error occurred; auto-reconnecting after 10 seconds" + "<br>" + document.body.innerHTML;
+	}
+	
+	/*source.onoffline = function(event) {
 		
-		//newest messages on bottom
-		//document.body.innerHTML += "Connection was opened" + "<br>" + document.body.innerHTML;
-	}, false);
-		
-	source.addEventListener('error', function(e) {
-		//newest messages on top
-		document.body.innerHTML = "An error occurred; auto-reconnecting" + "<br>" + document.body.innerHTML;
-		
-		//newest messages on bottom
-		//document.body.innerHTML += "An error occurred..." + "<br>";
-		if (e.readyState == EventSource.CLOSED) {
-			//newest messages on top
-			document.body.innerHTML = "Connection was closed" + "<br>" + document.body.innerHTML;
-			
-			//newest messages on bottom
-			//document.body.innerHTML += "Connection was closed" + "<br>";
-		}
-	}, false);
+	}*/
 	
 	source.addEventListener('clear', function(e) {
 		document.body.innerHTML = "[*] Waiting for messages.." + "<br>" + e.data;
 	}, false);
 	
+	source.addEventListener('jsonobject', function(e) {
+		var info = JSON.parse(e.data);
+		//var resultsfound = false;
+		
+		//assumes has id, name, and path
+		var print = "ID: " + info.id + "<br>" +
+		"NAME: " + info.name + "<br>" + 
+		"PATH: " + info.path + "<br><br>";
+		
+		//print id
+		if (SSEsearch == info.id) {
+			document.body.innerHTML = "matching id: " + info.id + "<br>" + print + document.body.innerHTML;
+			//resultsfound = true;
+		}
+		
+		
+	}, false);
+	
 	// onmessage handler is used if no event name is specified for a message
 	source.onmessage = function(event) {
-		//newest messages on top
 		document.body.innerHTML = event.data + "<br>" + document.body.innerHTML;
-		
-		//newest messages on bottom
-		//document.body.innerHTML += event.data + "<br>";
 	}
 	
 } else {
 	document.body.innerHTML = "Sorry, your browser does not support server-sent events...";
 }
-	</script>
+
+</script>
 
 </body>
 </html>
