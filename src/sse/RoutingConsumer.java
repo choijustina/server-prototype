@@ -51,26 +51,34 @@ public class RoutingConsumer extends HttpServlet {
 		String queueName = channel.queueDeclare().getQueue();
 		channel.queueBind(queueName, AbstractProducer.EXCHANGE_NAME, BINDING_KEY);
 		
+		Consumer consumer = new Consumer(response);
+		consumer.start();
+		
+		/*
 		PrintWriter out = response.getWriter();
 		out.print("retry: "+ RECONNECT_TIME + "\n");
 		out.print("data: " + "RoutingConsumer.java\n\n");
 		out.print("data: binding key: " + BINDING_KEY + "\n\n");
 		out.print("data: [*] Waiting for messages.\n\n");
 		out.flush();
+		*/
 		
-		QueueingConsumer consumer = new QueueingConsumer(channel);
-		channel.basicConsume(queueName, MSG_ACK, consumer);
+		QueueingConsumer queueingConsumer = new QueueingConsumer(channel);
+		channel.basicConsume(queueName, MSG_ACK, queueingConsumer);
 		
 		while (true) {
 			try {
-				QueueingConsumer.Delivery delivery = consumer.nextDelivery();
+				QueueingConsumer.Delivery delivery = queueingConsumer.nextDelivery();
 				
 				//routingKey is always the BINDING_KEY "json"
 				String message = new String(delivery.getBody());
 				
 				if (message.equals(AbstractProducer.CLOSE_CONSUMER))
 					break;
-				else if (message.equals("clear")) {
+				else
+					consumer.printData(message);
+				
+				/*else if (message.equals("clear")) {
 					out.print("event: clear\n");
 					out.print("data: binding key - " + BINDING_KEY + "\n\n");
 					out.flush();
@@ -78,6 +86,7 @@ public class RoutingConsumer extends HttpServlet {
 				out.print("event: jsonobject\n");
 				out.print("data: " + message + "\n\n");
 				out.flush();
+				*/
 				
 				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
 			} catch (InterruptedException e) {
@@ -86,7 +95,8 @@ public class RoutingConsumer extends HttpServlet {
 		}
 		connection.close();
 		channel.close();
-		out.close();
+		consumer.close();
+		//out.close();
 	}
 
 }

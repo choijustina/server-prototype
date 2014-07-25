@@ -65,25 +65,27 @@ if (typeof (EventSource) != "undefined") {
 	}*/
 	
 	source.addEventListener('clear', function(e) {
-		document.body.innerHTML = "[*] Waiting for messages.." + "<br>" + e.data;
+		document.body.innerHTML = "[*] Waiting for messages.." + "<br>";
+		//document.body.innerHTML = "[*] Waiting for messages.." + "<br>" + e.data;
 	}, false);
 	
 	source.addEventListener('jsonobject', function(e) {
 		var info = JSON.parse(e.data);
-		//var resultsfound = false;
 		
-		//assumes has id, name, and path
+		//assumes has id, msgtype, name, doctype, data
 		var print = "ID: " + info.id + "<br>" +
+		"MSGTYPE: " + info.msgtype + "<br>" +
 		"NAME: " + info.name + "<br>" + 
-		"PATH: " + info.path + "<br><br>";
+		"DOCTYPE: " + info.doctype + "<br>" +
+		"DATA: " + info.data + "<br><br>";
 		
-		//print id
-		if (SSEsearch == info.id) {
-			document.body.innerHTML = "matching id: " + info.id + "<br>" + print + document.body.innerHTML;
-			//resultsfound = true;
+		//print name
+		if (SSEsearch == info.name) {
+			document.body.innerHTML = "matching name: " + info.name + "<br>" + print + document.body.innerHTML;
 		}
-		
-		
+		else {
+			document.body.innerHTML = "not a match<br><br>" + document.body.innerHTML;
+		}
 	}, false);
 	
 	// onmessage handler is used if no event name is specified for a message

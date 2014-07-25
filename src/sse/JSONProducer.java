@@ -1,3 +1,7 @@
+/**
+ * File: JSONProducer.java
+ */
+
 package sse;
 
 import java.io.IOException;
@@ -13,20 +17,26 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class JSONProducer extends AbstractProducer {
+	String filename = "json.txt";
 
 	@Override
 	protected void getData(Channel channel, Connection connection) {
 		
 		try {
-			System.out.println("Press enter after every message you would like to send.\n" +
-					   "Specific commands: '" + CLOSE_PRODUCER + "', '" + CLOSE_CONSUMER + "' and 'clear'");
-			Scanner scanner = new Scanner(System.in);
+			//System.out.println("Press enter after every message you would like to send.\n" + "Specific commands: '" + CLOSE_PRODUCER + "', '" + CLOSE_CONSUMER + "' and 'clear'");
+			//Scanner scanner = new Scanner(System.in);
+			//messageData = scanner.nextLine();
+			URL url = new URL("http://localhost:8080/SSE/" + filename);
+			Scanner scanner = new Scanner(url.openStream());
 			messageData = scanner.nextLine();
 			
-			while (!(messageData.equals(CLOSE_PRODUCER))) {
+			//while (!(messageData.equals(CLOSE_PRODUCER))) {
+			while (scanner.hasNextLine()) {
 				bindingKey = "json";
 				
 				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
+				
+				Thread.currentThread().sleep(250);
 				
 				System.out.println("  [x] Sent:  " + messageData);
 				messageData = scanner.nextLine();
@@ -37,6 +47,9 @@ public class JSONProducer extends AbstractProducer {
 			e.printStackTrace();
 		}
 		catch (IOException e) {		// channel.basicPublish() method
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("closing producer");
