@@ -4,7 +4,7 @@
 <script src="AnchorPosition.js"></script>
 <script src="date.js"></script>
 <script src="PopupWindow.js"></script>
-<script>
+<script language="javascript">
 var cal = new CalendarPopup("caldiv");
 //cal.showNavigationDropdowns();
 cal.setCssPrefix("TEST");
@@ -140,13 +140,13 @@ DOCUMENT TYPE:
 	<option value="b">option b</option>
 	</select><br>
 	
-DATE: <INPUT TYPE="text" NAME="date" VALUE="" SIZE=25>
+DATE: <INPUT TYPE="text" placeholder="MM/DD/YY format (EX: 11/15/93)"  NAME="date" VALUE="" SIZE=25>
 <A HREF="#"
-   onClick="cal.select(document.forms['search'].date,'anchor1','MM/dd/yyyy'); return false;" ID="anchor1">select</A><br>
+   onClick="cal.select(document.forms['search'].date,'anchor1','MM/dd/yyyy'); return false;" ID="anchor1"><input type="button" value="..."></button></A><br>
 	
 <input type="submit" value="SUBMIT">
 </form>
 <DIV ID="caldiv" STYLE="position:absolute;visibility:hidden;background-color:white;layer-background-color:white;"></DIV>
 
 </body>
-</html>
+</html>>>
