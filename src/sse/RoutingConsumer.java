@@ -37,6 +37,7 @@ public class RoutingConsumer extends HttpServlet {
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
 		
+		channel.queueDeclare(AbstractProducer.QUEUE_NAME, false, false, false, null);
 		channel.exchangeDeclare(AbstractProducer.EXCHANGE_NAME, AbstractProducer.EXCHANGE_TYPE);
 		channel.queueBind(AbstractProducer.QUEUE_NAME, AbstractProducer.EXCHANGE_NAME, BINDING_KEY);
 		
