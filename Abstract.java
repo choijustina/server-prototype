@@ -5,25 +5,27 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 public abstract class Abstract {
-	public final String EXCHANGE_NAME = "logs";
-	//public final String QUEUE_NAME = "queue";		// uses server-generated queue names
-	public final String CLOSE_PRODUCER = "close producer";
-	public final String CLOSE_CONSUMER = "close consumer";
-	//public final boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
-	public String ROUTING_KEY = "";
-	public String MSG_DATA = "";
+	public static final String EXCHANGE_NAME = "directexchange";
+	public static final String EXCHANGE_TYPE = "direct";
+	public static final String QUEUE_NAME = "blahblah";		// uses server-generated queue names
+	public static final String CLOSE_PRODUCER = "closeproducer";
+	public static final String CLOSE_CONSUMER = "closeconsumer";
+	//public static final boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
+	
+	public static String bindingKey = "";
+	public static String messageData = "";
 
 	abstract void getData(Channel channel, Connection connection);
 	
-	public void createQueue() {
+	protected void createQueue() {
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("localhost");
 		
 		try {
 			Connection connection = factory.newConnection();
 			Channel channel = connection.createChannel();
-			channel.exchangeDeclare(EXCHANGE_NAME, "fanout");		// a durable, non-autodelete exchange of "topic" type
-			//channel.queueDeclare(QUEUE_NAME, MSG_DURABLE, false, false, null);
+			channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+			channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);		// a durable, non-autodelete exchange, type is second parameter
 			
 			getData(channel, connection);
 		} catch (IOException exception) {
@@ -31,7 +33,9 @@ public abstract class Abstract {
 		}
 	}
 	
-	public void closeQueue(Channel channel, Connection connection) {
+	protected void closeQueue(Channel channel, Connection connection) {
+		// TODO delete the queue/exchange?
+		
 		try {
 			channel.close();
 			connection.close();
