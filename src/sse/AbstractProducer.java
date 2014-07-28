@@ -9,7 +9,7 @@ import com.rabbitmq.client.ConnectionFactory;
 public abstract class AbstractProducer {
 	public static final String EXCHANGE_NAME = "directexchange";
 	public static final String EXCHANGE_TYPE = "direct";
-	public static final String QUEUE_NAME = "queue";		// uses server-generated queue names
+	public static final String QUEUE_NAME = "blahblah";		// uses server-generated queue names
 	public static final String CLOSE_PRODUCER = "closeproducer";
 	public static final String CLOSE_CONSUMER = "closeconsumer";
 	//public static final boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
