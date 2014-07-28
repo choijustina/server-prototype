@@ -2,10 +2,6 @@ package sse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.InputStream;
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-import org.apache.commons.io.IOUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -42,33 +38,30 @@ public class RoutingConsumer extends HttpServlet {
 		Channel channel = connection.createChannel();
 		
 		channel.exchangeDeclare(AbstractProducer.EXCHANGE_NAME, AbstractProducer.EXCHANGE_TYPE);
-		String queueName = channel.queueDeclare().getQueue();
-		channel.queueBind(queueName, AbstractProducer.EXCHANGE_NAME, BINDING_KEY);
+		channel.queueBind(AbstractProducer.QUEUE_NAME, AbstractProducer.EXCHANGE_NAME, BINDING_KEY);
 		
 		PrintWriter out = response.getWriter();
 		out.print("retry: "+ RECONNECT_TIME + "\n");
 		out.print("data: " + "RoutingConsumer.java\n\n");
 		out.print("data: binding key: " + BINDING_KEY + "\n\n");
 		out.print("data: [*] Waiting for messages.\n\n");
+		out.print("data: mongo connected \n\n");
 		out.flush();
 		
 		QueueingConsumer consumer = new QueueingConsumer(channel);
-		channel.basicConsume(queueName, MSG_ACK, consumer);
+		channel.basicConsume(AbstractProducer.QUEUE_NAME, MSG_ACK, consumer);
 		
 		while (true) {
 			try {
 				QueueingConsumer.Delivery delivery = consumer.nextDelivery();
+				
 				//String routingKey = delivery.getEnvelope().getRoutingKey();
-				String message = new String(delivery.getBody());
+				String m = new String(delivery.getBody());
 				
-				if (message.equals(AbstractProducer.CLOSE_CONSUMER)) {
+				if (m.equals(AbstractProducer.CLOSE_CONSUMER))
 					break;
-				}
-				
-				JSONObject json = (JSONObject) JSONSerializer.toJSON(message);
-		    	int ids = json.getInt( "id" );
-//		    	out.print("json: " + message + "\n");
-				out.print("data: " + message + "\n\n");
+
+				out.print("data: " + m + "\n\n");
 				out.flush();
 				
 				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
@@ -77,8 +70,6 @@ public class RoutingConsumer extends HttpServlet {
 			}
 		}
 		
-		
-		connection.close();
 		channel.close();
 		out.close();
 	}
