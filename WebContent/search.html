@@ -1,0 +1,152 @@
+<html>
+<head>
+<script src="CalendarPopup.js"></script>
+<script src="AnchorPosition.js"></script>
+<script src="date.js"></script>
+<script src="PopupWindow.js"></script>
+<script>
+var cal = new CalendarPopup("caldiv");
+//cal.showNavigationDropdowns();
+cal.setCssPrefix("TEST");
+
+//set dates available on calendar to be a week before up to today (including today)
+
+var t = new Date();
+var dd = t.getDate()+1; 
+var mm = t.getMonth()+1;
+var yy = t.getFullYear().toString().substr(2,2);
+(dd < 10) ? (dd = '0' + dd) : dd;
+(mm < 10) ? (mm = '0' + mm) : mm;
+
+var wk = new Date(t.getTime() - (60*60*24*7*1000));
+var wd = wk.getDate()-1; //include last week's today
+var wm = wk.getMonth()+1;
+var wy = wk.getFullYear().toString().substr(2,2);
+(wd < 10) ? (wd = '0' + wd) : wd;
+(wm < 10) ? (wm = '0' + wm) : wm;
+
+var oneWeekAgo = wm + '/' + wd + '/' + wy;
+var tomorrow = mm + '/' + dd + '/' + yy;
+
+cal.addDisabledDates(null, oneWeekAgo);
+cal.addDisabledDates(tomorrow, null);
+</script>
+<style>
+	.TESTcpYearNavigation,
+	.TESTcpMonthNavigation {
+			background-color:#6677DD;
+			text-align:center;
+			vertical-align:center;
+			text-decoration:none;
+			color:#FFFFFF;
+			font-weight:bold;
+			}
+	.TESTcpDayColumnHeader,
+	.TESTcpYearNavigation,
+	.TESTcpMonthNavigation,
+	.TESTcpCurrentMonthDate,
+	.TESTcpCurrentMonthDateDisabled,
+	.TESTcpOtherMonthDate,
+	.TESTcpOtherMonthDateDisabled,
+	.TESTcpCurrentDate,
+	.TESTcpCurrentDateDisabled,
+	.TESTcpTodayText,
+	.TESTcpTodayTextDisabled,
+	.TESTcpText {
+			font-family:arial;
+			font-size:8pt;
+			}
+	TD.TESTcpDayColumnHeader {
+			text-align:right;
+			border:solid thin #6677DD;
+			border-width:0 0 1 0;
+			}
+	.TESTcpCurrentMonthDate,
+	.TESTcpOtherMonthDate,
+	.TESTcpCurrentDate {
+			text-align:right;
+			text-decoration:none;
+			}
+	.TESTcpCurrentMonthDateDisabled,
+	.TESTcpOtherMonthDateDisabled,
+	.TESTcpCurrentDateDisabled {
+			color:#D0D0D0;
+			text-align:right;
+			text-decoration:line-through;
+			}
+	.TESTcpCurrentMonthDate {
+			color:#6677DD;
+			font-weight:bold;
+			}
+	.TESTcpCurrentDate {
+			color: #FFFFFF;
+			font-weight:bold;
+			}
+	.TESTcpOtherMonthDate {
+			color:#808080;
+			}
+	TD.TESTcpCurrentDate {
+			color:#FFFFFF;
+			background-color: #6677DD;
+			border-width:1;
+			border:solid thin #000000;
+			}
+	TD.TESTcpCurrentDateDisabled {
+			border-width:1;
+			border:solid thin #FFAAAA;
+			}
+	TD.TESTcpTodayText,
+	TD.TESTcpTodayTextDisabled {
+			border:solid thin #6677DD;
+			border-width:1 0 0 0;
+			}
+	A.TESTcpTodayText,
+	SPAN.TESTcpTodayTextDisabled {
+			height:20px;
+			}
+	A.TESTcpTodayText {
+			color:#6677DD;
+			font-weight:bold;
+			}
+	SPAN.TESTcpTodayTextDisabled {
+			color:#D0D0D0;
+			}
+	.TESTcpBorder {
+			border:solid thin #6677DD;
+			}
+p {
+	font-size:40;
+	text-align: center;
+	padding-top: 15%;
+
+}
+form {
+	text-align: center;
+}
+</style>
+
+
+</head>
+<body>
+<div></div>
+<p>SEARCH</p>
+<form name="search" action="index.html" method="get">
+FIRST NAME: <input type="text" name="firstName"><br>
+LAST NAME: <input type="text" name="lastName"><br>
+BUSINESS KEY: <input type="text" name="businessKey"><br>
+DOCUMENT TYPE: 
+	<select>
+	<option value="a">option a</option>
+	<option value="b">option b</option>
+	</select><br>
+	
+DATE: <INPUT TYPE="text" NAME="date" VALUE="" SIZE=25>
+<A HREF="#"
+   onClick="cal.select(document.forms['search'].date,'anchor1','MM/dd/yyyy'); return false;" ID="anchor1">select</A><br>
+	
+<input type="submit" value="SUBMIT">
+</form>
+<DIV ID="caldiv" STYLE="position:absolute;visibility:hidden;background-color:white;layer-background-color:white;"></DIV>
+
+</body>
+</html>
