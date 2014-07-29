@@ -42,6 +42,7 @@ public class RoutingConsumer extends HttpServlet {
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Connection", "keep-alive");
 		
+		// RABBITMQ
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("localhost");
 		Connection connection = factory.newConnection();
@@ -51,17 +52,19 @@ public class RoutingConsumer extends HttpServlet {
 		String queueName = channel.queueDeclare().getQueue();
 		channel.queueBind(queueName, AbstractProducer.EXCHANGE_NAME, BINDING_KEY);
 		
-		Consumer consumer = new Consumer(response);
-		consumer.start();
+		//Consumer consumer = new Consumer(response);
+		//consumer.start();
+		//String searchCriteria = request.getParameter("NameSearch");
 		
-		/*
+		//String loannum = request.getParameter("loannum");
+        //String doctype = request.getParameter("doctype");
+		
 		PrintWriter out = response.getWriter();
-		out.print("retry: "+ RECONNECT_TIME + "\n");
-		out.print("data: " + "RoutingConsumer.java\n\n");
-		out.print("data: binding key: " + BINDING_KEY + "\n\n");
-		out.print("data: [*] Waiting for messages.\n\n");
+		out.print("retry: 3000\n");
+		out.print("data: RoutingConsumer.java\n\n");
+		//out.print("data: loannum..." + loannum + "; doctype..." + doctype + "\n\n");
+		out.print("data: [*] Waiting for messages\n\n");
 		out.flush();
-		*/
 		
 		QueueingConsumer queueingConsumer = new QueueingConsumer(channel);
 		channel.basicConsume(queueName, MSG_ACK, queueingConsumer);
@@ -73,20 +76,33 @@ public class RoutingConsumer extends HttpServlet {
 				//routingKey is always the BINDING_KEY "json"
 				String message = new String(delivery.getBody());
 				
+				//JSONObject object = new JSONObject(message);
+				//String name = object.getString("name");
+				
 				if (message.equals(AbstractProducer.CLOSE_CONSUMER))
 					break;
-				else
-					consumer.printData(message);
-				
-				/*else if (message.equals("clear")) {
-					out.print("event: clear\n");
-					out.print("data: binding key - " + BINDING_KEY + "\n\n");
+				else {
+					//consumer.printData(message);
+					/*
+					if (searchCriteria.equals("none")) {
+						consumer.printData(message);
+					} else if (SEARCH_CRITERIA.equals(name)) {
+						consumer.printData(message);
+					} else {
+						consumer.printData("nomatch");
+					}*/
+					
+					if (message.equals("clear")) {
+						out.print("event: clear\n");
+						out.print("data: clears the client display\n\n");
+					} else {
+						out.print("event: jsonobject\n");
+						out.print("data: " + message + "\n\n");
+					}
 					out.flush();
+					
 				}
-				out.print("event: jsonobject\n");
-				out.print("data: " + message + "\n\n");
-				out.flush();
-				*/
+					
 				
 				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
 			} catch (InterruptedException e) {
@@ -95,8 +111,8 @@ public class RoutingConsumer extends HttpServlet {
 		}
 		connection.close();
 		channel.close();
-		consumer.close();
-		//out.close();
+		//consumer.close();
+		out.close();
 	}
 
 }

@@ -9,12 +9,11 @@ body {
 	background: pink;
 }
 
-</style>
+</style>	
 <script type="text/javascript">
 // GLOBAL VARIABLES FOR LATER //////////////////////////////////////
-var SSEsearch = "blank"   // equivalent of index.html's searchCriteria
 
-// 
+
 function pageScroll() {
 	//negative for scrolling up, positive for scrolling down
 	window.scrollBy(0,-100);
@@ -35,14 +34,16 @@ function addLoadEvent(func) {
   }
 }
 
-function buttonPressed() {
-	SSEsearch = window.parent.searchCriteria;
-	alert("2 SSE.html: " + SSEsearch);
+function getQueryString() {
+	alert("first");
+	loanNum = window.parent.QueryString.loannum;
+	docType = window.parent.QueryString.doctype;
 }
 
 addLoadEvent(pageScroll());
-</script>
+//addLoadEvent(getQueryString());
 
+</script>
 </head>
 
 <body>
@@ -57,12 +58,8 @@ if (typeof (EventSource) != "undefined") {
 		document.body.innerHTML = "Connection was opened" + "<br>" + document.body.innerHTML;
 	}
 	source.onerror = function(event) {
-		document.body.innerHTML = "An error occurred; auto-reconnecting after 10 seconds" + "<br>" + document.body.innerHTML;
+		document.body.innerHTML = "An error occurred; auto-reconnecting after 3 seconds" + "<br>" + document.body.innerHTML;
 	}
-	
-	/*source.onoffline = function(event) {
-		
-	}*/
 	
 	source.addEventListener('clear', function(e) {
 		document.body.innerHTML = "[*] Waiting for messages.." + "<br>";
@@ -78,14 +75,17 @@ if (typeof (EventSource) != "undefined") {
 		"NAME: " + info.name + "<br>" + 
 		"DOCTYPE: " + info.doctype + "<br>" +
 		"DATA: " + info.data + "<br><br>";
-		
+		/*
 		//print name
 		if (SSEsearch == info.name) {
 			document.body.innerHTML = "matching name: " + info.name + "<br>" + print + document.body.innerHTML;
 		}
 		else {
 			document.body.innerHTML = "not a match<br><br>" + document.body.innerHTML;
-		}
+		}*/
+		
+		document.body.innerHTML = print + document.body.innerHTML;
+		
 	}, false);
 	
 	// onmessage handler is used if no event name is specified for a message

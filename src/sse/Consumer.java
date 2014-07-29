@@ -18,7 +18,7 @@ import org.json.JSONObject;
 public class Consumer {
 	protected HttpServletResponse response;
 	protected PrintWriter out;
-	protected JSONObject object;
+	//protected JSONObject object;
 	//private static int counter = 0;
 
 	public Consumer(HttpServletResponse r1) {
@@ -33,24 +33,29 @@ public class Consumer {
 		
 	}
 	
+	/*
 	protected void addJSONObject(JSONObject obj) {
 		this.object = obj;
-	}
+	}*/
 	
 	protected void start() {
-		out.print("retry: 1000\n");
+		out.print("retry: 3000\n");
 		out.print("data: Consumer.java number " + "\n\n");
 		out.print("data: [*] Waiting for messages\n\n");
 		out.flush();
 	}
 	
-	protected void printData(String data) {
-		if (data.equals("clear")) {
+	protected void printData(String message) {
+		if (message.equals("clear")) {
 			out.print("event: clear\n");
 			out.print("data: clears the client display\n\n");
-		} else {
+		} 
+		else if (message.equals("nomatch")) {
+			out.print("data: not a match\n\n");
+		}
+		else {
 			out.print("event: jsonobject\n");
-			out.print("data: " + data + "\n\n");
+			out.print("data: " + message + "\n\n");
 		}
 		out.flush();
 	}

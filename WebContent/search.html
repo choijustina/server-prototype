@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Search page</title>
+</head>
+<body>
+<h2>on click, redirects to index.html</h2>
+<h4>4</h4>
+
+<form name="search" action="index.html" method="get">
+	Loan number: <input type="text" name="loannum">
+	Document type: <input type="text" name="doctype">
+	<input type="submit" value="SEARCH">
+</form>
+
+
+<h3>A demonstration of how to access a Text Field</h3>
+
+<input type="text" id="myText" value="Some text...">
+
+<p>Click the "Try it" button to get the text in the text field.</p>
+
+<button onclick="myFunction()">Try it</button>
+
+<p id="demo"></p>
+
+<script>
+function myFunction() {
+    var x = document.getElementById("myText").value;
+    document.getElementById("demo").innerHTML = x;
+}
+</script>
+
+
+</body>
+</html>

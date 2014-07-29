@@ -13,12 +13,9 @@
 <script type="text/javascript">
 
 //GLOBAL VARIABLES FOR LATER //////////////////////////////////////
-var searchCriteria = "nothing"
-
 
 
 // STUFF THAT ALLOWS FRAME TO BE RESIZABLE ///////////////////////
-
 $(function() {
   $('#resizable').resizable({
       start: function(event, ui) {
@@ -36,11 +33,36 @@ $(function() {
 }); 
 
 // SEARCH BUTTON FUNCTION
-function search() {
+/*function search() {
 	searchCriteria = document.getElementById("NameSearch").value;
-	//alert("1 searchCriteria: " + searchCriteria);
-	document.getElementById("iframe").contentWindow.buttonPressed();
-}
+	alert("1 searchCriteria: " + searchCriteria);
+	document.getElementById("iframe").contentWindow.buttonPressed();  // sends string to iframe
+}*/
+
+// URL PARAMETERS FUNCTION; TO USE: QueryString.<nameofinput>
+var QueryString = function () {
+	  // This function is anonymous, is executed immediately and 
+	  // the return value is assigned to QueryString!
+	  var query_string = {};
+	  var query = window.location.search.substring(1);
+	  var vars = query.split("&");
+	  for (var i=0;i<vars.length;i++) {
+	    var pair = vars[i].split("=");
+	    	// If first entry with this name
+	    if (typeof query_string[pair[0]] === "undefined") {
+	      query_string[pair[0]] = pair[1];
+	    	// If second entry with this name
+	    } else if (typeof query_string[pair[0]] === "string") {
+	      var arr = [ query_string[pair[0]], pair[1] ];
+	      query_string[pair[0]] = arr;
+	    	// If third or later entry with this name
+	    } else {
+	      query_string[pair[0]].push(pair[1]);
+	    }
+	  } 
+	    return query_string;
+	} ();
+
 
 function addLoadEvent(func) {
 	  var oldonload = window.onload;
@@ -54,6 +76,12 @@ function addLoadEvent(func) {
 	      func();
 	    }
 	}
+}
+
+function myFunction() {
+    var x = QueryString.loannum;
+    var y = QueryString.doctype;
+    document.getElementById("demo").innerHTML = x + ", " + y;
 }
 
 </script>
@@ -99,14 +127,23 @@ function addLoadEvent(func) {
 </style>
 </head>
 
-
 <body>
-<h1>Testing RoutingConsumer 96</h1>
 
-<!-- INPUT TEXT/SEARCH BAR -->
+<h1>Sending variables....</h1>
+<button onclick="myFunction()">display text</button>
+<p id="demo"></p>
+
+<!-- INPUT TEXT/SEARCH BAR  
 <div id="searchbar">
 	<input type="text" id="NameSearch" value="search by name"><button onclick="search()"> SEARCH</button><br>
-</div>
+</div> 
+
+<form action = "login" method="post">
+	Loan number: <input type="text" name="loannum">
+	Document type: <input type="text" name="doctype">
+	<input type="submit" value="SEARCH">
+</form>
+-->
 
 <div id="resizable">
    <iframe id="iframe" name="iframe" seamless src="SSE.html" style="display: block; margin: 0 auto; padding: 0; border: #000000 1px solid;"></iframe>
