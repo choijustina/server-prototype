@@ -12,7 +12,8 @@ body {
 </style>	
 <script type="text/javascript">
 // GLOBAL VARIABLES FOR LATER //////////////////////////////////////
-
+var loanNum = "blank";
+var docType = "blank";
 
 function pageScroll() {
 	//negative for scrolling up, positive for scrolling down
@@ -34,14 +35,14 @@ function addLoadEvent(func) {
   }
 }
 
-function getQueryString() {
-	alert("first");
+function parseQueryString() {
 	loanNum = window.parent.QueryString.loannum;
 	docType = window.parent.QueryString.doctype;
+	//alert("loanNum: " + loanNum + ", docType: " + docType);
 }
 
 addLoadEvent(pageScroll());
-//addLoadEvent(getQueryString());
+addLoadEvent(parseQueryString());
 
 </script>
 </head>
@@ -58,7 +59,7 @@ if (typeof (EventSource) != "undefined") {
 		document.body.innerHTML = "Connection was opened" + "<br>" + document.body.innerHTML;
 	}
 	source.onerror = function(event) {
-		document.body.innerHTML = "An error occurred; auto-reconnecting after 3 seconds" + "<br>" + document.body.innerHTML;
+		document.body.innerHTML = "An error occurred; auto-reconnecting" + "<br>" + document.body.innerHTML;
 	}
 	
 	source.addEventListener('clear', function(e) {

@@ -81,7 +81,7 @@ function addLoadEvent(func) {
 function myFunction() {
     var x = QueryString.loannum;
     var y = QueryString.doctype;
-    document.getElementById("demo").innerHTML = x + ", " + y;
+    document.getElementById("demo").innerHTML = "Loan num: " + x + ", Doc type: " + y; 
 }
 
 </script>
@@ -129,26 +129,27 @@ function myFunction() {
 
 <body>
 
-<h1>Sending variables....</h1>
-<button onclick="myFunction()">display text</button>
+<h1>Searching 2</h1>
+<form action = "RoutingConsumer" method="post">
+	Loan number: <input type="text" name="loanNum">
+	Document type: <input type="text" name="docType">
+	<input type="submit" value="SEARCH">
+</form>
+
+<!-- <button onclick="myFunction()">myFunction()</button>  -->
 <p id="demo"></p>
 
 <!-- INPUT TEXT/SEARCH BAR  
 <div id="searchbar">
 	<input type="text" id="NameSearch" value="search by name"><button onclick="search()"> SEARCH</button><br>
 </div> 
-
-<form action = "login" method="post">
-	Loan number: <input type="text" name="loannum">
-	Document type: <input type="text" name="doctype">
-	<input type="submit" value="SEARCH">
-</form>
 -->
 
+<!--
 <div id="resizable">
    <iframe id="iframe" name="iframe" seamless src="SSE.html" style="display: block; margin: 0 auto; padding: 0; border: #000000 1px solid;"></iframe>
 </div>
-
+-->
 
 </body>
 </html>

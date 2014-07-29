@@ -52,17 +52,13 @@ public class RoutingConsumer extends HttpServlet {
 		String queueName = channel.queueDeclare().getQueue();
 		channel.queueBind(queueName, AbstractProducer.EXCHANGE_NAME, BINDING_KEY);
 		
-		//Consumer consumer = new Consumer(response);
-		//consumer.start();
-		//String searchCriteria = request.getParameter("NameSearch");
-		
-		//String loannum = request.getParameter("loannum");
-        //String doctype = request.getParameter("doctype");
-		
+		String number = request.getParameter("loanNum");
+        String type = request.getParameter("docType");
+	
 		PrintWriter out = response.getWriter();
 		out.print("retry: 3000\n");
 		out.print("data: RoutingConsumer.java\n\n");
-		//out.print("data: loannum..." + loannum + "; doctype..." + doctype + "\n\n");
+		out.print("data: Loan number..." + number + "; document type..." + type + "\n\n");
 		out.print("data: [*] Waiting for messages\n\n");
 		out.flush();
 		
@@ -82,16 +78,6 @@ public class RoutingConsumer extends HttpServlet {
 				if (message.equals(AbstractProducer.CLOSE_CONSUMER))
 					break;
 				else {
-					//consumer.printData(message);
-					/*
-					if (searchCriteria.equals("none")) {
-						consumer.printData(message);
-					} else if (SEARCH_CRITERIA.equals(name)) {
-						consumer.printData(message);
-					} else {
-						consumer.printData("nomatch");
-					}*/
-					
 					if (message.equals("clear")) {
 						out.print("event: clear\n");
 						out.print("data: clears the client display\n\n");
@@ -111,7 +97,6 @@ public class RoutingConsumer extends HttpServlet {
 		}
 		connection.close();
 		channel.close();
-		//consumer.close();
 		out.close();
 	}
 
