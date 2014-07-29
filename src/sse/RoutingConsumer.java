@@ -52,13 +52,12 @@ public class RoutingConsumer extends HttpServlet {
 		String queueName = channel.queueDeclare().getQueue();
 		channel.queueBind(queueName, AbstractProducer.EXCHANGE_NAME, BINDING_KEY);
 		
-		String number = request.getParameter("loanNum");
-        String type = request.getParameter("docType");
+		
 	
 		PrintWriter out = response.getWriter();
 		out.print("retry: 3000\n");
 		out.print("data: RoutingConsumer.java\n\n");
-		out.print("data: Loan number..." + number + "; document type..." + type + "\n\n");
+		out.print("data: Loan number..." + Testing.loanNumber + "; document type..." + Testing.documentType + "\n\n");
 		out.print("data: [*] Waiting for messages\n\n");
 		out.flush();
 		

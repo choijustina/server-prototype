@@ -1,7 +1,7 @@
 /**
  * File: Consumer.java
  * Author: Justina Choi (choi.justina@gmail.com)
- * Date: July 24, 2014
+ * Date: July 29, 2014
  * Related files: RoutingConsumer.java
  * Notes:
  */
@@ -16,53 +16,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
 public class Consumer {
-	protected HttpServletResponse response;
-	protected PrintWriter out;
-	//protected JSONObject object;
-	//private static int counter = 0;
+	private int loanNumber;
+	private String documentType;
 
-	public Consumer(HttpServletResponse r1) {
-		//this.counter = this.counter + 1;
-		this.response = r1;
-		try {
-			this.out = response.getWriter();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public Consumer() {
+		
 		
 	}
 	
-	/*
-	protected void addJSONObject(JSONObject obj) {
-		this.object = obj;
-	}*/
-	
-	protected void start() {
-		out.print("retry: 3000\n");
-		out.print("data: Consumer.java number " + "\n\n");
-		out.print("data: [*] Waiting for messages\n\n");
-		out.flush();
-	}
-	
-	protected void printData(String message) {
-		if (message.equals("clear")) {
-			out.print("event: clear\n");
-			out.print("data: clears the client display\n\n");
-		} 
-		else if (message.equals("nomatch")) {
-			out.print("data: not a match\n\n");
-		}
-		else {
-			out.print("event: jsonobject\n");
-			out.print("data: " + message + "\n\n");
-		}
-		out.flush();
-	}
-	
-	protected void close() {
-		out.close();
-	}
 	
 
 }

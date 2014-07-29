@@ -79,8 +79,8 @@ function addLoadEvent(func) {
 }
 
 function myFunction() {
-    var x = QueryString.loannum;
-    var y = QueryString.doctype;
+    var x = QueryString.loanNum;
+    var y = QueryString.docType;
     document.getElementById("demo").innerHTML = "Loan num: " + x + ", Doc type: " + y; 
 }
 
@@ -129,14 +129,14 @@ function myFunction() {
 
 <body>
 
-<h1>Searching 2</h1>
-<form action = "RoutingConsumer" method="post">
+<h1>Searching and filtering... 20</h1>
+<form action = "test" method="post">
 	Loan number: <input type="text" name="loanNum">
 	Document type: <input type="text" name="docType">
 	<input type="submit" value="SEARCH">
 </form>
 
-<!-- <button onclick="myFunction()">myFunction()</button>  -->
+<button onclick="myFunction()">myFunction()</button>
 <p id="demo"></p>
 
 <!-- INPUT TEXT/SEARCH BAR  
@@ -145,11 +145,10 @@ function myFunction() {
 </div> 
 -->
 
-<!--
 <div id="resizable">
    <iframe id="iframe" name="iframe" seamless src="SSE.html" style="display: block; margin: 0 auto; padding: 0; border: #000000 1px solid;"></iframe>
 </div>
--->
+
 
 </body>
 </html>
