@@ -28,8 +28,8 @@ import org.json.JSONObject;
 public class RoutingConsumer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final boolean MSG_ACK = false;			// message acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
-	private static final String BINDING_KEY = "json";			
-	protected static final int RECONNECT_TIME = 10000;		// delay in milliseconds how long until auto-reconnect 
+	//private static final String BINDING_KEY = "json";			
+	protected static final int RECONNECT_TIME = 10000;		// delay in milliseconds until auto-reconnect 
 	
 	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
@@ -49,30 +49,38 @@ public class RoutingConsumer extends HttpServlet {
 		Channel channel = connection.createChannel();
 		
 		channel.exchangeDeclare(AbstractProducer.EXCHANGE_NAME, AbstractProducer.EXCHANGE_TYPE);
-		String queueName = channel.queueDeclare().getQueue();
-		channel.queueBind(queueName, AbstractProducer.EXCHANGE_NAME, BINDING_KEY);
+		channel.queueDeclare(AbstractProducer.QUEUE_NAME, true, false, false, null);
+		channel.queueBind(AbstractProducer.QUEUE_NAME, AbstractProducer.EXCHANGE_NAME, "");
 		
+		// merging changes
+		//String queueName = channel.queueDeclare().getQueue();
+		//channel.queueBind(queueName, AbstractProducer.EXCHANGE_NAME, BINDING_KEY);
 		
 		PrintWriter out = response.getWriter();
 		out.print("retry: 3000\n");
 		
 		BasicConsumer c1 = (BasicConsumer) ConsumerFactory.buildConsumer(ConsumerType.BASIC);
-		c1.setLoanNumber(SearchParameters.loanNumber);
+		c1.setName(SearchParameters.name);
+		c1.setBusinessKey(SearchParameters.businessKey);
 		c1.setDocumentType(SearchParameters.documentType);
+		c1.setDate(SearchParameters.date);
+		
 		out.print("data: created a basic consumer inside RoutingConsumer.java\n\n");
-		out.print("data: loan number: " + c1.getLoanNumber() + ", document type: " + c1.getDocumentType() + "\n\n");
-		out.print("data: name: " + c1.getName() + ", loan type: " + c1.getLoanType() + "\n\n");
+		out.print("data: name: " + c1.getName() + "\n\n");
+		out.print("data: business key: " + c1.getBusinessKey() + "\n\n");
+		out.print("data: document type: " + c1.getDocumentType() + "\n\n");
+		out.print("data: date: " + c1.getDate() + "\n\n");		
 		out.print("data: [*] Waiting for messages\n\n");
 		out.flush();
 		
 		QueueingConsumer queueingConsumer = new QueueingConsumer(channel);
-		channel.basicConsume(queueName, MSG_ACK, queueingConsumer);
+		channel.basicConsume(AbstractProducer.QUEUE_NAME, MSG_ACK, queueingConsumer);
 		
 		while (true) {
 			try {
 				QueueingConsumer.Delivery delivery = queueingConsumer.nextDelivery();
 				
-				//routingKey is always the BINDING_KEY "json"
+				//String routingKey = delivery.getEnvelope().getRoutingKey();
 				String message = new String(delivery.getBody());
 				
 				//JSONObject object = new JSONObject(message);
@@ -81,17 +89,18 @@ public class RoutingConsumer extends HttpServlet {
 				if (message.equals(AbstractProducer.CLOSE_CONSUMER))
 					break;
 				else {
+					/*
 					if (message.equals("clear")) {
 						out.print("event: clear\n");
-						out.print("data: clears the client display\n\n");
+						out.print("data: clearing the client display\n\n");
 					} else {
 						out.print("event: jsonobject\n");
 						out.print("data: " + message + "\n\n");
-					}
+					}*/
+					out.print("data: " + message + "\n\n");
 					out.flush();
 					
 				}
-					
 				
 				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
 			} catch (InterruptedException e) {

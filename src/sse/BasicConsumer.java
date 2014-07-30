@@ -1,10 +1,10 @@
 package sse;
 
 public class BasicConsumer extends Consumer {
-	private String loanNumber = null;
 	private String name = null;
+	private String businessKey = null;
 	private String documentType = null;
-	private String loanType = null;
+	private String date = null;
 
 	public BasicConsumer() {
 		super(ConsumerType.BASIC);
@@ -17,31 +17,31 @@ public class BasicConsumer extends Consumer {
 	}
 	
 	// SET
-	protected void setLoanNumber(String str) {
-		this.loanNumber = str;
-	}
 	protected void setName(String str) {
 		this.name = str;
+	}
+	protected void setBusinessKey(String str) {
+		this.businessKey = str;
 	}
 	protected void setDocumentType(String str) {
 		this.documentType = str;
 	}
-	protected void setLoanType(String str) {
-		this.loanType = str;
+	protected void setDate(String str) {
+		this.date = str;
 	}
 	
 	//GET
-	protected String getLoanNumber() {
-		return this.loanNumber;
-	}
 	protected String getName() {
 		return this.name;
+	}
+	protected String getBusinessKey() {
+		return this.businessKey;
 	}
 	protected String getDocumentType() {
 		return this.documentType;
 	}
-	protected String getLoanType() {
-		return this.loanType;
+	protected String getDate() {
+		return this.date;
 	}
 	
 

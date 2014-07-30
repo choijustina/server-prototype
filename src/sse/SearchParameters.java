@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 public class SearchParameters extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	protected static String loanNumber;
-	protected static String name;
-	protected static String documentType;
-	protected static String loanType;
+	protected static String name = null;
+	protected static String businessKey = null;
+	protected static String documentType = null;
+	protected static String date = null;
 	
 	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
@@ -25,10 +25,10 @@ public class SearchParameters extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		loanNumber = request.getParameter("loanNum");
-        name = request.getParameter("name");
+		name = request.getParameter("name");
+		businessKey = request.getParameter("businessKey");
 		documentType = request.getParameter("docType");
-		loanType = request.getParameter("loanType");
+		date = request.getParameter("date");
 		
         response.sendRedirect("index.html");
 		

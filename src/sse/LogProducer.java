@@ -1,3 +1,7 @@
+/**
+ * File: LogProducer.java
+ */
+
 package sse;
 
 import java.io.IOException;
