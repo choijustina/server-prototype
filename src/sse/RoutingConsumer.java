@@ -17,8 +17,7 @@ import com.rabbitmq.client.QueueingConsumer;
 @WebServlet("/RoutingConsumer")
 public class RoutingConsumer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final boolean MSG_ACK = false;			// msg acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
-	private static final String BINDING_KEY = "json";			
+	private static final boolean MSG_ACK = false;			// msg acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete		
 	protected static final int RECONNECT_TIME = 10000;		// millisecond delay until auto-reconnect 
 	
 	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
@@ -28,6 +27,17 @@ public class RoutingConsumer extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+//		String firstName = request.getParameter("firstName");
+//		String lastName = request.getParameter("lastName");
+//		String businessKey = request.getParameter("businessKey");
+//		String documentType = request.getParameter("documentType");
+//		String date = request.getParameter("date");
+		
+		
+		
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
 		response.setContentType("text/event-stream;charset=UTF-8");
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Connection", "keep-alive");
@@ -37,16 +47,15 @@ public class RoutingConsumer extends HttpServlet {
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
 		
-		channel.queueDeclare(AbstractProducer.QUEUE_NAME, false, false, false, null);
+
 		channel.exchangeDeclare(AbstractProducer.EXCHANGE_NAME, AbstractProducer.EXCHANGE_TYPE);
-		channel.queueBind(AbstractProducer.QUEUE_NAME, AbstractProducer.EXCHANGE_NAME, BINDING_KEY);
+		channel.queueDeclare(AbstractProducer.QUEUE_NAME, true, false, false, null);
+		channel.queueBind(AbstractProducer.QUEUE_NAME, AbstractProducer.EXCHANGE_NAME, "");
 		
 		PrintWriter out = response.getWriter();
 		out.print("retry: "+ RECONNECT_TIME + "\n");
 		out.print("data: " + "RoutingConsumer.java\n\n");
-		out.print("data: binding key: " + BINDING_KEY + "\n\n");
 		out.print("data: [*] Waiting for messages.\n\n");
-		out.print("data: mongo connected \n\n");
 		out.flush();
 		
 		QueueingConsumer consumer = new QueueingConsumer(channel);
