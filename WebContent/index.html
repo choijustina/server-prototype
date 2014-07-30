@@ -40,10 +40,6 @@ cal.addDisabledDates(tomorrow, null);
 
 //GLOBAL VARIABLES FOR LATER //////////////////////////////////////
 
-//checks before sending to iframe
-var param = new Array(9);
-//checks returned from iframe
-var returnvals = new Array(9);
 
 // CHECK/UNCHECK ALL FUNCTION /////////////////////////////////////
 /*
@@ -77,58 +73,6 @@ $(function() {
   });
 }); 
 
-// SUBMIT BUTTON FUNCTION ///////////////////////////////////////
-
-function pick() {
-	var checkBoxes = document.getElementsByTagName('input');
-	//alert(checkBoxes.length);
-
-	for (var i = 0; i < checkBoxes.length - 1; i++) {
-		if (checkBoxes[i].checked) {
-			param[i] = checkBoxes[i].value;
-//			param += checkBoxes[counter].value + " ";
-		} else {
-			param[i] = 0;
-		}
-	}
-
-//	alert("sent values: " + param );
-	//call child iframe and notify that a button was pressed
-	//activates function buttonPressed in iframe SSE.html
-	document.getElementById("iframe").contentWindow.buttonPressed();
-//	alert("Checkbox Value: " + param);
-}
-
-// TESTS WHETHER OR NOT EVERYTHING WAS SENT RIGHT /////////////
-/*
-function babyCallback(){
-
-//	returnvals = new Array(9);
-	for (var i = 0; i < 10; i++) {
-		returnvals[i] = document.getElementById("iframe").contentWindow.arrayVals[i];
-	}
-	alert("sent from baby: " + returnvals)
-//	alert("sent back values are " + param[0] + " " + param[1]);
-}
-*/
-
-// LOAD MULTIPLE FUNCTIONS ONLOAD ////////////////////////////
-function addLoadEvent(func) {
-  var oldonload = window.onload;
-  if (typeof window.onload != 'function') {
-    window.onload = func;
-  } else {
-    window.onload = function() {
-      if (oldonload) {
-        oldonload();
-      }
-      func();
-    }
-  }
-}
-
-addLoadEvent(checkAll('list',true));
-addLoadEvent(pick());
 </script>
 
 <!-- STYLES-------------------------------------------------------- -->
@@ -227,7 +171,7 @@ addLoadEvent(pick());
 	padding-left: 5px;
 }
 
-#iframe {
+#eventFrame {
   width: 100%;
   height: 100%;
   border: none;    
@@ -254,11 +198,11 @@ addLoadEvent(pick());
 
 </style>
 </head>
-<body onload="checkAll('list',true); pick()">
+<body>
 
 <h1>TEST</h1>
 
-<form name="filterform" action="SearchServlet" method="post">
+<form name="filterform" id="SSE" action="#" method="post">
 	FIRST NAME: <input type="text" name="firstName">
 	LAST NAME: <input type="text" name="lastName">
 	BUSINESS KEY: <input type="text" name="businessKey">
@@ -271,11 +215,11 @@ addLoadEvent(pick());
 
 	<input type="submit" value="SUBMIT">
 </form>
-<DIV ID="caldiv" STYLE="position:absolute;visibility:hidden;background-color:white;layer-background-color:white;"></DIV>
+<DIV ID="caldiv" STYLE="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></DIV>
 
 
 <div id="resizable">
-   <iframe id="iframe" name="iframe" seamless src="SSE.html" style="display: block; margin: 0 auto; padding: 0; border: #000000 1px solid;"></iframe>
+   <iframe id="eventFrame" name="eventFrame" seamless src="SSE.html" style="display: block; margin: 0 auto; padding: 0;"></iframe>
 </div>
 
 
