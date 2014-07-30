@@ -6,15 +6,12 @@
 body {
 	overflow-x: hidden;
 	word-wrap: break-word;
-	background: pink;
+	background: #BDBDBD;
 }
 
 </style>
 <script type="text/javascript">
 // GLOBAL VARIABLES FOR LATER //////////////////////////////////////
-//checks received from parent
-var arrayVals = new Array(9);
-
 // 
 function pageScroll() {
 	//negative for scrolling up, positive for scrolling down
@@ -36,18 +33,6 @@ function addLoadEvent(func) {
   }
 }
 
-function buttonPressed(){
-	var chklength = window.parent.document['list'].getElementsByTagName('input');
-	for (var i = 0; i < chklength.length; i++) {
-		arrayVals[i] = window.parent.param[i];
-	}
-	
-//	alert("rcvd values: " + arrayVals);
-	
-	//call back to alert parent that values were received
-	//for testing
-	//window.parent.babyCallback();
-}
 
 addLoadEvent(pageScroll());
 //addLoadEvent(function() {...});
@@ -56,8 +41,6 @@ addLoadEvent(pageScroll());
 </head>
 
 <body>
-
-<div id="ServerTime"></div>
 
 <script>
 if (typeof (EventSource) != "undefined") {
