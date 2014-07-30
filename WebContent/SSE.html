@@ -11,9 +11,9 @@ body {
 
 </style>	
 <script type="text/javascript">
+
 // GLOBAL VARIABLES FOR LATER //////////////////////////////////////
-var loanNum = "blank";
-var docType = "blank";
+
 
 function pageScroll() {
 	//negative for scrolling up, positive for scrolling down
@@ -35,15 +35,7 @@ function addLoadEvent(func) {
   }
 }
 
-/*
-function parseQueryString() {
-	loanNum = window.parent.QueryString.loanNum;
-	docType = window.parent.QueryString.docType;
-	//alert("loanNum: " + loanNum + ", docType: " + docType);
-}*/
-
 addLoadEvent(pageScroll());
-//addLoadEvent(parseQueryString());
 
 </script>
 </head>
@@ -56,37 +48,34 @@ addLoadEvent(pageScroll());
 if (typeof (EventSource) != "undefined") {
 	var source = new EventSource("http://localhost:8080/SSE/RoutingConsumer");
 	
+	//to have the newest messages on the bottom: document.body.innerHTML += "Connection was opened<br>";
 	source.onopen = function(event) {
 		document.body.innerHTML = "Connection was opened" + "<br>" + document.body.innerHTML;
 	}
+	
 	source.onerror = function(event) {
 		document.body.innerHTML = "An error occurred; auto-reconnecting" + "<br>" + document.body.innerHTML;
 	}
 	
 	source.addEventListener('clear', function(e) {
-		document.body.innerHTML = "[*] Waiting for messages.." + "<br>";
-		//document.body.innerHTML = "[*] Waiting for messages.." + "<br>" + e.data;
+		document.body.innerHTML = "[*] Waiting for messages.." + "<br>" + e.data;
 	}, false);
 	
-	source.addEventListener('jsonobject', function(e) {
-		var info = JSON.parse(e.data);
+	source.addEventListener('message', function(e) {
+		var d = JSON.parse(e.data);
 		
-		//assumes has id, msgtype, name, doctype, data
-		var print = "ID: " + info.id + "<br>" +
-		"MSGTYPE: " + info.msgtype + "<br>" +
-		"NAME: " + info.name + "<br>" + 
-		"DOCTYPE: " + info.doctype + "<br>" +
-		"DATA: " + info.data + "<br><br>";
-		/*
-		//print name
-		if (SSEsearch == info.name) {
-			document.body.innerHTML = "matching name: " + info.name + "<br>" + print + document.body.innerHTML;
-		}
-		else {
-			document.body.innerHTML = "not a match<br><br>" + document.body.innerHTML;
-		}*/
+		if (d.id == null) d.id = "-";
+		if (d.msgtype == null) d.msgtype = "-";
+		if (d.name == null) d.name = "-";
+		if (d.doctype == null) d.doctype = "-";
+		if (d.data == null) d.data = "-";
 		
-		document.body.innerHTML = print + document.body.innerHTML;
+		document.body.innerHTML = "ID: " + d.id
+								+ "<br>MSGTYPE: " + d.msgtype 
+								+ "<br>NAME: " + d.name 
+								+ "<br>DOCTYPE: " + d.doctype 
+								+ "<br>DATA: " + d.data 
+								+ "<br><br>" + document.body.innerHTML;
 		
 	}, false);
 	
