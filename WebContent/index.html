@@ -40,6 +40,7 @@ $(function() {
 }*/
 
 // URL PARAMETERS FUNCTION; TO USE: QueryString.<nameofinput>
+/*
 var QueryString = function () {
 	  // This function is anonymous, is executed immediately and 
 	  // the return value is assigned to QueryString!
@@ -62,6 +63,7 @@ var QueryString = function () {
 	  } 
 	    return query_string;
 	} ();
+	*/
 
 
 function addLoadEvent(func) {
@@ -78,11 +80,13 @@ function addLoadEvent(func) {
 	}
 }
 
+/*
 function myFunction() {
     var x = QueryString.loanNum;
     var y = QueryString.docType;
     document.getElementById("demo").innerHTML = "Loan num: " + x + ", Doc type: " + y; 
 }
+*/
 
 </script>
 
@@ -130,9 +134,14 @@ function myFunction() {
 <body>
 
 <h1>Searching and filtering... 20</h1>
-<form action = "test" method="post">
+
+<!-- goes to SearchParameters.java where it getParameters then redirects to index.html -->
+<form action = "redirect" method="post">
 	Loan number: <input type="text" name="loanNum">
+	Name: <input type="text" name="name">
+	<br>
 	Document type: <input type="text" name="docType">
+	Loan type: <input type="text" name="loanType">
 	<input type="submit" value="SEARCH">
 </form>
 

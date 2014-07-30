@@ -1,27 +1,23 @@
 /**
  * File: Consumer.java
  * Author: Justina Choi (choi.justina@gmail.com)
- * Date: July 29, 2014
- * Related files: RoutingConsumer.java
- * Notes:
+ * Date: 
  */
 
 package sse;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.json.JSONObject;
-
-public class Consumer {
-	private int loanNumber;
-	private String documentType;
-
-	public Consumer() {
-		
-		
+public abstract class Consumer {
+	private ConsumerType type = null;
+	
+	
+	public Consumer(ConsumerType type) {
+		this.type = type;
+	}
+	
+	protected abstract void construct();
+	
+	public ConsumerType getType() {
+		return this.type;
 	}
 	
 	

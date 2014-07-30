@@ -53,11 +53,15 @@ public class RoutingConsumer extends HttpServlet {
 		channel.queueBind(queueName, AbstractProducer.EXCHANGE_NAME, BINDING_KEY);
 		
 		
-	
 		PrintWriter out = response.getWriter();
 		out.print("retry: 3000\n");
-		out.print("data: RoutingConsumer.java\n\n");
-		out.print("data: Loan number..." + Testing.loanNumber + "; document type..." + Testing.documentType + "\n\n");
+		
+		BasicConsumer c1 = (BasicConsumer) ConsumerFactory.buildConsumer(ConsumerType.BASIC);
+		c1.setLoanNumber(SearchParameters.loanNumber);
+		c1.setDocumentType(SearchParameters.documentType);
+		out.print("data: created a basic consumer inside RoutingConsumer.java\n\n");
+		out.print("data: loan number: " + c1.getLoanNumber() + ", document type: " + c1.getDocumentType() + "\n\n");
+		out.print("data: name: " + c1.getName() + ", loan type: " + c1.getLoanType() + "\n\n");
 		out.print("data: [*] Waiting for messages\n\n");
 		out.flush();
 		
