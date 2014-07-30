@@ -24,7 +24,7 @@ public abstract class Abstract {
 			Connection connection = factory.newConnection();
 			Channel channel = connection.createChannel();
 			channel.queueDeclare(QUEUE_NAME, true, false, false, null);
-			channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);		// a durable, non-autodelete exchange, type is second parameter
+			channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE, true);		// a durable, non-autodelete exchange, type is second parameter
 			
 			getData(channel, connection);
 		} catch (IOException exception) {
