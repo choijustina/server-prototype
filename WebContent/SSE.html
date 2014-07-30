@@ -2,8 +2,6 @@
 <html>
 
 <head>
-
-  
 <style>
 body {
 	overflow-x: hidden;
@@ -16,7 +14,7 @@ body {
 // GLOBAL VARIABLES FOR LATER //////////////////////////////////////
 //checks received from parent
 var arrayVals = new Array(9);
-var bKey;
+
 // 
 function pageScroll() {
 	//negative for scrolling up, positive for scrolling down
@@ -36,11 +34,6 @@ function addLoadEvent(func) {
       func();
     }
   }
-}
-
-function bKeysubmitted() {
-	bindingKey = window.parent.bKey;
-	document.body.innerHTML = "Binding Key: " + bindingKey + "<br>" + document.body.innerHTML;
 }
 
 function buttonPressed(){
@@ -64,7 +57,6 @@ addLoadEvent(pageScroll());
 
 <body>
 
-
 <div id="ServerTime"></div>
 
 <script>
@@ -81,7 +73,7 @@ if (typeof (EventSource) != "undefined") {
 		
 	source.addEventListener('error', function(e) {
 		//newest messages on top
-		document.body.innerHTML = "An error occurred..." + "<br>" + document.body.innerHTML;
+		document.body.innerHTML = "An error occurred; auto-reconnecting" + "<br>" + document.body.innerHTML;
 		
 		//newest messages on bottom
 		//document.body.innerHTML += "An error occurred..." + "<br>";
@@ -95,23 +87,26 @@ if (typeof (EventSource) != "undefined") {
 	}, false);
 	
 	source.addEventListener('clear', function(e) {
-		document.body.innerHTML = "[*] Waiting for messages..";
+		document.body.innerHTML = "[*] Waiting for messages.." + "<br>" + e.data;
 	}, false);
 	
-	source.addEventListener('json', function(e)) {
-		var obj = JSON.parse(e.data);
-		document.body.innerHTML = "[x]" + obj.id + document.body.innerHTML;
-	}
 	
-/*	source.addEventListener('business', function(e) {
-		if (arrayVals[0]) {
-			//newest messages on top
-			document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
-			//newest messages on bottom
-			//document.body.innerHTML += e.data + "<br>";
-		}
-	}, false);
-*/
+	source.addEventListener('message', function(e) {
+		var d = JSON.parse(e.data);
+		
+		if (d.id == null) d.id = "-";
+		if (d.msgtype == null) d.msgtype = "-";
+		if (d.name == null) d.name = "-";
+		if (d.doctype == null) d.doctype = "-";
+		if (d.data == null) d.data = "-";
+
+		document.body.innerHTML ="ID: " + d.id  
+								+ "<br>MSGTYPE: " + d.msgtype 
+								+ "<br>NAME: " + d.name 
+								+ "<br>DOCTYPE: " + d.doctype 
+								+ "<br>DATA: " + d.data
+								+ "<br><br>" + document.body.innerHTML;
+		}, false);
 	
 	// onmessage handler is used if no event name is specified for a message
 	source.onmessage = function(event) {
