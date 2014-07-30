@@ -7,26 +7,36 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+<script src="CalendarPopup.js"></script>
+<script src="AnchorPosition.js"></script>
+<script src="date.js"></script>
+<script src="PopupWindow.js"></script>
+<script>
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
-  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-  <link rel="stylesheet" href="/resources/demos/style.css">
-  <script>
-  $(function() {
-	  $( "#dialog" ).dialog({ 
-	  	buttons: [ { text: "SUBMIT", click: function() { 
-	  		$( this ).dialog( "close" ); 
-	  		var bKey = document.getElementById("bindingkey").value;
-//	  		alert("Entered " + bKey);
-	  	} } ]
-	  });	  
-  });
-  </script>
+// CALENDAR STUFF /////////////////////////////////////////////////
+var cal = new CalendarPopup("caldiv");
+cal.offsetX = 5;
+cal.setCssPrefix("TEST");
+//set dates available on calendar to be a week before up to today (including today)
+var t = new Date();
+var dd = t.getDate()+1; 
+var mm = t.getMonth()+1;
+var yy = t.getFullYear().toString().substr(2,2);
+(dd < 10) ? (dd = '0' + dd) : dd;
+(mm < 10) ? (mm = '0' + mm) : mm;
 
+var wk = new Date(t.getTime() - (60*60*24*7*1000));
+var wd = wk.getDate()-1; //include last week's today
+var wm = wk.getMonth()+1;
+var wy = wk.getFullYear().toString().substr(2,2);
+(wd < 10) ? (wd = '0' + wd) : wd;
+(wm < 10) ? (wm = '0' + wm) : wm;
 
+var oneWeekAgo = wm + '/' + wd + '/' + wy;
+var tomorrow = mm + '/' + dd + '/' + yy;
 
-<script type="text/javascript">
+cal.addDisabledDates(null, oneWeekAgo);
+cal.addDisabledDates(tomorrow, null);
 
 //GLOBAL VARIABLES FOR LATER //////////////////////////////////////
 
@@ -36,7 +46,7 @@ var param = new Array(9);
 var returnvals = new Array(9);
 
 // CHECK/UNCHECK ALL FUNCTION /////////////////////////////////////
-
+/*
 function checkAll(formname, checktoggle){
   var checkboxes = new Array(); 
   checkboxes = document[formname].getElementsByTagName('input');
@@ -48,7 +58,7 @@ function checkAll(formname, checktoggle){
   }
   
 }
-
+*/
 // STUFF THAT ALLOWS FRAME TO BE RESIZABLE ///////////////////////
 
 $(function() {
@@ -119,15 +129,95 @@ function addLoadEvent(func) {
 
 addLoadEvent(checkAll('list',true));
 addLoadEvent(pick());
-
-
-
 </script>
 
 <!-- STYLES-------------------------------------------------------- -->
 <style type="text/css">
+	.TESTcpYearNavigation,
+	.TESTcpMonthNavigation {
+			background-color:#6677DD;
+			text-align:center;
+			vertical-align:center;
+			text-decoration:none;
+			color:#FFFFFF;
+			font-weight:bold;
+			}
+	.TESTcpDayColumnHeader,
+	.TESTcpYearNavigation,
+	.TESTcpMonthNavigation,
+	.TESTcpCurrentMonthDate,
+	.TESTcpCurrentMonthDateDisabled,
+	.TESTcpOtherMonthDate,
+	.TESTcpOtherMonthDateDisabled,
+	.TESTcpCurrentDate,
+	.TESTcpCurrentDateDisabled,
+	.TESTcpTodayText,
+	.TESTcpTodayTextDisabled,
+	.TESTcpText {
+			font-family:arial;
+			font-size:8pt;
+			}
+	TD.TESTcpDayColumnHeader {
+			text-align:right;
+			border:solid thin #6677DD;
+			border-width:0 0 1 0;
+			}
+	.TESTcpCurrentMonthDate,
+	.TESTcpOtherMonthDate,
+	.TESTcpCurrentDate {
+			text-align:right;
+			text-decoration:none;
+			}
+	.TESTcpCurrentMonthDateDisabled,
+	.TESTcpOtherMonthDateDisabled,
+	.TESTcpCurrentDateDisabled {
+			color:#D0D0D0;
+			text-align:right;
+			text-decoration:line-through;
+			}
+	.TESTcpCurrentMonthDate {
+			color:#6677DD;
+			font-weight:bold;
+			}
+	.TESTcpCurrentDate {
+			color: #FFFFFF;
+			font-weight:bold;
+			}
+	.TESTcpOtherMonthDate {
+			color:#808080;
+			}
+	TD.TESTcpCurrentDate {
+			color:#FFFFFF;
+			background-color: #6677DD;
+			border-width:1;
+			border:solid thin #000000;
+			}
+	TD.TESTcpCurrentDateDisabled {
+			border-width:1;
+			border:solid thin #FFAAAA;
+			}
+	TD.TESTcpTodayText,
+	TD.TESTcpTodayTextDisabled {
+			border:solid thin #6677DD;
+			border-width:1 0 0 0;
+			}
+	A.TESTcpTodayText,
+	SPAN.TESTcpTodayTextDisabled {
+			height:20px;
+			}
+	A.TESTcpTodayText {
+			color:#6677DD;
+			font-weight:bold;
+			}
+	SPAN.TESTcpTodayTextDisabled {
+			color:#D0D0D0;
+			}
+	.TESTcpBorder {
+			border:solid thin #6677DD;
+			}
+
 .box{
-	width: 98%;
+	width: 30%;
 	height: 100%;
 	border: none;
 	background-color: #ffffff;
@@ -152,61 +242,41 @@ addLoadEvent(pick());
 }
 
 #resizable {
-  width: 1200px;
-  height: 700px;
+  width: 60%;
+  height: 60%;
   background: #fff;
   border: 1px solid #ccc;
   position: absolute;
-  top: 100px;
-  left: 200px;
+  top: 125px;
+  left: 25px;
   z-index: 9;
 }
-
-
 
 </style>
 </head>
 <body onload="checkAll('list',true); pick()">
 
-<h1>Testing SSE_Rabbit</h1>
+<h1>TEST</h1>
 
-<div id="dialog">
-<div> Enter binding key:</div>
-<input id="bindingkey" type="text"/>
+<form name="filterform" action="SearchServlet" method="post">
+	FIRST NAME: <input type="text" name="firstName">
+	LAST NAME: <input type="text" name="lastName">
+	BUSINESS KEY: <input type="text" name="businessKey">
+	DOCUMENT TYPE: 
+		<select name="documentType">
+			<option value="a">option a</option>
+			<option value="b">option b</option>
+		</select>	
+	DATE: <A HREF="#" onClick="cal.select(document.forms['filterform'].date,'datesearch','MM/dd/yyyy'); return false;" ID="datesearch"><INPUT TYPE="text" placeholder="MM/DD/YY format (EX: 11/15/93)"  NAME="date" VALUE="" SIZE=25></A>
 
-<!-- PASSWORD INPUT
-	<div>Enter password:</div>
-	<input id="pass" type="password"/>
--->
-</div>
-
-
-<div class="box">
-
-<form name="list">
-<a onclick="javascript:checkAll('list', true);" href="javascript:void();">check all</a>
-<a onclick="javascript:checkAll('list', false);" href="javascript:void();">uncheck all</a><br>
-<label><input type="checkbox" name="filter[]" class="blah" value="1" onclick="chkme()">BUSINESS</label><br>
-<label><input type="checkbox" name="filter[]" class="blah" value="2">FAMILY</label><br>
-<label><input type="checkbox" name="filter[]" class="blah" value="3">FRIENDS</label><br>
-<label><input type="checkbox" name="filter[]" class="blah" value="5">HAPPY</label><br>
-<label><input type="checkbox" name="filter[]" class="blah" value="7">PERSONAL</label><br>
-<label><input type="checkbox" name="filter[]" class="blah" value="11">SAD</label><br>
-<label><input type="checkbox" name="filter[]" class="blah" value="13">SOCIAL</label><br>
-<label><input type="checkbox" name="filter[]" class="blah" value="17">SPIRITUAL</label><br>
-<label><input type="checkbox" name="filter[]" class="blah" value="19">UPDATE</label><br>
-<label><input type="checkbox" name="filter[]" class="blah" value="23">VIRTUAL</label><br>
- </form>
-<input type="button" value="SUBMIT"  onClick="pick()">
+	<input type="submit" value="SUBMIT">
+</form>
+<DIV ID="caldiv" STYLE="position:absolute;visibility:hidden;background-color:white;layer-background-color:white;"></DIV>
 
 
 <div id="resizable">
    <iframe id="iframe" name="iframe" seamless src="SSE.html" style="display: block; margin: 0 auto; padding: 0; border: #000000 1px solid;"></iframe>
-
-
-
-
-</div></div>
+</div>
 
 
 </body>
