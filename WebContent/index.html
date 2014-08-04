@@ -60,6 +60,52 @@ $(function() {
   });
 }); 
 
+function getName(str) {
+	var xmlhttp;
+	if (str.length==0) {
+		document.getElementById("printName").innerHTML="blank";
+		return;
+	}
+	if (window.XMLHttpRequest) {
+		// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp = new XMLHttpRequest();
+	} else {
+		// code for IE6, IE5
+		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	
+	xmlhttp.onreadystatechange=function() {
+		if (xmlhttp.readyState==4 &&  xmlhttp.status==200) {
+			document.getElementById("printName").innerHTML=str;
+		}
+	}
+	xmlhttp.open("GET", "", true);
+	xmlhttp.send();
+}
+
+function getBusinessKey(str) {
+	var xmlhttp;
+	if (str.length==0) {
+		document.getElementById("printBusinessKey").innerHTML="blank";
+		return;
+	}
+	if (window.XMLHttpRequest) {
+		// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp = new XMLHttpRequest();
+	} else {
+		// code for IE6, IE5
+		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	
+	xmlhttp.onreadystatechange=function() {
+		if (xmlhttp.readyState==4 &&  xmlhttp.status==200) {
+			document.getElementById("printBusinessKey").innerHTML=str;
+		}
+	}
+	xmlhttp.open("GET", "", true);
+	xmlhttp.send();
+}
+
 </script>
 
 <!-- STYLES-------------------------------------------------------- -->
@@ -188,12 +234,11 @@ $(function() {
 
 <body>
 
-<h1>REALDoc Event Stream Manager</h1>
+<h1><div id="myDiv">Event Stream Manager 18</div></h1>
 
-<!-- goes to SearchParameters.java where it getParameters then redirects to index.html --> 
-<form name="filterform" id="SSE" action="redirect" method="post">
-	NAME: <input type="text" name="name">
-	BUSINESS KEY: <input type="text" name="businessKey">
+<form id="filterform" action="">
+	NAME: <input type="text" onkeyup="getName(this.value)" />
+	BUSINESS KEY: <input type="text" onkeyup="getBusinessKey(this.value)" />
 	DOCUMENT TYPE: 
 		<select name="documentType">
 			<option value="a">option a</option>
@@ -201,15 +246,24 @@ $(function() {
 		</select>	
 	DATE: <A HREF="#" onClick="cal.select(document.forms['filterform'].date,'datesearch','MM/dd/yyyy'); return false;" ID="datesearch"><INPUT TYPE="text" placeholder="MM/DD/YY format (EX: 11/15/93)"  NAME="date" VALUE="" SIZE=25></A>
 
-	<input type="submit" value="SUBMIT">
+	<!-- <input type="submit" value="SUBMIT"> -->
+	<!-- <button type="button" onclick="loadXMLDoc()">CHANGE TEXT</button> -->
 </form>
+
+<p>
+Name: <span id="printName"></span><br>
+Business Key: <span id="printBusinessKey"></span>
+</p>
+
+
+
 <DIV ID="caldiv" STYLE="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></DIV>
 
-
+<!-- 
 <div id="resizable">
    <iframe id="eventFrame" name="eventFrame" seamless src="SSE.html" style="display: block; margin: 0 auto; padding: 0;"></iframe>
 </div>
-
+ -->
 
 </body>
 </html>
