@@ -4,7 +4,7 @@
 <script src="AnchorPosition.js"></script>
 <script src="date.js"></script>
 <script src="PopupWindow.js"></script>
-<script language="javascript">
+<script>
 var cal = new CalendarPopup("caldiv");
 //cal.showNavigationDropdowns();
 cal.setCssPrefix("TEST");
@@ -30,6 +30,9 @@ var tomorrow = mm + '/' + dd + '/' + yy;
 
 cal.addDisabledDates(null, oneWeekAgo);
 cal.addDisabledDates(tomorrow, null);
+
+/////////////////////////////////////////////////////////////
+
 </script>
 <style>
 	.TESTcpYearNavigation,
@@ -130,23 +133,27 @@ form {
 <body>
 <div></div>
 <p>SEARCH</p>
-<form name="search" action="index.html" method="get">
-FIRST NAME: <input type="text" name="firstName"><br>
-LAST NAME: <input type="text" name="lastName"><br>
-BUSINESS KEY: <input type="text" name="businessKey"><br>
-DOCUMENT TYPE: 
-	<select>
-	<option value="a">option a</option>
-	<option value="b">option b</option>
-	</select><br>
-	
-DATE: <INPUT TYPE="text" placeholder="MM/DD/YY format (EX: 11/15/93)"  NAME="date" VALUE="" SIZE=25>
-<A HREF="#"
-   onClick="cal.select(document.forms['search'].date,'anchor1','MM/dd/yyyy'); return false;" ID="anchor1"><input type="button" value="..."></button></A><br>
-	
-<input type="submit" value="SUBMIT">
+<form name="filterform" action="SearchServlet" method="post">
+	NAME: <input type="text" name="name"><br>
+	BUSINESS KEY: <input type="text" name="businessKey"><br>
+	DOCUMENT TYPE: 
+		<select name="documentType">
+		<option name="" value="">------</option>
+		<option name="a" value="a">type a</option>
+		<option name="b" value="b">type b</option>
+		<option name="c" value="c">type c</option>
+		<option name="d" value="d">type d</option>
+		<option name="e" value="e">type e</option>
+		
+		</select><br>
+		
+	DATE: <INPUT TYPE="text" placeholder="MM/DD/YY format (EX: 11/15/93)"  NAME="date" VALUE="" SIZE=25>
+	<A HREF="#"
+	   onClick="cal.select(document.forms['filterform'].date,'datesearch','MM/dd/yyyy'); return false;" ID="datesearch"><input type="button" value="..."></A><br>
+		
+	<input type="submit" value="SUBMIT">
 </form>
 <DIV ID="caldiv" STYLE="position:absolute;visibility:hidden;background-color:white;layer-background-color:white;"></DIV>
 
 </body>
-</html>>>
+</html>
