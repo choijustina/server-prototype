@@ -59,6 +59,7 @@ public class RoutingConsumer extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		out.print("retry: 3000\n");
 		
+		/*
 		BasicConsumer c1 = (BasicConsumer) ConsumerFactory.buildConsumer(ConsumerType.BASIC);
 		c1.setName(SearchParameters.name);
 		c1.setBusinessKey(SearchParameters.businessKey);
@@ -66,10 +67,13 @@ public class RoutingConsumer extends HttpServlet {
 		c1.setDate(SearchParameters.date);
 		
 		out.print("data: created a basic consumer inside RoutingConsumer.java\n\n");
-		out.print("data: name: " + c1.getName() + "\n\n");
-		out.print("data: business key: " + c1.getBusinessKey() + "\n\n");
+		out.print("data: date: " + c1.getDate() + "\n\n");
 		out.print("data: document type: " + c1.getDocumentType() + "\n\n");
-		out.print("data: date: " + c1.getDate() + "\n\n");		
+		out.print("data: business key: " + c1.getBusinessKey() + "\n\n");
+		out.print("data: name: " + c1.getName() + "\n\n");
+		out.print("data: SEARCH CRITERIA:\n\n");
+		*/
+		
 		out.print("data: [*] Waiting for messages\n\n");
 		out.flush();
 		
@@ -89,15 +93,15 @@ public class RoutingConsumer extends HttpServlet {
 				if (message.equals(AbstractProducer.CLOSE_CONSUMER))
 					break;
 				else {
-					/*
+					
 					if (message.equals("clear")) {
 						out.print("event: clear\n");
 						out.print("data: clearing the client display\n\n");
 					} else {
 						out.print("event: jsonobject\n");
 						out.print("data: " + message + "\n\n");
-					}*/
-					out.print("data: " + message + "\n\n");
+					}
+					//out.print("data: " + message + "\n\n");
 					out.flush();
 					
 				}

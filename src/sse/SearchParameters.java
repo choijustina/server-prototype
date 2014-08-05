@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 public class SearchParameters extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	protected static String name = null;
-	protected static String businessKey = null;
-	protected static String documentType = null;
-	protected static String date = null;
+	protected String name = null;
+	protected String businessKey = null;
+	protected String documentType = null;
+	protected String date = null;
 	
 	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {

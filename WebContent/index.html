@@ -41,6 +41,8 @@ cal.addDisabledDates(null, oneWeekAgo);
 cal.addDisabledDates(tomorrow, null);
 
 //GLOBAL VARIABLES FOR LATER //////////////////////////////////////
+var finalName;
+var finalBusinessKey;
 
 
 // STUFF THAT ALLOWS FRAME TO BE RESIZABLE ///////////////////////
@@ -60,6 +62,13 @@ $(function() {
   });
 }); 
 
+function refreshFrame() {
+	//document.getElementById(eventFrame).contentDocument.location.reload(true);
+	var iframe = document.getElementById('eventFrame');
+	iframe.src = iframe.src;
+	alert("refresh frame");
+}
+
 function getName(str) {
 	var xmlhttp;
 	if (str.length==0) {
@@ -76,6 +85,7 @@ function getName(str) {
 	
 	xmlhttp.onreadystatechange=function() {
 		if (xmlhttp.readyState==4 &&  xmlhttp.status==200) {
+			finalName = str;
 			document.getElementById("printName").innerHTML=str;
 		}
 	}
@@ -99,6 +109,7 @@ function getBusinessKey(str) {
 	
 	xmlhttp.onreadystatechange=function() {
 		if (xmlhttp.readyState==4 &&  xmlhttp.status==200) {
+			finalBusinessKey = str;
 			document.getElementById("printBusinessKey").innerHTML=str;
 		}
 	}
@@ -224,7 +235,7 @@ function getBusinessKey(str) {
   background: #fff;
   border: 1px solid #ccc;
   position: absolute;
-  top: 125px;
+  top: 200px;
   left: 25px;
   z-index: 9;
 }
@@ -234,7 +245,7 @@ function getBusinessKey(str) {
 
 <body>
 
-<h1><div id="myDiv">Event Stream Manager 18</div></h1>
+<h1><div id="myDiv">Event Stream Manager 32</div></h1>
 
 <form id="filterform" action="">
 	NAME: <input type="text" onkeyup="getName(this.value)" />
@@ -247,7 +258,7 @@ function getBusinessKey(str) {
 	DATE: <A HREF="#" onClick="cal.select(document.forms['filterform'].date,'datesearch','MM/dd/yyyy'); return false;" ID="datesearch"><INPUT TYPE="text" placeholder="MM/DD/YY format (EX: 11/15/93)"  NAME="date" VALUE="" SIZE=25></A>
 
 	<!-- <input type="submit" value="SUBMIT"> -->
-	<!-- <button type="button" onclick="loadXMLDoc()">CHANGE TEXT</button> -->
+	<button type="button" onClick="refreshFrame()">REFRESH</button>
 </form>
 
 <p>
@@ -255,15 +266,13 @@ Name: <span id="printName"></span><br>
 Business Key: <span id="printBusinessKey"></span>
 </p>
 
-
-
 <DIV ID="caldiv" STYLE="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></DIV>
 
-<!-- 
+
 <div id="resizable">
    <iframe id="eventFrame" name="eventFrame" seamless src="SSE.html" style="display: block; margin: 0 auto; padding: 0;"></iframe>
 </div>
- -->
+
 
 </body>
 </html>
