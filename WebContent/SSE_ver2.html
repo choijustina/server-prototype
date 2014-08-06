@@ -13,7 +13,7 @@ body {
 <script type="text/javascript">
 
 // GLOBAL VARIABLES FOR LATER //////////////////////////////////////
-var consumerKey;
+
 
 function pageScroll() {
 	//negative for scrolling up, positive for scrolling down
@@ -54,12 +54,7 @@ function printData(d) {
 }
 
 if (typeof (EventSource) != "undefined") {
-	var source = new EventSource("http://localhost:8080/SSE/RoutingConsumer");
-	
-	// TESTING GETING NAME FROM PARENT WINDOW
-	// window.parent.[name of variable]
-	document.body.innerHTML = "Business Key searching for: " + window.parent.finalBusinessKey + "<br>";
-	document.body.innerHTML = "Name searching for: " + window.parent.finalName + "<br>" + document.body.innerHTML;
+	var source = new EventSource("http://localhost:8080/SSE/SSE_Rabbit");
 	
 	//to have the newest messages on the bottom: document.body.innerHTML += "Connection was opened<br>";
 	source.onopen = function(event) {
@@ -77,11 +72,6 @@ if (typeof (EventSource) != "undefined") {
 		document.body.innerHTML = "[*] Waiting for messages.." + "<br>" + e.data;
 	}, false);
 	
-	source.addEventListener('number', function(e) {
-		consumerKey = e.data;
-		document.body.innerHTML = "ConsumerID number: " + consumerKey + "<br>" + document.body.innerHTML;
-	}, false);
-	
 	// JSON OBJECT
 	source.addEventListener('jsonobject', function(e) {
 		var d = JSON.parse(e.data);
@@ -91,21 +81,14 @@ if (typeof (EventSource) != "undefined") {
 		if (d.businesskey == null) d.businesskey = "-";
 		if (d.doctype == null) d.doctype = "-";
 		if (d.data == null) d.data = "-";
-		
-		
-		if (d.name == window.parent.finalName)
-			printData(d);
-		else {
-			document.body.innerHTML = "name: " + d.name + " is NOT A MATCH<br><br>" + document.body.innerHTML;
-		}
 			
-		//printData(d);
+		printData(d);
 
 	}, false);
 	
 	// onmessage handler is used if no event name is specified for a message
-	source.onmessage = function(e) {
-		document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
+	source.onmessage = function(event) {
+		document.body.innerHTML = event.data + "<br>" + document.body.innerHTML;
 	}
 	
 } else {

@@ -3,7 +3,7 @@
 <html>
 
 <head>
-<title>Event Stream Manager</title>
+<title>Version 2</title>
 
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
@@ -14,36 +14,6 @@
 <script src="date.js"></script>
 <script src="PopupWindow.js"></script>
 <script type="text/javascript">
-
-//CALENDAR STUFF /////////////////////////////////////////////////
-var cal = new CalendarPopup("caldiv");
-cal.offsetX = 5;
-cal.setCssPrefix("TEST");
-//set dates available on calendar to be a week before up to today (including today)
-var t = new Date();
-var dd = t.getDate()+1; 
-var mm = t.getMonth()+1;
-var yy = t.getFullYear().toString().substr(2,2);
-(dd < 10) ? (dd = '0' + dd) : dd;
-(mm < 10) ? (mm = '0' + mm) : mm;
-
-var wk = new Date(t.getTime() - (60*60*24*7*1000));
-var wd = wk.getDate()-1; //include last week's today
-var wm = wk.getMonth()+1;
-var wy = wk.getFullYear().toString().substr(2,2);
-(wd < 10) ? (wd = '0' + wd) : wd;
-(wm < 10) ? (wm = '0' + wm) : wm;
-
-var oneWeekAgo = wm + '/' + wd + '/' + wy;
-var tomorrow = mm + '/' + dd + '/' + yy;
-
-cal.addDisabledDates(null, oneWeekAgo);
-cal.addDisabledDates(tomorrow, null);
-
-//GLOBAL VARIABLES FOR LATER //////////////////////////////////////
-var finalName;
-var finalBusinessKey;
-
 
 // STUFF THAT ALLOWS FRAME TO BE RESIZABLE ///////////////////////
 $(function() {
@@ -61,61 +31,6 @@ $(function() {
       }
   });
 }); 
-
-function refreshFrame() {
-	//document.getElementById(eventFrame).contentDocument.location.reload(true);
-	var iframe = document.getElementById('eventFrame');
-	iframe.src = "SSE.html";
-	//alert("refreshed frame");
-}
-
-function getName(str) {
-	var xmlhttp;
-	if (str.length==0) {
-		//document.getElementById("printName").innerHTML="blank";
-		return;
-	}
-	if (window.XMLHttpRequest) {
-		// code for IE7+, Firefox, Chrome, Opera, Safari
-		xmlhttp = new XMLHttpRequest();
-	} else {
-		// code for IE6, IE5
-		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	
-	xmlhttp.onreadystatechange=function() {
-		if (xmlhttp.readyState==4 &&  xmlhttp.status==200) {
-			finalName = str;
-			//document.getElementById("printName").innerHTML=str;
-		}
-	}
-	xmlhttp.open("GET", "", true);
-	xmlhttp.send();
-}
-
-function getBusinessKey(str) {
-	var xmlhttp;
-	if (str.length==0) {
-		//document.getElementById("printBusinessKey").innerHTML="blank";
-		return;
-	}
-	if (window.XMLHttpRequest) {
-		// code for IE7+, Firefox, Chrome, Opera, Safari
-		xmlhttp = new XMLHttpRequest();
-	} else {
-		// code for IE6, IE5
-		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	
-	xmlhttp.onreadystatechange=function() {
-		if (xmlhttp.readyState==4 &&  xmlhttp.status==200) {
-			finalBusinessKey = str;
-			//document.getElementById("printBusinessKey").innerHTML=str;
-		}
-	}
-	xmlhttp.open("GET", "", true);
-	xmlhttp.send();
-}
 
 </script>
 
@@ -235,7 +150,7 @@ function getBusinessKey(str) {
   background: #fff;
   border: 1px solid #ccc;
   position: absolute;
-  top: 150px;
+  top: 100px;
   left: 25px;
   z-index: 1;
 }
@@ -245,34 +160,10 @@ function getBusinessKey(str) {
 
 <body>
 
-<h1>Event Stream Manager 48</h1>
-
-<form id="filterform" action="">
-	NAME: <input type="text" onkeyup="getName(this.value)" />
-	BUSINESS KEY: <input type="text" onkeyup="getBusinessKey(this.value)" />
-	DOCUMENT TYPE: 
-		<select name="documentType">
-			<option value="a">option a</option>
-			<option value="b">option b</option>
-		</select>	
-	DATE: <A HREF="#" onClick="cal.select(document.forms['filterform'].date,'datesearch','MM/dd/yyyy'); return false;" ID="datesearch"><INPUT TYPE="text" placeholder="MM/DD/YY format (EX: 11/15/93)"  NAME="date" VALUE="" SIZE=25></A>
-
-	<!-- <input type="submit" value="SUBMIT"> -->
-	<button type="button" onClick="refreshFrame()">SEARCH</button>
-</form>
-
-<!--  
-<p>
-Name: <span id="printName"></span><br>
-Business Key: <span id="printBusinessKey"></span>
-</p>
--->
-
-<DIV ID="caldiv" STYLE="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></DIV>
-
+<h1>integrating with RabbitMQ</h1>
 
 <div id="resizable">
-   <iframe id="eventFrame" name="eventFrame" seamless src="about:blank" style="display: block; margin: 0 auto; padding: 0;"></iframe>
+   <iframe id="eventFrame" name="eventFrame" seamless src="SSE_ver2.html" style="display: block; margin: 0 auto; padding: 0;"></iframe>
 </div>
 
 

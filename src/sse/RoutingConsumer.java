@@ -21,15 +21,37 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 @WebServlet("/RoutingConsumer")
 public class RoutingConsumer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final boolean MSG_ACK = false;			// message acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
 	//private static final String BINDING_KEY = "json";			
-	protected static final int RECONNECT_TIME = 10000;		// delay in milliseconds until auto-reconnect 
+	protected static final int RECONNECT_TIME = 3000;		// delay in milliseconds until auto-reconnect 
+	
+	private static Connection connection;
+	private static Channel channel;
+	private int initialized = 0; // 0 false, 1 true 
+	
+	private int consumerID = 1;
+	
+	private static int counter = 0;
+	public RoutingConsumer() {
+		counter++;
+	}
+	
+	private Connection initConnection(HttpServletRequest request, HttpServletResponse response)
+		throws IOException {
+		// RABBITMQ
+		ConnectionFactory factory = new ConnectionFactory();
+		factory.setHost("localhost");
+		connection = factory.newConnection();
+		return connection;
+	}
+	
+	private Channel initChannel(Connection connection) throws IOException {
+		channel = connection.createChannel();
+		return channel;
+	}
 	
 	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
@@ -42,37 +64,22 @@ public class RoutingConsumer extends HttpServlet {
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Connection", "keep-alive");
 		
-		// RABBITMQ
-		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("localhost");
-		Connection connection = factory.newConnection();
-		Channel channel = connection.createChannel();
+		if (initialized==0) {
+			initialized = 1;
+			connection = initConnection(request, response);
+			channel = initChannel(connection);
+		}
 		
 		channel.exchangeDeclare(AbstractProducer.EXCHANGE_NAME, AbstractProducer.EXCHANGE_TYPE);
 		channel.queueDeclare(AbstractProducer.QUEUE_NAME, true, false, false, null);
 		channel.queueBind(AbstractProducer.QUEUE_NAME, AbstractProducer.EXCHANGE_NAME, "");
 		
-		// merging changes
-		//String queueName = channel.queueDeclare().getQueue();
-		//channel.queueBind(queueName, AbstractProducer.EXCHANGE_NAME, BINDING_KEY);
-		
 		PrintWriter out = response.getWriter();
-		out.print("retry: 3000\n");
+		out.print("retry: " + RECONNECT_TIME + "\n\n");
 		
-		/*
-		BasicConsumer c1 = (BasicConsumer) ConsumerFactory.buildConsumer(ConsumerType.BASIC);
-		c1.setName(SearchParameters.name);
-		c1.setBusinessKey(SearchParameters.businessKey);
-		c1.setDocumentType(SearchParameters.documentType);
-		c1.setDate(SearchParameters.date);
-		
-		out.print("data: created a basic consumer inside RoutingConsumer.java\n\n");
-		out.print("data: date: " + c1.getDate() + "\n\n");
-		out.print("data: document type: " + c1.getDocumentType() + "\n\n");
-		out.print("data: business key: " + c1.getBusinessKey() + "\n\n");
-		out.print("data: name: " + c1.getName() + "\n\n");
-		out.print("data: SEARCH CRITERIA:\n\n");
-		*/
+		out.print("event: number\n");
+		out.print("data: " + consumerID + "\n\n");
+		consumerID++;
 		
 		out.print("data: [*] Waiting for messages\n\n");
 		out.flush();
@@ -87,9 +94,6 @@ public class RoutingConsumer extends HttpServlet {
 				//String routingKey = delivery.getEnvelope().getRoutingKey();
 				String message = new String(delivery.getBody());
 				
-				//JSONObject object = new JSONObject(message);
-				//String name = object.getString("name");
-				
 				if (message.equals(AbstractProducer.CLOSE_CONSUMER))
 					break;
 				else {
@@ -103,7 +107,6 @@ public class RoutingConsumer extends HttpServlet {
 					}
 					//out.print("data: " + message + "\n\n");
 					out.flush();
-					
 				}
 				
 				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);

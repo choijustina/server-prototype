@@ -13,9 +13,6 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.MessageProperties;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class JSONProducer extends AbstractProducer {
 	String filename = "json.txt";
 

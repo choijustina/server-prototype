@@ -31,7 +31,7 @@ public class SSE_Rabbit extends HttpServlet {
 	//private static final boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
 	//private static final int PREFETCH_COUNT = 1;      // maximum number of messages that the server will deliver
 	private static final boolean MSG_ACK = false;       // msg acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
-	private static final String BINDING_KEY = "#";	    // # can substitute for zero or more words; * for one word
+	//private static final String BINDING_KEY = "#";	    // # can substitute for zero or more words; * for one word
 	
 	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
@@ -49,23 +49,31 @@ public class SSE_Rabbit extends HttpServlet {
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
 	
+		/* version from when had topic exchange
 		channel.exchangeDeclare(AbstractProducer.EXCHANGE_NAME, "topic"); 	// a durable, non-autodelete exchange of "topic" type
 		String queueName = channel.queueDeclare().getQueue();	    //get server-generated queue name
 		channel.queueBind(queueName, AbstractProducer.EXCHANGE_NAME, BINDING_KEY);
 //		channel.queueDeclare(QUEUE_NAME, MSG_DURABLE, false, false, null);
+		*/
+		
+		channel.exchangeDeclare(AbstractProducer.EXCHANGE_NAME, AbstractProducer.EXCHANGE_TYPE);
+		channel.queueDeclare(AbstractProducer.QUEUE_NAME, true, false, false, null);
+		channel.queueBind(AbstractProducer.QUEUE_NAME, AbstractProducer.EXCHANGE_NAME, "");		// last param empty because no binding key
 		
 		PrintWriter out = response.getWriter();
-		out.print("data: binding key: " + BINDING_KEY + "\n\n");
+		out.print("data: inside SSE_Rabbit.java file\n\n");
+		//out.print("data: binding key: " + BINDING_KEY + "\n\n");
 		out.print("data: [*] Waiting for messages.\n\n");
 		out.flush();
 		//channel.basicQos(PREFETCH_COUNT);
 		
-		QueueingConsumer consumer = new QueueingConsumer(channel);
-		channel.basicConsume(queueName, MSG_ACK, consumer);
+		QueueingConsumer queueingConsumer = new QueueingConsumer(channel);
+		//channel.basicConsume(queueName, MSG_ACK, consumer);
+		channel.basicConsume(AbstractProducer.QUEUE_NAME, MSG_ACK, queueingConsumer);
 		
 		while (true) {
 			try {
-				QueueingConsumer.Delivery delivery = consumer.nextDelivery();
+				QueueingConsumer.Delivery delivery = queueingConsumer.nextDelivery();
 				
 				String routingKey = delivery.getEnvelope().getRoutingKey();
 				String message = new String(delivery.getBody());
@@ -75,7 +83,7 @@ public class SSE_Rabbit extends HttpServlet {
 				}
 				else if (message.equals("clear")) {
 					out.print("event: " + "clear" + "\n");
-					out.print("data: " + "binding key: " + BINDING_KEY + "\n\n");
+					//out.print("data: " + "binding key: " + BINDING_KEY + "\n\n");
 					out.flush();
 				}
 				else {
