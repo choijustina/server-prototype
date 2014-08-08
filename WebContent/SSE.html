@@ -6,19 +6,22 @@
 body {
 	overflow-x: hidden;
 	word-wrap: break-word;
-	background: #BDBDBD;
+	background: pink;
 }
 
-</style>
+</style>	
 <script type="text/javascript">
-// GLOBAL VARIABLES FOR LATER //////////////////////////////////////
-// 
+
+// CONTINUOUS PAGE SCROLL FUNCTION //////////////////////////////////////
+//for later maybe: edit so that if user drags scrollbar, stop function and let user
+//drag it to whatever they want to look at
 function pageScroll() {
 	//negative for scrolling up, positive for scrolling down
 	window.scrollBy(0,-100);
 	scrolldelay = setTimeout('pageScroll()',50);
 }
 
+// for multiple onload functions (instead of <body onload="">)
 function addLoadEvent(func) {
   var oldonload = window.onload;
   if (typeof window.onload != 'function') {
@@ -33,77 +36,62 @@ function addLoadEvent(func) {
   }
 }
 
-
 addLoadEvent(pageScroll());
-//addLoadEvent(function() {...});
-</script>
 
+</script>
 </head>
 
 <body>
+
+<div id="ServerTime"></div>
 
 <script>
 if (typeof (EventSource) != "undefined") {
 	var source = new EventSource("http://localhost:8080/SSE/RoutingConsumer");
 	
-	source.addEventListener('open', function(e) {
-		//newest messages on top
+	//to have the newest messages on the bottom: document.body.innerHTML += "Connection was opened<br>";
+	source.onopen = function(event) {
 		document.body.innerHTML = "Connection was opened" + "<br>" + document.body.innerHTML;
-		
-		//newest messages on bottom
-		//document.body.innerHTML += "Connection was opened" + "<br>" + document.body.innerHTML;
-	}, false);
-		
-	source.addEventListener('error', function(e) {
-		//newest messages on top
+	}
+	
+	source.onerror = function(event) {
 		document.body.innerHTML = "An error occurred; auto-reconnecting" + "<br>" + document.body.innerHTML;
-		
-		//newest messages on bottom
-		//document.body.innerHTML += "An error occurred..." + "<br>";
-		if (e.readyState == EventSource.CLOSED) {
-			//newest messages on top
-			document.body.innerHTML = "Connection was closed" + "<br>" + document.body.innerHTML;
-			
-			//newest messages on bottom
-			//document.body.innerHTML += "Connection was closed" + "<br>";
-		}
-	}, false);
+	}
 	
 	source.addEventListener('clear', function(e) {
 		document.body.innerHTML = "[*] Waiting for messages.." + "<br>" + e.data;
 	}, false);
 	
-	
+	// JSON OBJECT
 	source.addEventListener('message', function(e) {
 		var d = JSON.parse(e.data);
 		
 		if (d.id == null) d.id = "-";
-		if (d.msgtype == null) d.msgtype = "-";
 		if (d.name == null) d.name = "-";
+		if (d.businesskey == null) d.businesskey = "-";
 		if (d.doctype == null) d.doctype = "-";
 		if (d.data == null) d.data = "-";
-
-		document.body.innerHTML ="ID: " + d.id  
-								+ "<br>MSGTYPE: " + d.msgtype 
+		
+		document.body.innerHTML = "ID: " + d.id
 								+ "<br>NAME: " + d.name 
+								+ "<br>MSGTYPE: " + d.msgtype 
+								+ "<br>BUSINESSKEY: " + d.businesskey
 								+ "<br>DOCTYPE: " + d.doctype 
-								+ "<br>DATA: " + d.data
+								+ "<br>DATA: " + d.data 
 								+ "<br><br>" + document.body.innerHTML;
-		}, false);
+		
+	}, false);
 	
 	// onmessage handler is used if no event name is specified for a message
 	source.onmessage = function(event) {
-		//newest messages on top
 		document.body.innerHTML = event.data + "<br>" + document.body.innerHTML;
-		
-		//newest messages on bottom
-		//document.body.innerHTML += event.data + "<br>";
 	}
 	
 } else {
 	document.body.innerHTML = "Sorry, your browser does not support server-sent events...";
 }
-	</script>
+
+</script>
 
 </body>
 </html>
