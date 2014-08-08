@@ -24,6 +24,10 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.QueueingConsumer;
 
 public class RECV extends Abstract {
+	//DATABASE CONSUMER (prints out JSON to terminal, sends JSON to MongoDB
+	//database: JSONDB
+	//collection: SSE
+
 
 	//private static final String BINDING_KEY = "json";
 	@Override
@@ -36,7 +40,7 @@ public class RECV extends Abstract {
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
 
-		channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
+		channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE, true);
 		channel.queueDeclare(QUEUE_NAME, true, false, false, null);
 		channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, "");
 		
@@ -54,47 +58,37 @@ public class RECV extends Abstract {
 		//authenticate (optional)
 		//boolean auth = db.authenticate("user","pass");
 		
-		//capped collection, max size is 10kbytes, or 500 documents
 		DBCollection collection;
 		collection = db.getCollection("SSE");
-/*
-		if(db.collectionExists("log")) {
-			collection = db.getCollection("log");
-//			collection = db.runCommand({"convertToCapped": "log", size: 10000, max: 10});
-		} else {
-			collection = db.createCollection("log");
-		}
-*/
-
 
 		//one week = 604800 seconds
 		//one day = 86400 seconds
 		//one hour = 3600 seconds
 		//one minute = 60 seconds
 
+		//creates index startDate, setup so that stuff deletes after a week
 		BasicDBObject index = new BasicDBObject("startDate", 1);
-		BasicDBObject options = new BasicDBObject("expireAfterSeconds", 86400);
+		BasicDBObject options = new BasicDBObject("expireAfterSeconds", 604800);
 		collection.ensureIndex(index, options);
 
 		while (true) {
 			QueueingConsumer.Delivery delivery = consumer.nextDelivery();
 			String message = new String(delivery.getBody());
-		
-			JSONObject json = (JSONObject) JSONSerializer.toJSON(message);
-			//convert to DBObject
-			BasicDBObject dbObject = (BasicDBObject) JSON.parse(message);
 			
+			//convert to DBObject, add startDate, insert into DB
+			BasicDBObject dbObject = (BasicDBObject) JSON.parse(message);
 			dbObject = dbObject.append("startDate", new Date());
 			collection.insert(dbObject);
 			  
-/*
+/* LOOPS THROUGH AND PRINTS ALL OF CURSOR TO CONSOLE
 			DBCursor cursor = collection.find();
 			while (cursor.hasNext()) {
 				System.out.println(cursor.next());
 			}
 */
 			  
-	/*		JSONObject json = (JSONObject) JSONSerializer.toJSON(message);
+/* PRINT PARSED JSON TO CONSOLE
+			JSONObject json = (JSONObject) JSONSerializer.toJSON(message);
 				int id = json.getInt( "id" );
 				String msgtype = json.getString( "msgtype");
 				String name = json.getString( "name" );
@@ -106,7 +100,7 @@ public class RECV extends Abstract {
 				System.out.println( "NAME: " + name );
 				System.out.println( "DOCTYPE: " + doctype );
 				System.out.println( "DATA: " + data + "\n");
-	*/
+*/
 			  System.out.println(" [x] Received '" + message + "'");   
 		}
   }
