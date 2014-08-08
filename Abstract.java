@@ -5,7 +5,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 public abstract class Abstract {
-	//ABSTRACT CLASS FOR RECV AND SEND
+	//ABSTRACT CLASS FOR RECV, SEND, and SENDJSON
 
 	public static final String EXCHANGE_NAME = "fanoutexchange";
 	public static final String EXCHANGE_TYPE = "fanout";
