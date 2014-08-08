@@ -5,6 +5,8 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 public abstract class Abstract {
+	//ABSTRACT CLASS FOR RECV AND SEND
+
 	public static final String EXCHANGE_NAME = "fanoutexchange";
 	public static final String EXCHANGE_TYPE = "fanout";
 	public static final String QUEUE_NAME = "SSE_EVENTS";		// uses server-generated queue names
