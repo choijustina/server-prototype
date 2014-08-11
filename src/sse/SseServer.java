@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  * To access: http://localhost:8080/SSE/index_old.html
  * Source: http://milestonenext.blogspot.com/2013/07/html5-server-sent-events-sample-with.html
  * Documentation: http://docs.oracle.com/javaee/6/api/javax/servlet/http/package-summary.html
- * 
+ * Notes: Version 1 of Server-side Event Project; used with index_old.html and SSE_old.html
  */
 
 @WebServlet("/SseServer")
@@ -66,7 +66,7 @@ public class SseServer extends HttpServlet {
 			out.flush();
 			
 			try {
-				Thread.currentThread().sleep(1000);
+				Thread.currentThread().sleep(300);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

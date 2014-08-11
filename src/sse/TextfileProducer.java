@@ -19,7 +19,7 @@ public class TextfileProducer extends AbstractProducer {
 
 	@Override
 	protected void getData(Channel channel, Connection connection) {
-		String filename = "longfile_10.txt";
+		String filename = "Copylongfile_10.txt";
 		
 		URL url = null;
 		try {
@@ -37,7 +37,7 @@ public class TextfileProducer extends AbstractProducer {
 				messageData = s.nextLine();
 				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
 				
-				Thread.currentThread().sleep(500);
+				Thread.currentThread().sleep(100);
 				
 				System.out.println("  [x] Sent '" + messageData + "'");
 			}

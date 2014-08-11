@@ -28,17 +28,17 @@ public class RoutingConsumer extends HttpServlet {
 	//private static final String BINDING_KEY = "json";			
 	protected static final int RECONNECT_TIME = 3000;		// delay in milliseconds until auto-reconnect 
 	
-	private static Connection connection;
-	private static Channel channel;
-	private int initialized = 0; // 0 false, 1 true 
+	//private static Connection connection;
+	//private static Channel channel;
+	//private int initialized = 0; // 0 false, 1 true 
 	
-	private int consumerID = 1;
+	private String consumerKey = "abc";  // TODO: create a way to make this unique for each consumer initialized
 	
 	private static int counter = 0;
-	public RoutingConsumer() {
+	public RoutingConsumer() {  // only one instantiated
 		counter++;
 	}
-	
+	/*
 	private Connection initConnection(HttpServletRequest request, HttpServletResponse response)
 		throws IOException {
 		// RABBITMQ
@@ -47,11 +47,10 @@ public class RoutingConsumer extends HttpServlet {
 		connection = factory.newConnection();
 		return connection;
 	}
-	
 	private Channel initChannel(Connection connection) throws IOException {
 		channel = connection.createChannel();
 		return channel;
-	}
+	}*/
 	
 	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
@@ -63,12 +62,17 @@ public class RoutingConsumer extends HttpServlet {
 		response.setContentType("text/event-stream;charset=UTF-8");
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Connection", "keep-alive");
-		
+		/*
 		if (initialized==0) {
 			initialized = 1;
 			connection = initConnection(request, response);
 			channel = initChannel(connection);
-		}
+		}*/
+		
+		ConnectionFactory factory = new ConnectionFactory();
+		factory.setHost("localhost");
+		Connection connection = factory.newConnection();
+		Channel channel = connection.createChannel();
 		
 		channel.exchangeDeclare(AbstractProducer.EXCHANGE_NAME, AbstractProducer.EXCHANGE_TYPE);
 		channel.queueDeclare(AbstractProducer.QUEUE_NAME, true, false, false, null);
@@ -77,9 +81,13 @@ public class RoutingConsumer extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		out.print("retry: " + RECONNECT_TIME + "\n\n");
 		
-		out.print("event: number\n");
-		out.print("data: " + consumerID + "\n\n");
-		consumerID++;
+		out.print("event: consumerKey\n");
+		out.print("data: " + consumerKey + "\n\n");
+		
+		/*
+		out.print("event: " + consumerKey + "\n");
+		out.print("data: to confirm that consumerKey works as an event name\n\n");
+		*/
 		
 		out.print("data: [*] Waiting for messages\n\n");
 		out.flush();
@@ -91,7 +99,7 @@ public class RoutingConsumer extends HttpServlet {
 			try {
 				QueueingConsumer.Delivery delivery = queueingConsumer.nextDelivery();
 				
-				//String routingKey = delivery.getEnvelope().getRoutingKey();
+				String routingKey = delivery.getEnvelope().getRoutingKey();
 				String message = new String(delivery.getBody());
 				
 				if (message.equals(AbstractProducer.CLOSE_CONSUMER))
@@ -101,9 +109,11 @@ public class RoutingConsumer extends HttpServlet {
 					if (message.equals("clear")) {
 						out.print("event: clear\n");
 						out.print("data: clearing the client display\n\n");
-					} else {
+					} else if (routingKey.equals("json")){
 						out.print("event: jsonobject\n");
 						out.print("data: " + message + "\n\n");
+					} else {
+						out.print("data: " + routingKey + " - " + message + "\n\n");
 					}
 					//out.print("data: " + message + "\n\n");
 					out.flush();

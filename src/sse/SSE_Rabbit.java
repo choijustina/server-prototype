@@ -88,12 +88,13 @@ public class SSE_Rabbit extends HttpServlet {
 				}
 				else {
 					Date date = new Date();
-					out.print("data: " + date.toString() + "       [x] Received " + routingKey + " : '" + message + "'" + "\n\n");
+					//out.print("data: " + date.toString() + " [x] Received " + routingKey + " : '" + message + "'" + "\n\n");
+					out.print("data: " + date.toString() + " [x] Received " + message + "\n\n");
 					out.flush();
 				}
 				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
 				
-				//testing queue
+				//testing queue by throttling
 				//Thread.currentThread().sleep(1000);
 				
 			} catch (InterruptedException e) {

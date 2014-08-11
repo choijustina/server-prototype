@@ -35,7 +35,7 @@ public class JSONProducer extends AbstractProducer {
 				
 				Thread.currentThread().sleep(250);
 				
-				System.out.println("  [x] Sent:  " + messageData);
+				System.out.println("  [x] Sent:  " + bindingKey + " - " + messageData);
 				messageData = scanner.nextLine();
 			}
 			scanner.close();

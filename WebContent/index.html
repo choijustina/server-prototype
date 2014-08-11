@@ -3,12 +3,15 @@
 <html>
 
 <head>
-<title>Event Stream Manager</title>
+<title>Event Manager</title>
 
+<!--  
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+-->
+
 <script src="CalendarPopup.js"></script>
 <script src="AnchorPosition.js"></script>
 <script src="date.js"></script>
@@ -235,7 +238,7 @@ function getBusinessKey(str) {
   background: #fff;
   border: 1px solid #ccc;
   position: absolute;
-  top: 150px;
+  top: 200px;
   left: 25px;
   z-index: 1;
 }
@@ -245,11 +248,15 @@ function getBusinessKey(str) {
 
 <body>
 
-<h1>Event Stream Manager 48</h1>
+<!-- REALDoc logo image -->
+<img border="0" src="http://localhost:8080/SSE/REALDoc_logo.jpg" style="float:right" width="427" height="132"><br>
 
+<h1>Server-sent Event Manager</h1>
+<br><br>
 <form id="filterform" action="">
 	NAME: <input type="text" onkeyup="getName(this.value)" />
 	BUSINESS KEY: <input type="text" onkeyup="getBusinessKey(this.value)" />
+	<br>
 	DOCUMENT TYPE: 
 		<select name="documentType">
 			<option value="a">option a</option>

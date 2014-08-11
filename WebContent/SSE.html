@@ -46,7 +46,7 @@ addLoadEvent(pageScroll());
 function printData(d) {
 	document.body.innerHTML = "ID: " + d.id
 	+ "<br>NAME: " + d.name 
-	+ "<br>MSGTYPE: " + d.msgtype 
+	//+ "<br>MSGTYPE: " + d.msgtype 
 	+ "<br>BUSINESSKEY: " + d.businesskey
 	+ "<br>DOCTYPE: " + d.doctype 
 	+ "<br>DATA: " + d.data 
@@ -77,10 +77,18 @@ if (typeof (EventSource) != "undefined") {
 		document.body.innerHTML = "[*] Waiting for messages.." + "<br>" + e.data;
 	}, false);
 	
-	source.addEventListener('number', function(e) {
+	/*
+	source.addEventListener('consumerKey', function(e) {
 		consumerKey = e.data;
-		document.body.innerHTML = "ConsumerID number: " + consumerKey + "<br>" + document.body.innerHTML;
+		document.body.innerHTML = "ConsumerID: " + consumerKey + "<br>" + document.body.innerHTML;
 	}, false);
+	*/
+	/*
+	source.addEventListener(consumerKey, function (e) {
+		document.body.innerHTML = "matched consumerKey<br>" + document.body.innerHTML;
+	}, false);
+	*/
+	
 	
 	// JSON OBJECT
 	source.addEventListener('jsonobject', function(e) {
@@ -92,7 +100,6 @@ if (typeof (EventSource) != "undefined") {
 		if (d.doctype == null) d.doctype = "-";
 		if (d.data == null) d.data = "-";
 		
-		
 		if (d.name == window.parent.finalName)
 			printData(d);
 		else {
@@ -102,6 +109,8 @@ if (typeof (EventSource) != "undefined") {
 		//printData(d);
 
 	}, false);
+	
+	
 	
 	// onmessage handler is used if no event name is specified for a message
 	source.onmessage = function(e) {
