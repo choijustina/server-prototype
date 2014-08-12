@@ -8,12 +8,14 @@ body {
 	word-wrap: break-word;
 	background: pink;
 }
-
 </style>	
+
 <script type="text/javascript">
 
-// GLOBAL VARIABLES FOR LATER //////////////////////////////////////
+// GLOBAL VARIABLES ////////////////////////////////////////
 var consumerKey;
+var searchName;
+var searchBusinessKey;
 
 function pageScroll() {
 	//negative for scrolling up, positive for scrolling down
@@ -41,16 +43,14 @@ addLoadEvent(pageScroll());
 </head>
 
 <body>
-
 <script>
 function printData(d) {
 	document.body.innerHTML = "ID: " + d.id
-	+ "<br>NAME: " + d.name 
-	//+ "<br>MSGTYPE: " + d.msgtype 
-	+ "<br>BUSINESSKEY: " + d.businesskey
-	+ "<br>DOCTYPE: " + d.doctype 
-	+ "<br>DATA: " + d.data 
-	+ "<br><br>" + document.body.innerHTML;
+						+ "<br>NAME: " + d.name 
+						+ "<br>MSGTYPE: " + d.msgtype 
+						+ "<br>DOCTYPE: " + d.doctype 
+						+ "<br>DATA: " + d.data 
+						+ "<br><br>" + document.body.innerHTML;
 }
 
 if (typeof (EventSource) != "undefined") {
@@ -58,8 +58,10 @@ if (typeof (EventSource) != "undefined") {
 	
 	// TESTING GETING NAME FROM PARENT WINDOW
 	// window.parent.[name of variable]
-	document.body.innerHTML = "Business Key searching for: " + window.parent.finalBusinessKey + "<br>";
-	document.body.innerHTML = "Name searching for: " + window.parent.finalName + "<br>" + document.body.innerHTML;
+	searchName = window.parent.finalName;
+	searchBusinessKey = window.parent.finalBusinessKey;
+	document.body.innerHTML = "Business Key searching for: " + searchBusinessKey + "<br>";
+	document.body.innerHTML = "Name searching for: " + searchName + "<br>" + document.body.innerHTML;
 	
 	//to have the newest messages on the bottom: document.body.innerHTML += "Connection was opened<br>";
 	source.onopen = function(event) {
@@ -77,36 +79,34 @@ if (typeof (EventSource) != "undefined") {
 		document.body.innerHTML = "[*] Waiting for messages.." + "<br>" + e.data;
 	}, false);
 	
-	/*
 	source.addEventListener('consumerKey', function(e) {
 		consumerKey = e.data;
 		document.body.innerHTML = "ConsumerID: " + consumerKey + "<br>" + document.body.innerHTML;
 	}, false);
-	*/
 	/*
 	source.addEventListener(consumerKey, function (e) {
 		document.body.innerHTML = "matched consumerKey<br>" + document.body.innerHTML;
 	}, false);
 	*/
 	
-	
 	// JSON OBJECT
 	source.addEventListener('jsonobject', function(e) {
 		var d = JSON.parse(e.data);
 		
 		if (d.id == null) d.id = "-";
+		if (d.msgtype == null) d.msgtype = "-";
 		if (d.name == null) d.name = "-";
-		if (d.businesskey == null) d.businesskey = "-";
 		if (d.doctype == null) d.doctype = "-";
 		if (d.data == null) d.data = "-";
 		
+		/*
 		if (d.name == window.parent.finalName)
 			printData(d);
 		else {
 			document.body.innerHTML = "name: " + d.name + " is NOT A MATCH<br><br>" + document.body.innerHTML;
-		}
+		}*/
 			
-		//printData(d);
+		printData(d);
 
 	}, false);
 	
@@ -114,7 +114,7 @@ if (typeof (EventSource) != "undefined") {
 	
 	// onmessage handler is used if no event name is specified for a message
 	source.onmessage = function(e) {
-		document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
+		document.body.innerHTML = ".." + e.data + "<br>" + document.body.innerHTML;
 	}
 	
 } else {
