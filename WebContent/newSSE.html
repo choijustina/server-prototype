@@ -12,6 +12,7 @@ var bodyText;
 
 /*
  * getName - gets the name from the form "filterform", stores it in the variable filterName
+ * 			 AJAX function
  */
 function getName(str) {
 	var xmlhttp;
@@ -57,7 +58,12 @@ function printData(d) {
 	bodyText = data + bodyText;
 	document.getElementById("recv").innerHTML = bodyText;
 }
-function openConnection() {
+
+/*
+ * openConnection()
+  
+ */
+ function openConnection() {
 	if (typeof (EventSource) != "undefined") {
 		var source = new EventSource("http://localhost:8080/SSE/RoutingConsumer");
 		
@@ -92,10 +98,27 @@ function openConnection() {
 			bodyText = event.data + "<br>" + bodyText;
 			document.getElementById("recv").innerHTML = bodyText;
 		}
-
 	}
 }
 
+/*
+ * addLoadEvent - the function in the parameter runs when the page is loaded
+ */
+function addLoadEvent(func) {
+	var oldonload = window.onload;
+	if (typeof window.onload != 'function') {
+		window.onload = func;
+	  } else {
+	    window.onload = function() {
+	      if (oldonload) {
+	        oldonload();
+	      }
+	      func();
+	    }
+	  }
+	}
+
+addLoadEvent(openConnection());
 
 </script>
 
@@ -114,33 +137,18 @@ table,th,td {
 <!-- REALDoc logo image -->
 <img border="0" src="http://localhost:8080/SSE/REALDoc_logo.jpg" style="float:right" width="427" height="132"><br>
 
-<h1>Server-sent Event Manager without iframe 6</h1>
+<h1>Server-sent Event Manager without iframe 21</h1>
+<h5>Loaded newSSE.html file</h5>
 
-<form id="filterform" action="" method="post">
-	Name:<input type="text" name="filterName"/>
-	Document type:
-		<select name="docType">
-			<option value="a">option a</option>
-			<option value="b">option b</option>
-			<option value="c">option c</option>
-			<option value="d">option d</option>
-			<option value="e">option e</option>
-		</select>
-	<input type="submit" value="SUBMIT FIRST">
-	<button type="button" onClick="openConnection()">THEN SEARCH</button>
-	
-	<!-- when using submit, because action="", is refreshing the page?
-			need to figure out how to openConnection() on this refresh.. 
-			A submit button is used to send form data to a server. The
-			data is sent to the page specified in the form's action
-			attribute. The file defined in the action attribute usually
-			does something with the received input.
-			-->
-</form>
+<!-- 
+<form id="filterform" action="" method="post" onsubmit="openConnection()"> 
+<form id="filterform" action="RoutingConsumer" method="post">
+-->
+
 
 <br><br>
 
-<table width="500">
+<table width="1000" height="500">
 <tr>
 	<td>Name: <span id="printName"></span></td>
 	<td>Document type: <span id="printDocType>"></span></td>

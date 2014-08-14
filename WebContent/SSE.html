@@ -39,10 +39,15 @@ function addLoadEvent(func) {
 
 addLoadEvent(pageScroll());
 
+
+
+
+
 </script>
 </head>
 
 <body>
+
 <script>
 function printData(d) {
 	document.body.innerHTML = "ID: " + d.id
@@ -60,8 +65,8 @@ if (typeof (EventSource) != "undefined") {
 	// window.parent.[name of variable]
 	searchName = window.parent.finalName;
 	searchBusinessKey = window.parent.finalBusinessKey;
-	document.body.innerHTML = "Business Key searching for: " + searchBusinessKey + "<br>";
-	document.body.innerHTML = "Name searching for: " + searchName + "<br>" + document.body.innerHTML;
+	document.body.innerHTML = "(HTML) Business Key searching for: " + searchBusinessKey + "<br>";
+	document.body.innerHTML = "(HTML) Name searching for: " + searchName + "<br>" + document.body.innerHTML;
 	
 	//to have the newest messages on the bottom: document.body.innerHTML += "Connection was opened<br>";
 	source.onopen = function(event) {
@@ -120,7 +125,6 @@ if (typeof (EventSource) != "undefined") {
 } else {
 	document.body.innerHTML = "Sorry, your browser does not support server-sent events...";
 }
-
 </script>
 
 </body>

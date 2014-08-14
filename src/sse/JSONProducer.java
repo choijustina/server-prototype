@@ -14,8 +14,9 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.MessageProperties;
 
 public class JSONProducer extends AbstractProducer {
-	String filename = "json.txt";
-
+	//String filename = "json.txt";
+	String filename = "json3.txt";
+	
 	@Override
 	protected void getData(Channel channel, Connection connection) {
 		

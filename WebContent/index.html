@@ -18,6 +18,12 @@
 <script src="PopupWindow.js"></script>
 <script type="text/javascript">
 
+
+// GLOBAL VARIABLES ////////////////////////////////////////
+var finalName;
+var finalBusinessKey;
+
+
 //CALENDAR STUFF /////////////////////////////////////////////////
 var cal = new CalendarPopup("caldiv");
 cal.offsetX = 5;
@@ -43,12 +49,8 @@ var tomorrow = mm + '/' + dd + '/' + yy;
 cal.addDisabledDates(null, oneWeekAgo);
 cal.addDisabledDates(tomorrow, null);
 
-//GLOBAL VARIABLES FOR LATER //////////////////////////////////////
-var finalName;
-var finalBusinessKey;
 
-
-// STUFF THAT ALLOWS FRAME TO BE RESIZABLE ///////////////////////
+// ALLOWS FRAME TO BE RESIZABLE ///////////////////////
 $(function() {
   $('#resizable').resizable({
       start: function(event, ui) {
@@ -65,6 +67,7 @@ $(function() {
   });
 }); 
 
+// CALLED AFTER SUBMIT BUTTON IS CLICKED
 function refreshFrame() {
 	//document.getElementById(eventFrame).contentDocument.location.reload(true);
 	var iframe = document.getElementById('eventFrame');
@@ -119,10 +122,9 @@ function getBusinessKey(str) {
 	xmlhttp.open("GET", "", true);
 	xmlhttp.send();
 }
-
 </script>
 
-<!-- STYLES-------------------------------------------------------- -->
+<!-- STYLES---------------------------------------------------------->
 <style type="text/css">
 	.TESTcpYearNavigation,
 	.TESTcpMonthNavigation {
@@ -238,7 +240,7 @@ function getBusinessKey(str) {
   background: #fff;
   border: 1px solid #ccc;
   position: absolute;
-  top: 200px;
+  top: 250px;
   left: 25px;
   z-index: 1;
 }
@@ -251,12 +253,11 @@ function getBusinessKey(str) {
 <!-- REALDoc logo image -->
 <img border="0" src="http://localhost:8080/SSE/REALDoc_logo.jpg" style="float:right" width="427" height="132"><br>
 
-<h1>Server-sent Event Manager</h1>
-<br><br>
+<h1>Server-sent Event Manager 10</h1>
 <form id="filterform" action="">
 	NAME: <input type="text" onkeyup="getName(this.value)" />
 	BUSINESS KEY: <input type="text" onkeyup="getBusinessKey(this.value)" />
-	<br>
+	
 	DOCUMENT TYPE: 
 		<select name="documentType">
 			<option value="a">option a</option>
@@ -265,10 +266,11 @@ function getBusinessKey(str) {
 	DATE: <A HREF="#" onClick="cal.select(document.forms['filterform'].date,'datesearch','MM/dd/yyyy'); return false;" ID="datesearch"><INPUT TYPE="text" placeholder="MM/DD/YY format (EX: 11/15/93)"  NAME="date" VALUE="" SIZE=25></A>
 
 	<!-- <input type="submit" value="SUBMIT"> -->
-	<button type="button" onClick="refreshFrame()">SEARCH</button>
+	<button type="button" onClick="refreshFrame()">refreshFrame</button>
 </form>
 
-<!--  
+
+<!--  FOR ERROR CHECKING PURPOSES TO MAKE SURE GETS RIGHT NAME/BUSINESS KEY
 <p>
 Name: <span id="printName"></span><br>
 Business Key: <span id="printBusinessKey"></span>
@@ -277,11 +279,9 @@ Business Key: <span id="printBusinessKey"></span>
 
 <DIV ID="caldiv" STYLE="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></DIV>
 
-
 <div id="resizable">
    <iframe id="eventFrame" name="eventFrame" seamless src="about:blank" style="display: block; margin: 0 auto; padding: 0;"></iframe>
 </div>
-
 
 </body>
 </html>
