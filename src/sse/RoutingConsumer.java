@@ -39,8 +39,6 @@ public class RoutingConsumer extends HttpServlet {
 	private static Map<Integer, Consumer> consumerMap = new HashMap<Integer, Consumer>();
 	private static int numberOfConsumers = 0;
 	
-	// mapping connectionID -> Consumer
-	
 	private static int counter = 0;
 	public RoutingConsumer() {  // testing if only one instantiated
 		counter++;
@@ -50,7 +48,6 @@ public class RoutingConsumer extends HttpServlet {
 			throws ServletException, IOException {
 		doPost(request, response);
 	}
-	
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -93,13 +90,13 @@ public class RoutingConsumer extends HttpServlet {
 		
 		out.println("<p>Should redirect after " + RECONNECT_TIME + " milliseconds</p><br>");
 		
-//		out.println("</body>");
-//		out.println("</html>");
-//		out.flush();
-//		out.close();
-		
-//		Thread.currentThread().sleep(RECONNECT_TIME);
+		out.println("</body>");
+		out.println("</html>");
+		out.flush();
+		out.close();
 		*/
+//		Thread.currentThread().sleep(RECONNECT_TIME);
+		
 		
 		String name = request.getParameter("searchName");
 		Consumer c = new Consumer(name);
@@ -171,7 +168,7 @@ public class RoutingConsumer extends HttpServlet {
 		for (int i = 1; i <= numberOfConsumers; i++) {
 			//out.print("data: consumer " + i + ": " + consumerMap.get(i) + "\n\n");
 			Consumer consumer = consumerMap.get(i);
-			String n = consumer.name;
+			String n = consumer.getName();
 			out.print("data: consumer " + i + " is searching for: " + n + "\n\n");
 		}
 		

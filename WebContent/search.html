@@ -6,12 +6,16 @@
 </head>
 <body>
 
+<!-- 
+	On submit, sends information to RoutingConsumer
+ -->
+
 <h1>SEARCH PAGE</h1>
+
 <p>Enter filter criteria:</p>
-<br>
 
 <form id="filterform" action="RoutingConsumer" method="post">
-	Name:<input type="text" name="searchName" onkeyup="getName(this.value)"/>
+	Name: <input type="text" name="searchName" />
 	Document type:
 		<select name="docType">
 			<option value="a">option a</option>
@@ -23,31 +27,8 @@
 	<input type="submit" value="SUBMIT">
 </form>
 	
-	<!-- 
-	<button type="button" onClick="openConnection()">openConnection() button</button>
-	
-	
-	when using submit, because action="", is refreshing the page?
-	need to figure out how to openConnection() on this refresh.. 
-	A submit button is used to send form data to a server. The
-	data is sent to the page specified in the form's action
-	attribute. The file defined in the action attribute usually
-	does something with the received input.
-	-->
 
-
-
-
-
-<br><br><br>
-<h2>on click, redirects to index.html</h2>
-
-<form name="search" action="index.html" method="get">
-	Loan number: <input type="text" name="loannum">
-	Document type: <input type="text" name="doctype">
-	<input type="submit" value="SEARCH">
-</form>
-
+<!--  
 
 <h3>A demonstration of how to access a Text Field</h3>
 
@@ -66,6 +47,7 @@ function myFunction() {
 }
 </script>
 
+-->
 
 </body>
 </html>
