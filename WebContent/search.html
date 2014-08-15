@@ -1,53 +1,180 @@
-<!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Search page</title>
-</head>
-<body>
+<title>Search</title>
 
-<!-- 
-	On submit, sends information to RoutingConsumer
- -->
-
-<h1>SEARCH PAGE</h1>
-
-<p>Enter filter criteria:</p>
-
-<form id="filterform" action="RoutingConsumer" method="post">
-	Name: <input type="text" name="searchName" />
-	Document type:
-		<select name="docType">
-			<option value="a">option a</option>
-			<option value="b">option b</option>
-			<option value="c">option c</option>
-			<option value="d">option d</option>
-			<option value="e">option e</option>
-		</select>
-	<input type="submit" value="SUBMIT">
-</form>
-	
-
-<!--  
-
-<h3>A demonstration of how to access a Text Field</h3>
-
-<input type="text" id="myText" value="Some text...">
-
-<p>Click the "Try it" button to get the text in the text field.</p>
-
-<button onclick="myFunction()">Try it</button>
-
-<p id="demo"></p>
-
+<script src="CalendarPopup.js"></script>
+<script src="AnchorPosition.js"></script>
+<script src="date.js"></script>
+<script src="PopupWindow.js"></script>
 <script>
-function myFunction() {
-    var x = document.getElementById("myText").value;
-    document.getElementById("demo").innerHTML = x;
+
+
+// FOR THE CALENDAR //////////////////////////////////////// /////////////////////////////////////////
+var cal = new CalendarPopup("caldiv");
+//cal.showNavigationDropdowns(); //make month/year drop downs
+cal.setCssPrefix("TEST"); //if you want to change fonts/colors and stuff (style bracket below)
+
+//set so that the only dates available on calendar are from today - a week ago from today
+var t = new Date();
+var dd = t.getDate()+1;
+var mm = t.getMonth()+1; 
+var yy = t.getFullYear().toString().substr(2,2);
+(dd < 10) ? (dd = '0' + dd) : dd; //append 0 to front (7 -> 07)
+(mm < 10) ? (mm = '0' + mm) : mm; //append 0 to front (7 -> 07)
+
+var wk = new Date(t.getTime() - (60*60*24*7*1000));
+var wd = wk.getDate()-1; //to include last week's today
+var wm = wk.getMonth()+1;
+var wy = wk.getFullYear().toString().substr(2,2);
+(wd < 10) ? (wd = '0' + wd) : wd; //append 0
+(wm < 10) ? (wm = '0' + wm) : wm; //append 0
+
+var oneWeekAgo = wm + '/' + wd + '/' + wy;
+var tomorrow = mm + '/' + dd + '/' + yy;
+
+//only search from one week ago until today
+cal.addDisabledDates(null, oneWeekAgo);
+cal.addDisabledDates(tomorrow, null);
+
+
+//FUNCTION THAT CHECKS IF BUSINESS KEY & NAME FIELD WAS ENTERED (AT LEAST ONE MUST BE FILLED IN) //////
+function validateForm() {
+	var n_miss = document.forms["filterform"]["name"].value;
+	var bkey_miss = document.forms["filterform"]["businessKey"].value;
+	
+	if ((n_miss==null || n_miss == "") && (bkey_miss==null || bkey_miss == "")){
+		alert("You must enter at least a name or business key!");
+		return false;
+	}
+	
 }
 </script>
+<style>
 
--->
+/* THIS STUFF IS FOR THE CALENDAR.  */
+
+	.TESTcpYearNavigation,
+	.TESTcpMonthNavigation {
+			background-color:#6677DD;
+			text-align:center;
+			vertical-align:center;
+			text-decoration:none;
+			color:#FFFFFF;
+			font-weight:bold;
+			}
+	.TESTcpDayColumnHeader,
+	.TESTcpYearNavigation,
+	.TESTcpMonthNavigation,
+	.TESTcpCurrentMonthDate,
+	.TESTcpCurrentMonthDateDisabled,
+	.TESTcpOtherMonthDate,
+	.TESTcpOtherMonthDateDisabled,
+	.TESTcpCurrentDate,
+	.TESTcpCurrentDateDisabled,
+	.TESTcpTodayText,
+	.TESTcpTodayTextDisabled,
+	.TESTcpText {
+			font-family:arial;
+			font-size:8pt;
+			}
+	TD.TESTcpDayColumnHeader {
+			text-align:right;
+			border:solid thin #6677DD;
+			border-width:0 0 1 0;
+			}
+	.TESTcpCurrentMonthDate,
+	.TESTcpOtherMonthDate,
+	.TESTcpCurrentDate {
+			text-align:right;
+			text-decoration:none;
+			}
+	.TESTcpCurrentMonthDateDisabled,
+	.TESTcpOtherMonthDateDisabled,
+	.TESTcpCurrentDateDisabled {
+			color:#D0D0D0;
+			text-align:right;
+			text-decoration:line-through;
+			}
+	.TESTcpCurrentMonthDate {
+			color:#6677DD;
+			font-weight:bold;
+			}
+	.TESTcpCurrentDate {
+			color: #FFFFFF;
+			font-weight:bold;
+			}
+	.TESTcpOtherMonthDate {
+			color:#808080;
+			}
+	TD.TESTcpCurrentDate {
+			color:#FFFFFF;
+			background-color: #6677DD;
+			border-width:1;
+			border:solid thin #000000;
+			}
+	TD.TESTcpCurrentDateDisabled {
+			border-width:1;
+			border:solid thin #FFAAAA;
+			}
+	TD.TESTcpTodayText,
+	TD.TESTcpTodayTextDisabled {
+			border:solid thin #6677DD;
+			border-width:1 0 0 0;
+			}
+	A.TESTcpTodayText,
+	SPAN.TESTcpTodayTextDisabled {
+			height:20px;
+			}
+	A.TESTcpTodayText {
+			color:#6677DD;
+			font-weight:bold;
+			}
+	SPAN.TESTcpTodayTextDisabled {
+			color:#D0D0D0;
+			}
+	.TESTcpBorder {
+			border:solid thin #6677DD;
+			}
+			
+/*THIS STUFF IS FOR THE REST OF THE STUFF */
+
+p {
+	font-size:40;
+	text-align: left;
+	padding-top: 15%;
+
+}
+form {
+	text-align: left;
+}
+</style>
+
+
+</head>
+<body>
+<!-- <div></div> -->
+<p>SEARCH</p> 
+
+<form name="filterform" action="RoutingConsumer" onsubmit="return validateForm()" method="post">
+	NAME: <input type="text" name="name">
+	BUSINESS KEY: <input type="text" name="businessKey">
+	DOCUMENT TYPE: 
+		<select name="docType">
+		<option value="">------</option>
+		<option value="a">type a</option>
+		<option value="b">type b</option>
+		<option value="c">type c</option>
+		<option value="d">type d</option>
+		<option value="e">type e</option>
+		</select>
+	DATE: <INPUT TYPE="text" placeholder="MM/DD/YY format (EX: 11/15/93)"  NAME="date" VALUE="" SIZE=25>
+	<A HREF="#"
+	   onClick="cal.select(document.forms['filterform'].date,'datesearch','MM/dd/yyyy'); return false;" ID="datesearch"><input type="button" value="CALENDAR"></A>
+		
+	<input type="submit" value="SUBMIT">
+</form>
+
+<DIV ID="caldiv" STYLE="position:absolute;visibility:hidden;background-color:white;layer-background-color:white;"></DIV>
 
 </body>
 </html>

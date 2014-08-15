@@ -20,10 +20,8 @@
 
 
 // GLOBAL VARIABLES ////////////////////////////////////////
-var finalName;
-var finalBusinessKey;
 
-
+/*
 //CALENDAR STUFF /////////////////////////////////////////////////
 var cal = new CalendarPopup("caldiv");
 cal.offsetX = 5;
@@ -48,8 +46,9 @@ var tomorrow = mm + '/' + dd + '/' + yy;
 
 cal.addDisabledDates(null, oneWeekAgo);
 cal.addDisabledDates(tomorrow, null);
+*/
 
-
+/*
 // ALLOWS FRAME TO BE RESIZABLE ///////////////////////
 $(function() {
   $('#resizable').resizable({
@@ -66,6 +65,7 @@ $(function() {
       }
   });
 }); 
+*/
 
 // CALLED AFTER SUBMIT BUTTON IS CLICKED
 function refreshFrame() {
@@ -75,53 +75,6 @@ function refreshFrame() {
 	//alert("refreshed frame");
 }
 
-function getName(str) {
-	var xmlhttp;
-	if (str.length==0) {
-		//document.getElementById("printName").innerHTML="blank";
-		return;
-	}
-	if (window.XMLHttpRequest) {
-		// code for IE7+, Firefox, Chrome, Opera, Safari
-		xmlhttp = new XMLHttpRequest();
-	} else {
-		// code for IE6, IE5
-		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	
-	xmlhttp.onreadystatechange=function() {
-		if (xmlhttp.readyState==4 &&  xmlhttp.status==200) {
-			finalName = str;
-			//document.getElementById("printName").innerHTML=str;
-		}
-	}
-	xmlhttp.open("GET", "", true);
-	xmlhttp.send();
-}
-
-function getBusinessKey(str) {
-	var xmlhttp;
-	if (str.length==0) {
-		//document.getElementById("printBusinessKey").innerHTML="blank";
-		return;
-	}
-	if (window.XMLHttpRequest) {
-		// code for IE7+, Firefox, Chrome, Opera, Safari
-		xmlhttp = new XMLHttpRequest();
-	} else {
-		// code for IE6, IE5
-		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	
-	xmlhttp.onreadystatechange=function() {
-		if (xmlhttp.readyState==4 &&  xmlhttp.status==200) {
-			finalBusinessKey = str;
-			//document.getElementById("printBusinessKey").innerHTML=str;
-		}
-	}
-	xmlhttp.open("GET", "", true);
-	xmlhttp.send();
-}
 </script>
 
 <!-- STYLES---------------------------------------------------------->
@@ -240,7 +193,7 @@ function getBusinessKey(str) {
   background: #fff;
   border: 1px solid #ccc;
   position: absolute;
-  top: 250px;
+  top: 100px;
   left: 25px;
   z-index: 1;
 }
@@ -253,7 +206,8 @@ function getBusinessKey(str) {
 <!-- REALDoc logo image -->
 <img border="0" src="http://localhost:8080/SSE/REALDoc_logo.jpg" style="float:right" width="427" height="132"><br>
 
-<h1>Server-sent Event Manager 10</h1>
+<h1>Server-sent Event Manager 11</h1>
+<!-- 
 <form id="filterform" action="">
 	NAME: <input type="text" onkeyup="getName(this.value)" />
 	BUSINESS KEY: <input type="text" onkeyup="getBusinessKey(this.value)" />
@@ -262,25 +216,21 @@ function getBusinessKey(str) {
 		<select name="documentType">
 			<option value="a">option a</option>
 			<option value="b">option b</option>
+			<option value="c">option c</option>
+			<option value="d">option d</option>
+			<option value="e">option e</option>
 		</select>	
 	DATE: <A HREF="#" onClick="cal.select(document.forms['filterform'].date,'datesearch','MM/dd/yyyy'); return false;" ID="datesearch"><INPUT TYPE="text" placeholder="MM/DD/YY format (EX: 11/15/93)"  NAME="date" VALUE="" SIZE=25></A>
 
-	<!-- <input type="submit" value="SUBMIT"> -->
 	<button type="button" onClick="refreshFrame()">refreshFrame</button>
-</form>
-
-
-<!--  FOR ERROR CHECKING PURPOSES TO MAKE SURE GETS RIGHT NAME/BUSINESS KEY
-<p>
-Name: <span id="printName"></span><br>
-Business Key: <span id="printBusinessKey"></span>
-</p>
--->
+</form> 
 
 <DIV ID="caldiv" STYLE="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></DIV>
+-->
 
 <div id="resizable">
-   <iframe id="eventFrame" name="eventFrame" seamless src="about:blank" style="display: block; margin: 0 auto; padding: 0;"></iframe>
+	<!-- <iframe id="eventFrame" name="eventFrame" seamless src="about:blank" style="display: block; margin: 0 auto; padding: 0;"></iframe> -->
+   <iframe id="eventFrame" name="eventFrame" seamless src="SSE.html" style="display: block; margin: 0 auto; padding: 0;"></iframe>
 </div>
 
 </body>
