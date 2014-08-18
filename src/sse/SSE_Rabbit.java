@@ -29,7 +29,7 @@ public class SSE_Rabbit extends HttpServlet {
 	//private static final boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
 	//private static final int PREFETCH_COUNT = 1;      // maximum number of messages that the server will deliver
 	private static final boolean MSG_ACK = true;       // msg acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
-	private static String bindingKey = "document";	    // # can substitute for zero or more words; * for one word
+	private static final String bindingKey = "document";	    // # can substitute for zero or more words; * for one word
 	
 	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
@@ -49,7 +49,8 @@ public class SSE_Rabbit extends HttpServlet {
 		Channel channel = connection.createChannel();
 		
 		channel.exchangeDeclare(AbstractProducer.EXCHANGE_NAME, AbstractProducer.EXCHANGE_TYPE);
-		String queueName = channel.queueDeclare().getQueue();
+//		String queueName = channel.queueDeclare().getQueue();
+		String queueName = channel.queueDeclare(AbstractProducer.QUEUE_NAME, true, false, false, null).getQueue();
 		channel.queueBind(queueName, AbstractProducer.EXCHANGE_NAME, bindingKey);
 
 		

@@ -26,18 +26,15 @@ public class JSONProducer extends AbstractProducer {
 			//messageData = scanner.nextLine();
 			URL url = new URL("http://localhost:8080/SSE/" + filename);
 			Scanner scanner = new Scanner(url.openStream());
-			messageData = scanner.nextLine();
 			
-			//while (!(messageData.equals(CLOSE_PRODUCER))) {
 			while (scanner.hasNextLine()) {
 				bindingKey = "json";
+				messageData = scanner.nextLine();
 				
 				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
+				System.out.println("  [x] Sent:  " + bindingKey + " - " + messageData);
 				
 				Thread.currentThread().sleep(250);
-				
-				System.out.println("  [x] Sent:  " + bindingKey + " - " + messageData);
-				messageData = scanner.nextLine();
 			}
 			scanner.close();
 		}

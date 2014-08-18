@@ -38,6 +38,7 @@ cal.addDisabledDates(tomorrow, null);
 
 
 //FUNCTION THAT CHECKS IF BUSINESS KEY & NAME FIELD WAS ENTERED (AT LEAST ONE MUST BE FILLED IN) //////
+/*
 function validateForm() {
 	var n_miss = document.forms["filterform"]["name"].value;
 	var bkey_miss = document.forms["filterform"]["businessKey"].value;
@@ -47,6 +48,14 @@ function validateForm() {
 		return false;
 	}
 	
+}
+*/
+function validateForm() {
+	var nameMissing = document.forms["filterform"]["name"].value;
+	if (nameMissing=="" || nameMissing==null) {
+		alert("A name must at least be entered");
+		return false;
+	}
 }
 </script>
 <style>
@@ -157,7 +166,20 @@ form {
 
 <form name="filterform" action="RoutingConsumer" onsubmit="return validateForm()" method="post">
 	NAME: <input type="text" name="name">
-	BUSINESS KEY: <input type="text" name="businessKey">
+	<!-- BUSINESS KEY: <input type="text" name="businessKey"> -->
+	MESSAGE TYPE:
+		<select name="msgType">
+		<option value="">------</option>
+		<option value="request_generated">Request Generated</option>
+		<option value="request_received">Request Received</option>
+		<option value="request_validated">Request Validated</option>
+		<option value="letter_generated">Letter Generated</option>
+		<option value="awaiting_approval">Awaiting Approval</option>
+		<option value="letter_approved">Letter Approved</option>
+		<option value="letter_dispatched">Letter Dispatched</option>
+		<option value="delivery_confirmed">Delivery Confirmed</option>
+		<option value="file_closed">File Closed</option>
+		</select>
 	DOCUMENT TYPE: 
 		<select name="docType">
 		<option value="">------</option>

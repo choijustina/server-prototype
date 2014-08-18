@@ -7,8 +7,10 @@ public class Consumer {
 	private String doctype;
 	private String data;
 
-	public Consumer(String strName) {
+	public Consumer(String strName, String msgType, String docType) {
 		this.name = strName;
+		this.msgtype = msgType;
+		this.doctype = docType;
 	}
 	
 	protected String getID() {
@@ -30,5 +32,10 @@ public class Consumer {
 	protected String getData() {
 		return this.data;
 	}
+	/*
+	protected String printConsumer() {
+		return "Consumer - ID: " + this.id + ", Name: " + this.name + ", Message Type: " + this.msgtype
+				+ ", Document Type: " + this.doctype + ", Data: " + this.data + "\n\n";
+	}*/
 
 }
