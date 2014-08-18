@@ -164,7 +164,7 @@ public class RoutingConsumer extends HttpServlet {
 //				String eventID = (String) jsonObject.get("id");
 				String eventMsgType = (String) jsonObject.get("msgtype");
 				String eventDocType = (String) jsonObject.get("doctype");
-//				String eventData = (String) jsonObject.get("data");
+				String eventData = (String) jsonObject.get("data");
 				
 				// check if the event matches any of the filter criteria
 				for (int i = 1; i <= numberOfConsumers; i++) {
@@ -186,10 +186,7 @@ public class RoutingConsumer extends HttpServlet {
 						caseNum = 1;						// searching name, message type and document type (ALL OPTIONS)
 					
 					
-					if (DEBUG) out.print("data: case number is " + caseNum + "\n\n");
-					
-					// assumes is a json object
-//					out.print("event: jsonobject\n");
+//					if (DEBUG) out.print("data: case number is " + caseNum + "\n\n");
 					
 					switch(caseNum) {
 					case 0:
@@ -197,61 +194,40 @@ public class RoutingConsumer extends HttpServlet {
 					case 1:				// searching name, message type and document type
 						if ( (consumerName.equals(eventName)) && (consumerMsgType.equals(eventMsgType)) && (consumerDocType.equals(eventDocType)) ) {
 							jsonObject.put("consumerKey", i);
+							if(DEBUG) out.print("data: case 1 & sending to consumerID: " + i + "; eventdata: " + eventData + "\n\n");
+							out.print("event: jsonobject\n");
 							out.print("data: " + jsonObject + "\n\n");
 						}
-//						if (DEBUG) {
-//							out.print("data: " + "consumerName: " + consumerName + "; eventName: " + eventName + "<br>\n\n");
-//							out.print("data: " + "conumserMsgType: " + consumerMsgType + "; eventMsgType: " + eventMsgType + "\n\n");
-//							out.print("data: " + "consumerDocType: " + consumerDocType + "; eventDocType: " + eventDocType + "\n\n");
-//						}
+						break;
 					case 2:				// searching name
 						if (consumerName.equals(eventName)) {
 							jsonObject.put("consumerKey", i);
+							if(DEBUG) out.print("data: case 2 & sending to consumerID: " + i + "; eventdata: " + eventData + "\n\n");
+							out.print("event: jsonobject\n");
 							out.print("data: " + jsonObject + "\n\n");
 						}
+						break;
 					case 3:				// searching name & document type
 						if ( (consumerName.equals(eventName)) && (consumerDocType.equals(eventDocType)) ) {
 							jsonObject.put("consumerKey", i);
+							if(DEBUG) out.print("data: case 3 & sending to consumerID: " + i + "; eventdata: " + eventData + "\n\n");
+							out.print("event: jsonobject\n");
 							out.print("data: " + jsonObject + "\n\n");
 						}
+						break;
 					case 4:				// searching name & message type
 						if ( (consumerName.equals(eventName)) && (consumerMsgType.equals(eventMsgType)) ) {
 							jsonObject.put("consumerKey", i);
+							if(DEBUG) out.print("data: case 4 & sending to consumerID: " + i + "; eventdata: " + eventData + "\n\n");
+							out.print("event: jsonobject\n");
 							out.print("data: " + jsonObject + "\n\n");
 						}
+						break;
 					}
 					
 					out.flush();
 				}
 				
-				
-				/*
-				if (message.equals(AbstractProducer.CLOSE_CONSUMER))
-					break;
-				else {
-					if (message.equals("clear")) {
-						out.print("event: clear\n");
-						out.print("data: clearing the client display\n\n");
-					} else if (routingKey.equals("json")){
-						out.print("event: jsonobject\n");
-						out.print("data: " + message + "\n\n");
-						
-//						JSONParser parser = new JSONParser();
-//						JSONObject jsonObject = (JSONObject) parser.parse(message);
-//						String eventName = (String) jsonObject.get("name");
-//						String eventID = (String) jsonObject.get("id");
-//						String eventMsgType = (String) jsonObject.get("msgtype");
-//						String eventDocType = (String) jsonObject.get("doctype");
-//						String eventData = (String) jsonObject.get("data");
-						
-						//out.print("data: name is " + eventName + "\n\n");
-					} else {
-						out.print("data: " + routingKey + " - " + message + "\n\n");
-					}
-					//out.print("data: " + message + "\n\n");
-					out.flush();
-				}
-				*/
 				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
