@@ -3,7 +3,7 @@
  * Author: Justina Choi (choi.justina@gmail.com)
  * Date: July 1, 2014
  * Sources: http://www.rabbitmq.com/tutorials/tutorial-two-java.html
- * Notes: RabbitMQ Consumer
+ * Notes: integrating RabbitMQ Consumer; used in version two of SSE.html
  */
 
 package sse;
@@ -26,12 +26,10 @@ import com.rabbitmq.client.QueueingConsumer;
 @WebServlet("/SSE_Rabbit")
 public class SSE_Rabbit extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	//private static final String EXCHANGE_NAME = "topicexchange";   //AbstractProducer.EXCHANGE_NAME
-	//private static final String QUEUE_NAME = "queue"; // when using an exchange, server-generated queue names
 	//private static final boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
 	//private static final int PREFETCH_COUNT = 1;      // maximum number of messages that the server will deliver
-	private static final boolean MSG_ACK = false;       // msg acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
-	//private static final String BINDING_KEY = "#";	    // # can substitute for zero or more words; * for one word
+	private static final boolean MSG_ACK = true;       // msg acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
+	private static String bindingKey = "document";	    // # can substitute for zero or more words; * for one word
 	
 	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
@@ -44,38 +42,30 @@ public class SSE_Rabbit extends HttpServlet {
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Connection", "keep-alive");
 		
+		// RABBITMQ
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("localhost");
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
-	
-		/* version from when had topic exchange
-		channel.exchangeDeclare(AbstractProducer.EXCHANGE_NAME, "topic"); 	// a durable, non-autodelete exchange of "topic" type
-		String queueName = channel.queueDeclare().getQueue();	    //get server-generated queue name
-		channel.queueBind(queueName, AbstractProducer.EXCHANGE_NAME, BINDING_KEY);
-//		channel.queueDeclare(QUEUE_NAME, MSG_DURABLE, false, false, null);
-		*/
 		
 		channel.exchangeDeclare(AbstractProducer.EXCHANGE_NAME, AbstractProducer.EXCHANGE_TYPE);
-		channel.queueDeclare(AbstractProducer.QUEUE_NAME, true, false, false, null);
-		channel.queueBind(AbstractProducer.QUEUE_NAME, AbstractProducer.EXCHANGE_NAME, "");		// last param empty because no binding key
+		String queueName = channel.queueDeclare().getQueue();
+		channel.queueBind(queueName, AbstractProducer.EXCHANGE_NAME, bindingKey);
+
 		
 		PrintWriter out = response.getWriter();
 		out.print("data: inside SSE_Rabbit.java file\n\n");
-		//out.print("data: binding key: " + BINDING_KEY + "\n\n");
+		out.print("data: binding key: " + bindingKey + "\n\n");
 		out.print("data: [*] Waiting for messages.\n\n");
 		out.flush();
-		//channel.basicQos(PREFETCH_COUNT);
 		
 		QueueingConsumer queueingConsumer = new QueueingConsumer(channel);
-		//channel.basicConsume(queueName, MSG_ACK, consumer);
-		channel.basicConsume(AbstractProducer.QUEUE_NAME, MSG_ACK, queueingConsumer);
+		channel.basicConsume(queueName, MSG_ACK, queueingConsumer);
 		
 		while (true) {
 			try {
 				QueueingConsumer.Delivery delivery = queueingConsumer.nextDelivery();
-				
-				String routingKey = delivery.getEnvelope().getRoutingKey();
+//				String routingKey = delivery.getEnvelope().getRoutingKey();
 				String message = new String(delivery.getBody());
 				
 				if (message.equals(AbstractProducer.CLOSE_CONSUMER)) {
@@ -83,16 +73,17 @@ public class SSE_Rabbit extends HttpServlet {
 				}
 				else if (message.equals("clear")) {
 					out.print("event: " + "clear" + "\n");
-					//out.print("data: " + "binding key: " + BINDING_KEY + "\n\n");
 					out.flush();
 				}
 				else {
 					Date date = new Date();
 					//out.print("data: " + date.toString() + " [x] Received " + routingKey + " : '" + message + "'" + "\n\n");
-					out.print("data: " + date.toString() + " [x] Received " + message + "\n\n");
+					out.print("data: " + date.toString() + " [x] Received msg: "  + message + "\n\n");
 					out.flush();
 				}
-				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+				
+				// only when msg ack is false?
+//				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
 				
 				//testing queue by throttling
 				//Thread.currentThread().sleep(1000);
@@ -105,6 +96,4 @@ public class SSE_Rabbit extends HttpServlet {
 		channel.close();
 		out.close();
 	}
-	
-	
 }

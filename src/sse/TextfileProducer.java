@@ -35,11 +35,13 @@ public class TextfileProducer extends AbstractProducer {
 			while (s.hasNextLine()) {
 				bindingKey = "document";
 				messageData = s.nextLine();
-				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
 				
-				Thread.currentThread().sleep(100);
+				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
+//				channel.basicPublish(EXCHANGE_NAME, "", null, messageData.getBytes());
 				
 				System.out.println("  [x] Sent '" + messageData + "'");
+				
+				Thread.currentThread().sleep(300);
 			}
 			
 		} catch (IOException e1) {
