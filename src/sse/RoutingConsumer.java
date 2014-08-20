@@ -82,8 +82,6 @@ public class RoutingConsumer extends HttpServlet {
 		// TODO: if request.getParam returns null/empty string, then don't search for it
 		// TODO: add getParamater for other filter criteria
 		
-//		Consumer c = new Consumer(name);
-//		Consumer c = new Consumer(name, docType);
 		Consumer c = new Consumer(name, msgType, docType);
 		
 		if (numberOfConsumers==0)
@@ -95,11 +93,10 @@ public class RoutingConsumer extends HttpServlet {
 		
 		RequestDispatcher view = request.getRequestDispatcher(REDIRECT_FILE);
 		view.forward(request, response);
-		
 	}
 	
 	/*
-	 * isEventStream - when newSSE.html loads, connects to RoutingConsumer as an EventSource
+	 * isEventStream - when SSE.html loads, connects to RoutingConsumer as an EventSource
 	 */
 	private void isEventStream(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -113,9 +110,12 @@ public class RoutingConsumer extends HttpServlet {
 		out.print("event: consumerKey\n");
 		out.print("data: " + numberOfConsumers + "\n\n");
 		
-		if (connection==null)
+		out.print("data: inside RoutingConsumer.java\n\n");
+		
+		if (connection==null) {
 			initRabbitMQ();
-		else
+			out.print("data: initialized RabbitMQ connection\n\n");
+		} else
 			out.print("data: RabbitMQ already initialized - double check\n\n");
 		
 		out.print("data: [*] Waiting for messages\n\n");
@@ -130,12 +130,13 @@ public class RoutingConsumer extends HttpServlet {
 			String b = consumer.getDocType();
 			String c = consumer.getMsgType();
 			
+			// MESSAGE TYPE
 			if (c.equals(""))
 				out.print("data: message type is an empty string for consumer " + numberOfConsumers + "\n\n");
 			else
 				out.print("data: consumer " + numberOfConsumers + " is searching for message type " + c + "\n\n");
 			
-			
+			// DOCUMENT TYPE
 			if (b.equals(""))
 				out.print("data: document type is an empty string for consumer " + numberOfConsumers + "\n\n");
 			else
@@ -143,7 +144,6 @@ public class RoutingConsumer extends HttpServlet {
 			
 			out.print("data: consumer " + numberOfConsumers + " is searching for the name '" + a + "'\n\n");
 			out.flush();
-			
 		}
 		
 		
@@ -151,11 +151,17 @@ public class RoutingConsumer extends HttpServlet {
 			try {
 				QueueingConsumer.Delivery delivery = queueingConsumer.nextDelivery();
 				
-				//String routingKey = delivery.getEnvelope().getRoutingKey();
+				// when being sent from JSONProducer, always "json"
+//				String routingKey = delivery.getEnvelope().getRoutingKey();
 				String message = new String(delivery.getBody());
-
-				if (message.equals(AbstractProducer.CLOSE_CONSUMER))
-					break;			
+				
+				if (message.equals(AbstractProducer.CLOSE_CONSUMER)) {
+					out.print("data: CLOSING THE CONSUMER\n\n");
+					out.flush();
+					channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+					break;
+				}
+								
 				
 				JSONParser parser = new JSONParser();
 				JSONObject jsonObject = (JSONObject) parser.parse(message);
@@ -236,7 +242,8 @@ public class RoutingConsumer extends HttpServlet {
 			}
 		}
 		out.close();
-		closeRabbitMQ();
+		// so that can auto-reconnect after an error
+//		closeRabbitMQ();
 	}
 	
 	/*
@@ -252,7 +259,6 @@ public class RoutingConsumer extends HttpServlet {
 		channel.queueDeclare(AbstractProducer.QUEUE_NAME, true, false, false, null);
 //		channel.queueBind(AbstractProducer.QUEUE_NAME, AbstractProducer.EXCHANGE_NAME, "");
 		channel.queueBind(AbstractProducer.QUEUE_NAME, AbstractProducer.EXCHANGE_NAME, bindingKey);
-		
 		
 		queueingConsumer = new QueueingConsumer(channel);
 		channel.basicConsume(AbstractProducer.QUEUE_NAME, MSG_ACK, queueingConsumer);
