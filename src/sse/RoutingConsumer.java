@@ -7,8 +7,23 @@
 
 package sse;
 
+import com.mongodb.BasicDBObject;
+//import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+//import com.mongodb.DBCursor;
+//import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.util.JSON;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.QueueingConsumer;
+
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,11 +34,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.QueueingConsumer;
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -32,16 +42,18 @@ import org.json.simple.parser.ParseException;
 public class RoutingConsumer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final boolean MSG_ACK = false;			// TODO: message acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
-	protected static final int RECONNECT_TIME = 3000;		// delay in milliseconds until auto-reconnect 
+	private static final int RECONNECT_TIME = 3000;			// delay in milliseconds until auto-reconnect 
 	private static final String REDIRECT_FILE = "index.html";
-	private static final String bindingKey = "json";	
+	private static final String bindingKey = "";
 	
-	private Connection connection = null;  //only one RabbitMQ connection
+	private Connection connection = null;					//only one RabbitMQ connection
 	private Channel channel = null;
 	private QueueingConsumer queueingConsumer = null;
 	
 	private static Map<Integer, Consumer> consumerMap = new HashMap<Integer, Consumer>();
 	private static int numberOfConsumers = 0;
+	
+	private DBCollection collection;
 	
 	private static final boolean DEBUG = true;
 	
@@ -112,13 +124,12 @@ public class RoutingConsumer extends HttpServlet {
 		
 		out.print("data: inside RoutingConsumer.java\n\n");
 		
+		
 		if (connection==null) {
 			initRabbitMQ();
 			out.print("data: initialized RabbitMQ connection\n\n");
 		} else
 			out.print("data: RabbitMQ already initialized - double check\n\n");
-		
-		out.print("data: [*] Waiting for messages\n\n");
 
 		if (DEBUG) {
 			out.print("data: DEBUG MODE IS ON\n\n");
@@ -143,9 +154,13 @@ public class RoutingConsumer extends HttpServlet {
 				out.print("data: consumer " + numberOfConsumers + " is searching for document type " + b + "\n\n");
 			
 			out.print("data: consumer " + numberOfConsumers + " is searching for the name '" + a + "'\n\n");
-			out.flush();
 		}
 		
+//		if (initMongo() && DEBUG)
+//			out.print("data: successfully initialized Mongo database\n\n");
+		
+		out.print("data: [*] Waiting for messages\n\n");
+		out.flush();
 		
 		while (true) {
 			try {
@@ -161,7 +176,9 @@ public class RoutingConsumer extends HttpServlet {
 					channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
 					break;
 				}
-								
+				
+//				if (addtoMongo(message) && DEBUG)
+//					out.print("data: successfully added to MongoDB\n\n");
 				
 				JSONParser parser = new JSONParser();
 				JSONObject jsonObject = (JSONObject) parser.parse(message);
@@ -241,9 +258,16 @@ public class RoutingConsumer extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
+		out.print("data: CLOSING CONSUMER if doesn't auto-reconnect within 5 seconds\n\n");
+		out.flush();
 		out.close();
-		// so that can auto-reconnect after an error
-//		closeRabbitMQ();
+		try {
+			Thread.currentThread().sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		// closes the connection if doesn't try to auto-reconnect 
+		closeRabbitMQ();
 	}
 	
 	/*
@@ -256,17 +280,59 @@ public class RoutingConsumer extends HttpServlet {
 		channel = connection.createChannel();
 		
 		channel.exchangeDeclare(AbstractProducer.EXCHANGE_NAME, AbstractProducer.EXCHANGE_TYPE);
-		channel.queueDeclare(AbstractProducer.QUEUE_NAME, true, false, false, null);
-//		channel.queueBind(AbstractProducer.QUEUE_NAME, AbstractProducer.EXCHANGE_NAME, "");
-		channel.queueBind(AbstractProducer.QUEUE_NAME, AbstractProducer.EXCHANGE_NAME, bindingKey);
+		
+		// server-generated queue names
+//		String queueName = channel.queueDeclare().getQueue();
+		// already defined queue name (in AbstractProducer.java)
+		String queueName = channel.queueDeclare(AbstractProducer.QUEUE_NAME, true, false, false, null).getQueue();
+		
+		channel.queueBind(queueName, AbstractProducer.EXCHANGE_NAME, bindingKey);
 		
 		queueingConsumer = new QueueingConsumer(channel);
-		channel.basicConsume(AbstractProducer.QUEUE_NAME, MSG_ACK, queueingConsumer);
+		channel.basicConsume(queueName, MSG_ACK, queueingConsumer);
 	}
 	
 	private void closeRabbitMQ() throws IOException {
 		connection.close();
 		channel.close();
+	}
+	
+	private boolean initMongo() {
+		try {
+			//connect to local db server
+			MongoClient mongoClient = new MongoClient();
+			
+			//get handle to db "JSONDB"
+			DB db = mongoClient.getDB("JSONDB");
+			
+			//authenticate (optional)
+			//boolean auth = db.authenticate("user","pass");
+			
+			collection = db.getCollection("SSE");
+
+			//one week = 604800 seconds
+			//one day = 86400 seconds
+			//one hour = 3600 seconds
+			//one minute = 60 seconds
+
+			//creates index startDate, setup so that stuff deletes after a week
+			BasicDBObject index = new BasicDBObject("startDate", 1);
+			BasicDBObject options = new BasicDBObject("expireAfterSeconds", 604800);
+			collection.ensureIndex(index, options);
+			
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean addtoMongo(String msg) {
+		//convert to DBObject, add startDate, insert into DB
+		BasicDBObject dbObject = (BasicDBObject) JSON.parse(msg);
+		dbObject = dbObject.append("startDate", new Date());
+		collection.insert(dbObject);
+		return true;
 	}
 
 }

@@ -48,7 +48,7 @@ function addLoadEvent(func) {
 
 <script>
 function printData(d) {
-	document.body.innerHTML = "consumerKey: " + d.consumerKey + "<br>" +
+	document.body.innerHTML = "<br>consumerKey: " + d.consumerKey + "<br>" +
 		"ID: " + d.id
 						+ "<br>NAME: " + d.name 
 						+ "<br>MSGTYPE: " + d.msgtype 
@@ -59,6 +59,7 @@ function printData(d) {
 
 if (typeof (EventSource) != "undefined") {
 	var source = new EventSource("http://localhost:8080/SSE/RoutingConsumer");
+	//var source = new EventSource("http://localhost:8080/SSE/Consumer");
 	
 	//to have the newest messages on the bottom: document.body.innerHTML += "Connection was opened<br>";
 	source.onopen = function(event) {
@@ -66,7 +67,9 @@ if (typeof (EventSource) != "undefined") {
 	}
 	
 	source.onerror = function(event) {
-		document.body.innerHTML = "An error occurred; auto-reconnecting after 3 seconds <br>" + document.body.innerHTML;
+		document.body.innerHTML = "An error occurred; auto-reconnecting after 3 seconds<br>"
+									+ "&nbsp;If doesn't reconnect, check RabbitMQ connection in RoutingConsumer<br>"
+									+ document.body.innerHTML; 
 		if (event.readyState == EventSource.CLOSED) {
 			document.body.innerHTML = "CONNECTION CLOSED<br>" + document.body.innerHTML;
 		}
@@ -99,15 +102,10 @@ if (typeof (EventSource) != "undefined") {
 		if (d.doctype == null) d.doctype = "-";
 		if (d.data == null) d.data = "-";
 		
-		/*
-		if (d.name == window.parent.finalName)
-			printData(d);
-		else {
-			document.body.innerHTML = "name: " + d.name + " is NOT A MATCH<br><br>" + document.body.innerHTML;
-		}*/
-		
 		if (d.consumerKey==consumerKey)
 			printData(d);
+		
+		//printData(d);
 		
 	}, false);
 	

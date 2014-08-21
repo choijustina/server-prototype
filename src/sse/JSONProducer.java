@@ -28,11 +28,14 @@ public class JSONProducer extends AbstractProducer {
 			Scanner scanner = new Scanner(url.openStream());
 			
 			while (scanner.hasNextLine()) {
-				bindingKey = "json";
+//				bindingKey = "json";
 				messageData = scanner.nextLine();
 				
-				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
-				System.out.println("  [x] Sent:  " + bindingKey + " - " + messageData);
+//				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
+//				System.out.println("  [x] Sent:  " + bindingKey + " - " + messageData);
+				
+				channel.basicPublish(EXCHANGE_NAME, "", MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
+				System.out.println("  [x] Sent:  " + " - " + messageData);
 				
 				Thread.currentThread().sleep(250);
 			}

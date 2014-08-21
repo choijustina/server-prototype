@@ -33,11 +33,11 @@ public class TextfileProducer extends AbstractProducer {
 			s = new Scanner(url.openStream());
 			
 			while (s.hasNextLine()) {
-				bindingKey = "document";
+//				bindingKey = "document";
 				messageData = s.nextLine();
 				
-				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
-//				channel.basicPublish(EXCHANGE_NAME, "", null, messageData.getBytes());
+//				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
+				channel.basicPublish(EXCHANGE_NAME, "", MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());			// 2nd parameter is binding key; none for fanout exchange
 				
 				System.out.println("  [x] Sent '" + messageData + "'");
 				

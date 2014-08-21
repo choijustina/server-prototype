@@ -27,16 +27,16 @@ public class ConsoleProducer extends AbstractProducer {
 			while (!(scanner.hasNext(CLOSE_PRODUCER))) {
 				
 				// SENDING WITHOUT A BINDING KEY
-				/*messageData = scanner.nextLine();
+				messageData = scanner.nextLine();
 				channel.basicPublish(EXCHANGE_NAME, "", MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
 				System.out.println("  [x] Sent " + " : '" + messageData + "'");
-				*/
+				
 				//SENDING WITH A BINDING KEY
-				bindingKey = scanner.next();
+/*				bindingKey = scanner.next();
 				messageData = scanner.next() + scanner.nextLine();
 				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
-				System.out.println("  [x] Sent " + bindingKey + " - " + messageData + "'");
-				
+				System.out.println("  [x] Sent " + bindingKey + " - '" + messageData + "'");
+				*/			
 			}
 		} catch (IOException exception) {
 			exception.printStackTrace();

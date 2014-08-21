@@ -10,6 +10,7 @@ import java.util.logging.*;
 import java.util.Scanner;
 import java.util.Date;
 import java.text.*;
+
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.MessageProperties;
@@ -32,13 +33,18 @@ public class LogProducer extends AbstractProducer {
 		
 		try {
 			while (!(scanner.hasNext(CLOSE_PRODUCER))) {
-				bindingKey = scanner.next();
+//				bindingKey = scanner.next();
 				messageData = scanner.next() + scanner.nextLine();
 				
-				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
-				System.out.println("  [x] Sent " + bindingKey + " : '" + messageData + "'");
+//				channel.basicPublish(EXCHANGE_NAME, bindingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
+//				System.out.println("  [x] Sent " + bindingKey + " : '" + messageData + "'");
+				
+				channel.basicPublish(EXCHANGE_NAME, "", MessageProperties.PERSISTENT_TEXT_PLAIN, messageData.getBytes());
+				System.out.println("  [x] Sent:  " + " - " + messageData);
+				
 				String d = getDate();
-				logger.info(d + " : " + bindingKey + " : '" + messageData + "'");
+//				logger.info(d + " : " + bindingKey + " : '" + messageData + "'");
+				logger.info(d + " : '" + messageData + "'");
 			}
 		} catch (IOException exception) {
 			exception.printStackTrace(); 

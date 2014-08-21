@@ -15,14 +15,14 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 public abstract class AbstractProducer {
-	public static final String EXCHANGE_NAME = "topicexchange";
-	public static final String EXCHANGE_TYPE = "topic";
+	public static final String EXCHANGE_NAME = "fanout_exchange";
+	public static final String EXCHANGE_TYPE = "fanout";
 	public static final String QUEUE_NAME = "ServerSent_Events";
 	public static final String CLOSE_PRODUCER = "closeproducer";
 	public static final String CLOSE_CONSUMER = "closeconsumer";
 	//public static final boolean MSG_DURABLE = true;  // so message doesn't get lost if consumer dies
 	
-	public static String bindingKey = "";
+//	public static String bindingKey = "";
 	public static String messageData = "";
 
 	abstract void getData(Channel channel, Connection connection);
@@ -35,7 +35,9 @@ public abstract class AbstractProducer {
 			Connection connection = factory.newConnection();
 			Channel channel = connection.createChannel();
 			
-			channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);		// a durable, non-autodelete exchange, type is second parameter
+			channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);		// a durable, non-autodelete exchange
+//			channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+//			channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, "");
 			
 			getData(channel, connection);
 			closeQueue(channel, connection);
