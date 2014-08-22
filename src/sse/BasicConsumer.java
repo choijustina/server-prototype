@@ -25,6 +25,7 @@ public class BasicConsumer extends HttpServlet {
 	
 	protected static RoutingConsumer rc = null;
 	private static int assignConsumerID = 10;
+	private static int connectionID = 0;
 	
 	protected static PrintWriter out;
 	
@@ -63,6 +64,7 @@ public class BasicConsumer extends HttpServlet {
 		else
 			RoutingConsumer.numberOfConsumers++;
 		
+		connectionID = RoutingConsumer.numberOfConsumers;
 		RoutingConsumer.consumerMap.put(RoutingConsumer.numberOfConsumers, consumer);
 		
 		RequestDispatcher view = request.getRequestDispatcher(REDIRECT_FILE);
@@ -76,6 +78,12 @@ public class BasicConsumer extends HttpServlet {
 		
 		out = response.getWriter();				// IOException may occur here
 		out.print("retry: " + RECONNECT_TIME + "\n\n");
+		
+//		out.print("event: ConnectionID\n");
+//		out.print("data: " + assignConsumerID + "\n\n");
+//		assignConsumerID +=10;
+		
+		out.print("data: the connectionID is.... " + connectionID + "\n\n");
 		
 		if (rc==null) {
 			rc = new RoutingConsumer();
@@ -102,6 +110,7 @@ public class BasicConsumer extends HttpServlet {
 		
 		while(true) {
 			// wait to receive messages
+			
 		}
 		
 		/*

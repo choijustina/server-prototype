@@ -31,6 +31,10 @@ public class ConsumerObject {
 		return this.data;
 	}
 	
+//	protected void makeDataNull() {
+//		this.data = null;
+//	}
+	
 	protected String printConsumer() {
 		return "Consumer - ID: " + this.consumerID + ", Name: " + this.name + ", Message Type: " + this.msgtype
 				+ ", Document Type: " + this.doctype + ", Data: " + this.data + "\n\n";

@@ -79,8 +79,7 @@ public class RoutingConsumer {
 				// loop through all of the consumers
 				for (int i = 1; i <= RoutingConsumer.numberOfConsumers; i++) {
 					ConsumerObject thisConsumer = RoutingConsumer.consumerMap.get(i);
-//					thisConsumer.recvMsg(message);
-					
+					thisConsumer.recvMsg(10, message);
 				}
 				
 			} catch (InterruptedException e) {

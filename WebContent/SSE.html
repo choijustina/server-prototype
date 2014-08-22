@@ -73,7 +73,11 @@ if (typeof (EventSource) != "undefined") {
 			document.body.innerHTML = "CONNECTION CLOSED<br>" + document.body.innerHTML;
 		}
 	}
-	
+	/*
+	source.adddEventListener('ConnectionID', function(e) {
+		document.body.innerHTML = "ConnectionID is: " + e.data + "<br>" + document.body.innerHTML;
+	}, false);
+	*/
 	source.addEventListener('clear', function(e) {
 		document.body.innerHTML = "[*] Waiting for messages.." + "<br>" + e.data;
 	}, false);
