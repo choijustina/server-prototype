@@ -17,19 +17,28 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/Consumer")
+import org.json.simple.JSONObject;
+
+@WebServlet("/BasicConsumer")
 public class BasicConsumer extends HttpServlet {
+	private static BasicConsumer instance = null;
+	
 	private static final long serialVersionUID = 1L;
 	private static final int RECONNECT_TIME = 3000;			// delay in milliseconds until auto-reconnect
 	private static final String REDIRECT_FILE = "index.html";
 	
 	protected static RoutingConsumer rc = null;
-	private static int assignConsumerID = 10;
-	private static int connectionID = 0;
-	
 	protected static PrintWriter out;
 	
 	private static final boolean DEBUG = true;
+	
+	public BasicConsumer() { }
+	
+	public static BasicConsumer getInstance() {
+		if (instance==null)
+			instance = new BasicConsumer();
+		return instance;
+	}
 	
 	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
@@ -56,16 +65,14 @@ public class BasicConsumer extends HttpServlet {
 		String b = request.getParameter("msgType");
 		String c = request.getParameter("docType");
 		
-		ConsumerObject consumer = new ConsumerObject(assignConsumerID, a, b, c);
-		assignConsumerID +=10;
+		ConsumerObject consumerobj = new ConsumerObject(a, b, c, getInstance());
 		
 		if (RoutingConsumer.numberOfConsumers==0)
 			RoutingConsumer.numberOfConsumers = 1;
 		else
 			RoutingConsumer.numberOfConsumers++;
 		
-		connectionID = RoutingConsumer.numberOfConsumers;
-		RoutingConsumer.consumerMap.put(RoutingConsumer.numberOfConsumers, consumer);
+		RoutingConsumer.consumerMap.put(RoutingConsumer.numberOfConsumers, consumerobj);
 		
 		RequestDispatcher view = request.getRequestDispatcher(REDIRECT_FILE);
 		view.forward(request, response);
@@ -79,73 +86,25 @@ public class BasicConsumer extends HttpServlet {
 		out = response.getWriter();				// IOException may occur here
 		out.print("retry: " + RECONNECT_TIME + "\n\n");
 		
-//		out.print("event: ConnectionID\n");
-//		out.print("data: " + assignConsumerID + "\n\n");
-//		assignConsumerID +=10;
-		
-		out.print("data: the connectionID is.... " + connectionID + "\n\n");
-		
-		if (rc==null) {
+		if (rc==null)
 			rc = new RoutingConsumer();
-			if(DEBUG) out.print("data: RoutingConsumer instantiated successfully\n\n");
-		} else
-			if(DEBUG) out.print("data: RoutingConsumer already instantiated\n\n");
-		
-		if (DEBUG) {
-			out.print("data: DEBUG MODE IS ON\n\n");
-			out.print("data: inside BasicConsumer.java file\n\n");
-			out.print("data: numberOfConsumers counter: " + RoutingConsumer.numberOfConsumers + "\n\n");
-			out.print("data: size of consumerMap: " + RoutingConsumer.consumerMap.size() + "\n\n");
-			out.print("data: listing all of the consumers in mapping\n\n");
-			
-			for (int i = 1; i <= RoutingConsumer.numberOfConsumers; i++) {
-				ConsumerObject thisConsumer = RoutingConsumer.consumerMap.get(i);
-				String str = thisConsumer.printConsumer();
-				out.print("data: " + str + "\n\n");
-			}
-		}
 		
 		out.print("data: [*] Waiting for messages\n\n");
 		out.flush();
 		
 		while(true) {
 			// wait to receive messages
-			
 		}
-		
-		/*
-		int i = 1;
-		while(true) {
-			
-			out.print("data: this is the new message " + i + "\n\n");
-			out.flush();
-			i++;
-			
-			try {
-				Thread.currentThread().sleep(10000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			if (i>100)
-				break;
-		}
-		
-		out.close();
-		*/
 	}
 	
-	// debugging purposes
-	protected static void recvMsg(String str) {
+	protected void receiveMessage(String str) {
 		out.print("data: " + str + "\n\n");
 		out.flush();
 	}
 	
-	protected static void recvMsg(int idNumber, String str) {
-		out.print("data: " + str + "\n\n");
+	protected void sendJSON(JSONObject jsonobj) {
+		out.print("event: jsonobject\n");
+		out.print("data: " + jsonobj + "\n\n");
 		out.flush();
 	}
-	
-
 }

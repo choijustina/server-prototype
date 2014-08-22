@@ -1,18 +1,24 @@
+/*
+ * File: ConsumerObject.java
+ * Author: Justina Choi (choi.justina@gmail.com)
+ * Date: August 20, 2014
+ * Purpose: stores the filter criteria for each search instance
+ */
+
 package sse;
 
 public class ConsumerObject {
-	private int consumerID;
-//	private String eventID;
 	private String name;
 	private String msgtype;
 	private String doctype;
 	private String data;
+	private BasicConsumer basicConsumer;
 	
-	public ConsumerObject (int id, String strName, String msgType, String docType) {
-		this.consumerID = id;
+	public ConsumerObject (String strName, String msgType, String docType, BasicConsumer bc) {
 		this.name = strName;
 		this.msgtype = msgType;
 		this.doctype = docType;
+		this.basicConsumer = bc;
 	}
 	
 	protected String getName() {
@@ -31,17 +37,12 @@ public class ConsumerObject {
 		return this.data;
 	}
 	
-//	protected void makeDataNull() {
-//		this.data = null;
-//	}
-	
-	protected String printConsumer() {
-		return "Consumer - ID: " + this.consumerID + ", Name: " + this.name + ", Message Type: " + this.msgtype
-				+ ", Document Type: " + this.doctype + ", Data: " + this.data + "\n\n";
+	protected BasicConsumer getBasicConsumer() {
+		return this.basicConsumer;
 	}
 	
-	protected void recvMsg(int num, String str) {
-		BasicConsumer.out.print("data: " + str + "\n\n");
-		BasicConsumer.out.flush();
+	protected String printConsumer() {
+		return "Consumer - Name: " + this.name + ", Message Type: " + this.msgtype
+				+ ", Document Type: " + this.doctype + ", Data: " + this.data + "\n\n";
 	}
 }

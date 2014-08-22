@@ -37,19 +37,7 @@ cal.addDisabledDates(null, oneWeekAgo);
 cal.addDisabledDates(tomorrow, null);
 
 
-//FUNCTION THAT CHECKS IF BUSINESS KEY & NAME FIELD WAS ENTERED (AT LEAST ONE MUST BE FILLED IN) //////
-/*
-function validateForm() {
-	var n_miss = document.forms["filterform"]["name"].value;
-	var bkey_miss = document.forms["filterform"]["businessKey"].value;
-	
-	if ((n_miss==null || n_miss == "") && (bkey_miss==null || bkey_miss == "")){
-		alert("You must enter at least a name or business key!");
-		return false;
-	}
-	
-}
-*/
+//FUNCTION THAT MAKES SURE AT LEAST NAME FIELD WAS ENTERED //////
 function validateForm() {
 	var nameMissing = document.forms["filterform"]["name"].value;
 	if (nameMissing=="" || nameMissing==null) {
@@ -164,7 +152,7 @@ form {
 <!-- <div></div> -->
 <p>SEARCH</p>
 
-<form name="filterform" action="Consumer" onsubmit="return validateForm()" method="post">
+<form name="filterform" action="BasicConsumer" onsubmit="return validateForm()" method="post">
 	NAME: <input type="text" name="name">
 	<!-- BUSINESS KEY: <input type="text" name="businessKey"> -->
 	MESSAGE TYPE:

@@ -4,49 +4,19 @@
 
 <head>
 <title>Event Manager</title>
-
-<!--  
+ 
+ <!-- 
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
--->
+ -->
 
 <script src="CalendarPopup.js"></script>
 <script src="AnchorPosition.js"></script>
 <script src="date.js"></script>
 <script src="PopupWindow.js"></script>
 <script type="text/javascript">
-
-
-// GLOBAL VARIABLES ////////////////////////////////////////
-
-/*
-//CALENDAR STUFF /////////////////////////////////////////////////
-var cal = new CalendarPopup("caldiv");
-cal.offsetX = 5;
-cal.setCssPrefix("TEST");
-//set dates available on calendar to be a week before up to today (including today)
-var t = new Date();
-var dd = t.getDate()+1; 
-var mm = t.getMonth()+1;
-var yy = t.getFullYear().toString().substr(2,2);
-(dd < 10) ? (dd = '0' + dd) : dd;
-(mm < 10) ? (mm = '0' + mm) : mm;
-
-var wk = new Date(t.getTime() - (60*60*24*7*1000));
-var wd = wk.getDate()-1; //include last week's today
-var wm = wk.getMonth()+1;
-var wy = wk.getFullYear().toString().substr(2,2);
-(wd < 10) ? (wd = '0' + wd) : wd;
-(wm < 10) ? (wm = '0' + wm) : wm;
-
-var oneWeekAgo = wm + '/' + wd + '/' + wy;
-var tomorrow = mm + '/' + dd + '/' + yy;
-
-cal.addDisabledDates(null, oneWeekAgo);
-cal.addDisabledDates(tomorrow, null);
-*/
 
 /*
 // ALLOWS FRAME TO BE RESIZABLE ///////////////////////
@@ -66,15 +36,6 @@ $(function() {
   });
 }); 
 */
-
-// CALLED AFTER SUBMIT BUTTON IS CLICKED
-function refreshFrame() {
-	//document.getElementById(eventFrame).contentDocument.location.reload(true);
-	var iframe = document.getElementById('eventFrame');
-	iframe.src = "SSE.html";
-	//alert("refreshed frame");
-}
-
 </script>
 
 <!-- STYLES---------------------------------------------------------->
@@ -206,30 +167,9 @@ function refreshFrame() {
 <!-- REALDoc logo image -->
 <img border="0" src="http://localhost:8080/SSE/REALDoc_logo.jpg" style="float:right" width="427" height="132"><br>
 
-<h1>Server-sent Event Manager 19</h1>
-<!-- 
-<form id="filterform" action="">
-	NAME: <input type="text" onkeyup="getName(this.value)" />
-	BUSINESS KEY: <input type="text" onkeyup="getBusinessKey(this.value)" />
-	
-	DOCUMENT TYPE: 
-		<select name="documentType">
-			<option value="a">option a</option>
-			<option value="b">option b</option>
-			<option value="c">option c</option>
-			<option value="d">option d</option>
-			<option value="e">option e</option>
-		</select>	
-	DATE: <A HREF="#" onClick="cal.select(document.forms['filterform'].date,'datesearch','MM/dd/yyyy'); return false;" ID="datesearch"><INPUT TYPE="text" placeholder="MM/DD/YY format (EX: 11/15/93)"  NAME="date" VALUE="" SIZE=25></A>
-
-	<button type="button" onClick="refreshFrame()">refreshFrame</button>
-</form> 
-
-<DIV ID="caldiv" STYLE="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></DIV>
--->
+<h1>Server-sent Event Manager</h1>
 
 <div id="resizable">
-	<!-- <iframe id="eventFrame" name="eventFrame" seamless src="about:blank" style="display: block; margin: 0 auto; padding: 0;"></iframe> -->
    <iframe id="eventFrame" name="eventFrame" seamless src="SSE.html" style="display: block; margin: 0 auto; padding: 0;"></iframe>
 </div>
 

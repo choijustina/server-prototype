@@ -61,11 +61,10 @@ function printData(d) {
 
 /*
  * openConnection()
-  
  */
  function openConnection() {
 	if (typeof (EventSource) != "undefined") {
-		var source = new EventSource("http://localhost:8080/SSE/RoutingConsumer");
+		var source = new EventSource("http://localhost:8080/SSE/RoutingConsumer2");
 		
 		source.onopen = function(event) {
 			bodyText = "Connection was opened<br>"
@@ -137,8 +136,8 @@ table,th,td {
 <!-- REALDoc logo image -->
 <img border="0" src="http://localhost:8080/SSE/REALDoc_logo.jpg" style="float:right" width="427" height="132"><br>
 
-<h1>Server-sent Event Manager without iframe 21</h1>
-<h5>Loaded newSSE.html file</h5>
+<h1>Server-sent Event Manager</h1>
+<h5>Loaded newSSE.html file with RoutingConsumer2.java</h5>
 
 <!-- 
 <form id="filterform" action="" method="post" onsubmit="openConnection()"> 

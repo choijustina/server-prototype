@@ -12,9 +12,6 @@ body {
 
 <script type="text/javascript">
 
-// GLOBAL VARIABLES ////////////////////////////////////////
-var consumerKey;
-
 function pageScroll() {
 	//negative for scrolling up, positive for scrolling down
 	window.scrollBy(0,-100);
@@ -37,10 +34,6 @@ function addLoadEvent(func) {
 
 //addLoadEvent(pageScroll());
 
-
-
-
-
 </script>
 </head>
 
@@ -48,8 +41,7 @@ function addLoadEvent(func) {
 
 <script>
 function printData(d) {
-	document.body.innerHTML = "<br>consumerKey: " + d.consumerKey + "<br>" +
-		"ID: " + d.id
+	document.body.innerHTML = "ID: " + d.id
 						+ "<br>NAME: " + d.name 
 						+ "<br>MSGTYPE: " + d.msgtype 
 						+ "<br>DOCTYPE: " + d.doctype 
@@ -58,7 +50,7 @@ function printData(d) {
 }
 
 if (typeof (EventSource) != "undefined") {
-	var source = new EventSource("http://localhost:8080/SSE/Consumer");
+	var source = new EventSource("http://localhost:8080/SSE/BasicConsumer");
 	
 	//to have the newest messages on the bottom: document.body.innerHTML += "Connection was opened<br>";
 	source.onopen = function(event) {
@@ -67,49 +59,32 @@ if (typeof (EventSource) != "undefined") {
 	
 	source.onerror = function(event) {
 		document.body.innerHTML = "An error occurred; auto-reconnecting after 3 seconds<br>"  // can change in Consumer.java, RECONNECT_TIME variable
-									//+ "&nbsp;If doesn't reconnect, check RabbitMQ connection in RoutingConsumer<br>"
 									+ document.body.innerHTML; 
 		if (event.readyState == EventSource.CLOSED) {
 			document.body.innerHTML = "CONNECTION CLOSED<br>" + document.body.innerHTML;
 		}
 	}
-	/*
-	source.adddEventListener('ConnectionID', function(e) {
-		document.body.innerHTML = "ConnectionID is: " + e.data + "<br>" + document.body.innerHTML;
-	}, false);
-	*/
 	source.addEventListener('clear', function(e) {
 		document.body.innerHTML = "[*] Waiting for messages.." + "<br>" + e.data;
-	}, false);
-	/*
-	source.addEventListener('consumerKey', function(e) {
-		consumerKey = e.data;
-		document.body.innerHTML = "ConsumerID: " + consumerKey + "<br>" + document.body.innerHTML;
 	}, false);
 	
 	// JSON OBJECT
 	source.addEventListener('jsonobject', function(e) {
 		var d = JSON.parse(e.data);
-		//var d = e.data;
-		
+
 		if (d.id == null) d.id = "-";
 		if (d.msgtype == null) d.msgtype = "-";
 		if (d.name == null) d.name = "-";
 		if (d.doctype == null) d.doctype = "-";
 		if (d.data == null) d.data = "-";
-		
-		if (d.consumerKey==consumerKey)
-			printData(d);
-		
-		//printData(d);
+
+		printData(d);
 		
 	}, false);
-	*/
-	
 	
 	// onmessage handler is used if no event name is specified for a message
 	source.onmessage = function(e) {
-		document.body.innerHTML = "recvd msg: " + e.data + "<br>" + document.body.innerHTML;
+		document.body.innerHTML = e.data + "<br>" + document.body.innerHTML;
 	}
 	
 } else {
