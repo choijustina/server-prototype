@@ -58,8 +58,7 @@ function printData(d) {
 }
 
 if (typeof (EventSource) != "undefined") {
-	var source = new EventSource("http://localhost:8080/SSE/RoutingConsumer");
-	//var source = new EventSource("http://localhost:8080/SSE/Consumer");
+	var source = new EventSource("http://localhost:8080/SSE/Consumer");
 	
 	//to have the newest messages on the bottom: document.body.innerHTML += "Connection was opened<br>";
 	source.onopen = function(event) {
@@ -67,8 +66,8 @@ if (typeof (EventSource) != "undefined") {
 	}
 	
 	source.onerror = function(event) {
-		document.body.innerHTML = "An error occurred; auto-reconnecting after 3 seconds<br>"
-									+ "&nbsp;If doesn't reconnect, check RabbitMQ connection in RoutingConsumer<br>"
+		document.body.innerHTML = "An error occurred; auto-reconnecting after 3 seconds<br>"  // can change in Consumer.java, RECONNECT_TIME variable
+									//+ "&nbsp;If doesn't reconnect, check RabbitMQ connection in RoutingConsumer<br>"
 									+ document.body.innerHTML; 
 		if (event.readyState == EventSource.CLOSED) {
 			document.body.innerHTML = "CONNECTION CLOSED<br>" + document.body.innerHTML;
@@ -78,18 +77,11 @@ if (typeof (EventSource) != "undefined") {
 	source.addEventListener('clear', function(e) {
 		document.body.innerHTML = "[*] Waiting for messages.." + "<br>" + e.data;
 	}, false);
-	
+	/*
 	source.addEventListener('consumerKey', function(e) {
 		consumerKey = e.data;
 		document.body.innerHTML = "ConsumerID: " + consumerKey + "<br>" + document.body.innerHTML;
 	}, false);
-	
-	/*
-	source.addEventListener(consumerKey, function (e) {
-		document.body.innerHTML = "matched consumerKey<br>" + document.body.innerHTML;
-	}, false);
-	*/
-	
 	
 	// JSON OBJECT
 	source.addEventListener('jsonobject', function(e) {
@@ -108,7 +100,7 @@ if (typeof (EventSource) != "undefined") {
 		//printData(d);
 		
 	}, false);
-	
+	*/
 	
 	
 	// onmessage handler is used if no event name is specified for a message

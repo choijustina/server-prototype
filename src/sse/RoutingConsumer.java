@@ -20,79 +20,43 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 //import org.json.simple.JSONObject;
 //import org.json.simple.parser.JSONParser;
 //import org.json.simple.parser.ParseException;
 
-@WebServlet("/RoutingConsumer")
-public class RoutingConsumer extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+public class RoutingConsumer {
 	private static final boolean MSG_ACK = false;			// TODO: message acknowledgment off when true; receipts of messages are sent back from consumer telling okay to delete
 	private static final String bindingKey = "";
-	private static final String REDIRECT_FILE = "index.html";
 	
-	private Connection connection = null;					//only one RabbitMQ connection
-	private Channel channel = null;
-	private QueueingConsumer queueingConsumer = null;
+	private static Connection connection = null;					//only one RabbitMQ connection
+	private static Channel channel = null;
+	private static QueueingConsumer queueingConsumer = null;
 	
 	protected static Map<Integer, ConsumerObject> consumerMap = new HashMap<Integer, ConsumerObject>();
 	protected static int numberOfConsumers = 0;
 	
 	private static final boolean DEBUG = true;
-	private static int counter = 0; // tests if only one instantiated
 	
-	protected void doGet (HttpServletRequest request, HttpServletResponse response) 
-			throws ServletException, IOException {
-		doPost(request, response);
-	}
-	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		String name = request.getParameter("name");
-		String msgType = request.getParameter("msgType");
-		String docType = request.getParameter("docType");
+	public RoutingConsumer() throws IOException {
 		
-		ConsumerObject c = new ConsumerObject(name, msgType, docType);
-		
-		if (numberOfConsumers==0)
-			numberOfConsumers = 1;
-		else
-			numberOfConsumers++;
-		
-		consumerMap.put(numberOfConsumers, c);
-		
-		RequestDispatcher view = request.getRequestDispatcher(REDIRECT_FILE);
-		view.forward(request, response);
-	}
-	
-	public RoutingConsumer() throws IOException {  
-		counter++;
-		
-		// for debugging purposes
-		PrintStream out = new PrintStream(new FileOutputStream("RoutingConsumerOutput.txt"));
-		
-		if (counter>1)
-			out.print("ERROR - counter is greater than one >> RoutingConsumer instantiated more than once\n\n");
+//		PrintStream out = null;
+		if (DEBUG) {
+			BasicConsumer.recvMsg("DEBUG MODE IS ON");
+			BasicConsumer.recvMsg("number of consumers: " + numberOfConsumers);
+			
+			for (int i = 1; i <= numberOfConsumers; i++) {
+				ConsumerObject thisConsumer = consumerMap.get(i);
+				String str = thisConsumer.printConsumer();
+				BasicConsumer.recvMsg(str);
+			}
+		}
 		
 		if (connection==null) {
 			initRabbitMQ();  // may throw IOException
-			out.print("initialized RabbitMQ connection\n\n");
+			if (DEBUG) BasicConsumer.recvMsg("initialized RabbitMQ connection\n\n");
 		} else
-			out.print("RabbitMQ already initialized - double check\n\n");
+			if (DEBUG) BasicConsumer.recvMsg("RabbitMQ already initialized - double check\n\n");
 		
-		if (DEBUG) {
-			out.print("DEBUG MODE IS ON\n\n");
-		}
-		
-		out.print("[*] Waiting for messages\n\n");
-
 		while (true) {  // waiting for items in RabbitMQ queue
 			try {
 				
@@ -104,13 +68,20 @@ public class RoutingConsumer extends HttpServlet {
 				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
 				
 				if (message.equals(AbstractProducer.CLOSE_CONSUMER)) {
-					out.print("CLOSING THE CONSUMER\n\n");
+//					BasicConsumer.recvMsg("CLOSING THE CONSUMER\n\n");
 					channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
 					break;
 				}
 				
 				Date date = new Date();
-				out.print("Recvd: " + date + " - " + message + "\n\n");
+//				if (DEBUG) BasicConsumer.recvMsg("Recvd: " + date + " - " + message + "\n\n");
+				
+				// loop through all of the consumers
+				for (int i = 1; i <= RoutingConsumer.numberOfConsumers; i++) {
+					ConsumerObject thisConsumer = RoutingConsumer.consumerMap.get(i);
+//					thisConsumer.recvMsg(message);
+					
+				}
 				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -118,15 +89,15 @@ public class RoutingConsumer extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
-		out.print("CLOSING CONSUMER if doesn't auto-reconnect within 5 seconds\n\n");
+		if (DEBUG) BasicConsumer.recvMsg("CLOSING CONSUMER if doesn't auto-reconnect within 5 seconds\n\n");
 		try {
 			Thread.currentThread().sleep(5000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		// closes the connection if doesn't try to auto-reconnect 
-		closeRabbitMQ();		// may throw IOException
-		out.close();
+		closeRabbitMQ();	// may throw IOException
+		//out.close();
 	}
 	
 	/*
@@ -165,5 +136,5 @@ public class RoutingConsumer extends HttpServlet {
 			e.printStackTrace();
 		}
 	}*/
-
+	
 }
